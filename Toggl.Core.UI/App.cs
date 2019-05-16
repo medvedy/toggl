@@ -4,7 +4,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Toggl.Core.UI.Navigation;
 using Toggl.Core.UI.ViewModels;
-using Toggl.Core.UI.Views;
+using Toggl.Storage.Settings;
 
 namespace Toggl.Core.UI
 {
@@ -13,22 +13,42 @@ namespace Toggl.Core.UI
         where TInput : new()
     {
         private readonly UIDependencyContainer dependencyContainer;
-        
+        private readonly ITimeService timeService;
+        private readonly INavigationService navigationService;
+        private readonly IOnboardingStorage onboardingStorage;
+        private readonly IAccessRestrictionStorage accessRestrictionStorage;
+
         public App(UIDependencyContainer dependencyContainer)
         {
             this.dependencyContainer = dependencyContainer;
+            timeService = dependencyContainer.TimeService;
+            navigationService = dependencyContainer.NavigationService;
+            onboardingStorage = dependencyContainer.OnboardingStorage;
+            accessRestrictionStorage = dependencyContainer.AccessRestrictionStorage;
         }
-        
+
         public async Task Start()
+        {
+            await processCommonStart();
+            await navigationService.Navigate<MainTabBarViewModel>(null);
+        }
+
+        public async Task StartWithNavigationUrl(Uri navigationUrl)
+        {
+            await processCommonStart();
+
+            var urlHandler = dependencyContainer.UrlHandler;
+            var urlWasHandled = await urlHandler.Handle(navigationUrl);
+            if (urlWasHandled) return;
+
+            await navigationService.Navigate<MainTabBarViewModel>(null);
+        }
+
+        private async Task processCommonStart()
         {
             revokeNewUserIfNeeded();
 
             dependencyContainer.BackgroundSyncService.SetupBackgroundSync(dependencyContainer.UserAccessManager);
-            
-            var timeService = dependencyContainer.TimeService;
-            var navigationService = dependencyContainer.NavigationService;
-            var onboardingStorage = dependencyContainer.OnboardingStorage;
-            var accessRestrictionStorage = dependencyContainer.AccessRestrictionStorage;
 
             onboardingStorage.SetFirstOpened(timeService.CurrentDateTime);
 
@@ -43,7 +63,7 @@ namespace Toggl.Core.UI
                 await navigationService.Navigate<TFirstViewModelWhenNotLoggedIn, TInput>(new TInput(), null);
                 return;
             }
-            
+
             var user = await dependencyContainer.InteractorFactory.GetCurrentUser().Execute();
             if (accessRestrictionStorage.IsUnauthorized(user.ApiToken))
             {
@@ -52,8 +72,6 @@ namespace Toggl.Core.UI
             }
 
             dependencyContainer.SyncManager.ForceFullSync().Subscribe();
-
-            await navigationService.Navigate<MainTabBarViewModel>(null);
         }
 
         private void revokeNewUserIfNeeded()
@@ -71,6 +89,5 @@ namespace Toggl.Core.UI
 
             dependencyContainer.OnboardingStorage.SetIsNewUser(false);
         }
-
     }
 }
