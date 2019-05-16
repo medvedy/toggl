@@ -85,6 +85,11 @@ namespace Toggl.Droid.Presentation
             return true;
         }
 
+        internal void HandleUrlForAppStart(string navigationUrl, SplashScreen splashScreen)
+        {
+            splashScreen.Finish();
+        }
+
         private bool handleTimeEntryEdit(Dictionary<string, string> args)
         {
             // e.g: toggl://tracker/timeEntry/edit?timeEntryId=1

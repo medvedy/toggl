@@ -8,10 +8,12 @@ using Android.Support.V7.App;
 using Toggl.Core;
 using Toggl.Core.Services;
 using Toggl.Core.UI;
+using Toggl.Core.UI.Navigation;
 using Toggl.Core.UI.Parameters;
 using Toggl.Core.UI.ViewModels;
 using Toggl.Droid.BroadcastReceivers;
 using Toggl.Droid.Helper;
+using Toggl.Droid.Presentation;
 using static Android.Content.Intent;
 
 namespace Toggl.Droid
@@ -53,25 +55,28 @@ namespace Toggl.Droid
                 new IntentFilter(ActionTimezoneChanged));
 
             createApplicationLifecycleObserver(dependencyContainer.BackgroundService);
-            
-            StartWithIntent(app).ContinueWith(_ =>
+
+            var hasAppAccess = app.Initialize()
+                .CheckIfUserHasFullAppAccess().GetAwaiter().GetResult();
+
+            if (!hasAppAccess)
             {
                 Finish();
-            });
-        }
-
-        private async Task StartWithIntent(App<LoginViewModel, CredentialsParameter> app)
-        {
-            var navigationUrl = Intent.Data?.ToString() ?? getTrackUrlFromProcessedText();
-
-            if (string.IsNullOrEmpty(navigationUrl))
-            {
-                await app.Start();
                 return;
             }
 
-            var uri = new Uri(navigationUrl);
-            await app.StartWithNavigationUrl(uri);
+            var navigationUrl = Intent.Data?.ToString() ?? getTrackUrlFromProcessedText();
+            if (string.IsNullOrEmpty(navigationUrl))
+            {
+                AndroidDependencyContainer.Instance
+                    .NavigationService
+                    .Navigate<MainTabBarViewModel>(null)
+                    .ContinueWith(_ => Finish());
+                return;
+            }
+
+            AndroidUrlHandler androidHandler = null; //TODO: Get reference to actual handler
+            androidHandler.HandleUrlForAppStart(navigationUrl, this);
         }
 
         private string getTrackUrlFromProcessedText()
@@ -86,7 +91,6 @@ namespace Toggl.Droid
             var applicationUrl = ApplicationUrls.Track.Default(description);
             return applicationUrl;
         }
-
 
         private void createApplicationLifecycleObserver(IBackgroundService backgroundService)
         {
