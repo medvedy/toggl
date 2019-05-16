@@ -41,9 +41,7 @@ namespace Toggl.Core.UI.Services
         public async Task<bool> Handle(Uri uri)
         {
             var path = uri.AbsolutePath;
-            var args = HttpUtility
-                .ParseQueryString(uri.Query)
-                .ToDictionary(CommonFunctions.Identity, CommonFunctions.Identity);
+            var args = uri.GetQueryParams();
 
             switch (path)
             {
