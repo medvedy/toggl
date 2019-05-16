@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -51,25 +53,25 @@ namespace Toggl.Droid
                 new IntentFilter(ActionTimezoneChanged));
 
             createApplicationLifecycleObserver(dependencyContainer.BackgroundService);
-
-            app.Start().ContinueWith(_ =>
+            
+            StartWithIntent(app).ContinueWith(_ =>
             {
                 Finish();
             });
+        }
 
-            // TODO: Reimplement this when working on deeplinking
-            //var navigationUrl = Intent.Data?.ToString() ?? getTrackUrlFromProcessedText();
-            //var navigationService = AndroidDependencyContainer.Instance.NavigationService;
-            //if (string.IsNullOrEmpty(navigationUrl))
-            //{
-            //    Finish();
-            //    return;
-            //}
+        private async Task StartWithIntent(App<LoginViewModel, CredentialsParameter> app)
+        {
+            var navigationUrl = Intent.Data?.ToString() ?? getTrackUrlFromProcessedText();
 
-            //navigationService.Navigate(navigationUrl).ContinueWith(_ =>
-            //{
-            //    Finish();
-            //});
+            if (string.IsNullOrEmpty(navigationUrl))
+            {
+                await app.Start();
+                return;
+            }
+
+            var uri = new Uri(navigationUrl);
+            await app.StartWithNavigationUrl(uri);
         }
 
         private string getTrackUrlFromProcessedText()
