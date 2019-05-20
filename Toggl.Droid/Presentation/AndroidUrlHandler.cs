@@ -40,6 +40,11 @@ namespace Toggl.Droid.Presentation
 
         public void HandleUrlForAppStart(string navigationUrl, Activity activity)
         {
+            var handled = handle(new Uri(navigationUrl), activity).GetAwaiter().GetResult();
+            if (!handled) 
+                AndroidStartupHelper.StartMainTabBarActivity(activity);
+            
+            activity.Finish();
         }
         
         private async Task<bool> handle(Uri uri, Activity activity)
