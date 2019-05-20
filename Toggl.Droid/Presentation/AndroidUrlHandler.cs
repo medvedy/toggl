@@ -14,7 +14,6 @@ using Toggl.Core.UI.Navigation;
 using Toggl.Core.UI.Parameters;
 using Toggl.Core.UI.Services;
 using Toggl.Core.UI.ViewModels;
-using Toggl.Core.UI.Views;
 using Toggl.Droid.Activities;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
@@ -27,7 +26,6 @@ namespace Toggl.Droid.Presentation
         private readonly IUrlHandler urlHandler;
         private readonly ITimeService timeService;
         private readonly IInteractorFactory interactorFactory;
-        private readonly INavigationService navigationService;
         
         public AndroidUrlHandler(ITimeService timeService, IInteractorFactory interactorFactory, INavigationService navigationService, IPresenter viewPresenter)
         {
@@ -38,7 +36,6 @@ namespace Toggl.Droid.Presentation
 
             this.timeService = timeService;
             this.interactorFactory = interactorFactory;
-            this.navigationService = navigationService;
             urlHandler = new UrlHandler(timeService, interactorFactory, navigationService, viewPresenter);
         }
 
@@ -47,15 +44,13 @@ namespace Toggl.Droid.Presentation
             throw new InvalidOperationException("The AndroidUrlHandler shouldn't call HandleUrlForAppStart");
         }
         
-        internal void HandleUrlForAppStart<ActivityType>(string navigationUrl, ActivityType activity)
-        where ActivityType : Activity, IView 
+        internal void HandleUrlForAppStart(string navigationUrl, Activity activity)
         {
             handle(new Uri(navigationUrl), activity)
                 .ContinueWith(_ => { activity.Finish(); });
         }
         
-        private async Task<bool> handle<ActivityType>(Uri uri, ActivityType activity)
-        where ActivityType : Activity, IView
+        private async Task<bool> handle(Uri uri, Activity activity)
         {
             var path = uri.AbsolutePath;
             var args = uri.GetQueryParams();
@@ -72,7 +67,7 @@ namespace Toggl.Droid.Presentation
                     return await handleCalendar(args, activity);
                 default:
                     return await urlHandler.Handle(uri)
-                        .ContinueWith(_ => navigationService.Navigate<MainTabBarViewModel>(activity))
+                        .ContinueWith(_ => AndroidStartupHelper.StartMainTabBarActivity(activity))
                         .ContinueWith(_ => true);
             }
         }

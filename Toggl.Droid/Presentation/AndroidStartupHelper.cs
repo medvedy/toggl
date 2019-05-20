@@ -41,10 +41,7 @@ namespace Toggl.Droid.Presentation
         {
             var vmCache = AndroidDependencyContainer.Instance.ViewModelCache;
             var cachedViewModel = vmCache.Get<MainTabBarViewModel>();
-            if (cachedViewModel != null)
-                return cachedViewModel;
-
-            return locateMainTabBarViewModel();
+            return cachedViewModel ?? locateMainTabBarViewModel();
         }
 
         private static MainTabBarViewModel locateMainTabBarViewModel()
