@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reactive;
 using Android.App;
 using Android.Content;
 using Toggl.Core.UI.Navigation;
@@ -7,12 +8,13 @@ using Toggl.Core.UI.ViewModels;
 using Toggl.Core.UI.ViewModels.Settings;
 using Toggl.Core.UI.Views;
 using Toggl.Droid.Activities;
+using TaskStackBuilder = Android.Support.V4.App.TaskStackBuilder;
 
 namespace Toggl.Droid.Presentation
 {
     public sealed class ActivityPresenter : AndroidPresenter
     {
-        private const ActivityFlags clearBackStackFlags = ActivityFlags.ClearTop | ActivityFlags.ClearTask | ActivityFlags.NewTask;
+        private const ActivityFlags clearBackStackFlags = ActivityFlags.ClearTop | ActivityFlags.SingleTop;
 
         protected override HashSet<Type> AcceptedViewModels { get; } = new HashSet<Type>
         {
@@ -67,19 +69,19 @@ namespace Toggl.Droid.Presentation
                 throw new Exception($"Failed to start Activity for viewModel with type {viewModelType.Name}");
             }
 
-            var intent = new Intent(Application.Context, presentableInfo.ActivityType).AddFlags(presentableInfo.Flags);
+            var intent = new Intent((sourceView as Activity ?? Application.Context), presentableInfo.ActivityType).AddFlags(presentableInfo.Flags);
 
             if (presentableInfo.Flags == clearBackStackFlags)
             {
                 AndroidDependencyContainer.Instance.ViewModelCache.ClearAll();
             }
-
+            
             AndroidDependencyContainer
                 .Instance
                 .ViewModelCache
                 .Cache(viewModel);
 
-            Application.Context.StartActivity(intent);
+            (sourceView as Activity ?? Application.Context).StartActivity(intent);
         }
 
         private struct ActivityPresenterInfo
