@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Util;
 using Android.Views;
+using Toggl.Core.Analytics;
 using Toggl.Core.UI.ViewModels;
 using Toggl.Core.UI.ViewModels.Calendar;
 using Toggl.Core.UI.ViewModels.Reports;
@@ -19,12 +22,22 @@ namespace Toggl.Droid.Activities
 {
     [Activity(Theme = "@style/AppTheme",
               ScreenOrientation = ScreenOrientation.Portrait,
+              LaunchMode = LaunchMode.SingleTop,
               ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public sealed partial class MainTabBarActivity : ReactiveActivity<MainTabBarViewModel>
     {
+        public static string StartingTabExtra = "StartingTabExtra";
+        public static string WorkspaceIdExtra = "WorkspaceIdExtra";
+        public static string StartDateExtra = "StartDateExtra";
+        public static string EndDateExtra = "EndDateExtra";
+        
         private readonly Dictionary<int, Fragment> fragments = new Dictionary<int, Fragment>();
         private Fragment activeFragment;
         private bool activityResumedBefore = false;
+        private int? requestedInitialTab;
+        private long? reportsRequestedWorkspaceId;
+        private DateTimeOffset? reportsRequestedStartDate;
+        private DateTimeOffset? reportsRequestedEndDate;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -35,13 +48,43 @@ namespace Toggl.Droid.Activities
             InitializeViews();
 
             restoreFragmentsViewModels();
-            showInitialFragment();
-
+            showInitialFragment(getInitialTab(Intent));
+            loadReportsIntentExtras(Intent);
+            
             navigationView
                 .Rx()
                 .ItemSelected()
                 .Subscribe(onTabSelected)
                 .DisposedBy(DisposeBag);
+        }
+
+        private int getInitialTab(Intent intent)
+            => intent.GetIntExtra(StartingTabExtra, Resource.Id.MainTabTimerItem);
+        
+        protected override void OnNewIntent(Intent intent)
+        {
+            base.OnNewIntent(intent);
+            requestedInitialTab = getInitialTab(intent);
+            loadReportsIntentExtras(intent);
+        }
+
+        private void loadReportsIntentExtras(Intent intent)
+        {
+            var workspaceId = intent.GetLongExtra(WorkspaceIdExtra, 0L);
+            var startDate = intent.GetLongExtra(StartDateExtra, 0L);
+            var endDate = intent.GetLongExtra(EndDateExtra, 0L);
+
+            if (workspaceId == 0)
+                reportsRequestedWorkspaceId = null;
+
+            if (startDate == 0 || endDate == 0)
+            {
+                reportsRequestedStartDate = null;
+                reportsRequestedEndDate = null;
+            }
+            
+            reportsRequestedStartDate = DateTimeOffset.FromUnixTimeSeconds(startDate);
+            reportsRequestedEndDate = DateTimeOffset.FromUnixTimeSeconds(endDate);
         }
 
         private void restoreFragmentsViewModels()
@@ -72,9 +115,33 @@ namespace Toggl.Droid.Activities
 
             if (!activityResumedBefore)
             {
-                navigationView.SelectedItemId = Resource.Id.MainTabTimerItem;
+                navigationView.SelectedItemId = requestedInitialTab ?? Resource.Id.MainTabTimerItem;
                 activityResumedBefore = true;
+                requestedInitialTab = null;
+                loadReportsIfNeeded();
+                return;
             }
+
+            if (requestedInitialTab == null) return;
+            navigationView.SelectedItemId = requestedInitialTab.Value;
+            requestedInitialTab = null;
+            loadReportsIfNeeded();
+        }
+
+        private void loadReportsIfNeeded()
+        {
+            if (reportsRequestedStartDate == null || reportsRequestedEndDate == null)
+                return;
+            
+            var reportsViewModel = getTabViewModel<ReportsViewModel>();
+            if (reportsViewModel != null && navigationView.SelectedItemId == Resource.Id.MainTabReportsItem)
+            {
+                reportsViewModel.LoadReport(reportsRequestedWorkspaceId, reportsRequestedStartDate.Value, reportsRequestedEndDate.Value, ReportsSource.Other);
+            }
+            
+            reportsRequestedWorkspaceId = null;
+            reportsRequestedStartDate = null;
+            reportsRequestedEndDate = null;
         }
 
         private Fragment getCachedFragment(int itemId)
@@ -156,19 +223,22 @@ namespace Toggl.Droid.Activities
             activeFragment = fragment;
         }
 
-        private void showInitialFragment()
+        private void showInitialFragment(int initialTabItemId)
         {
             SupportFragmentManager.RemoveAllFragments();
 
-            var mainFragment = getCachedFragment(Resource.Id.MainTabTimerItem) as MainFragment;
+            var initialFragment = getCachedFragment(initialTabItemId);
             SupportFragmentManager
                 .BeginTransaction()
-                .Add(Resource.Id.CurrentTabFragmmentContainer, mainFragment)
+                .Add(Resource.Id.CurrentTabFragmmentContainer, initialFragment)
                 .Commit();
 
-            mainFragment.SetFragmentIsVisible(true);
+            if (initialFragment is MainFragment mainFragment)
+                mainFragment.SetFragmentIsVisible(true);
 
-            activeFragment = mainFragment;
+            requestedInitialTab = initialTabItemId;
+            navigationView.SelectedItemId = initialTabItemId;
+            activeFragment = initialFragment;
         }
     }
 }
