@@ -85,7 +85,7 @@ namespace Toggl.Droid.Presentation
             return true;
         }
 
-        internal void HandleUrlForAppStart(string navigationUrl, SplashScreen splashScreen)
+        internal void HandleUrlForAppStart(string navigationUrl, Activity splashScreen)
         {
             splashScreen.Finish();
         }
