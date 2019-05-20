@@ -58,18 +58,6 @@ namespace Toggl.Core.UI
             return true;
         }
 
-        public async Task StartWithNavigationUrl(Uri navigationUrl)
-        {
-
-            dependencyContainer.SyncManager.ForceFullSync().Subscribe();
-
-            var urlHandler = dependencyContainer.UrlHandler;
-            var urlWasHandled = await urlHandler.Handle(navigationUrl);
-            if (urlWasHandled) return;
-
-            await navigationService.Navigate<MainTabBarViewModel>(null);
-        }
-
         private void revokeNewUserIfNeeded()
         {
             const int newUserThreshold = 60;
