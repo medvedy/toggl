@@ -14,6 +14,7 @@ using Toggl.Core.UI.Parameters;
 using Toggl.Core.UI.ViewModels;
 using Toggl.Core.UI.Views;
 using Toggl.Droid.BroadcastReceivers;
+using Toggl.Droid.Presentation;
 using static Android.Content.Intent;
 
 namespace Toggl.Droid
@@ -56,11 +57,8 @@ namespace Toggl.Droid
                 return;
             }
 
-            AndroidDependencyContainer.Instance
-                .NavigationService
-                .Navigate<MainTabBarViewModel>(this)
-                .ContinueWith(_ => Finish());
-            return;
+            AndroidStartupHelper.StartMainTabBarActivity(this);
+            Finish();
         }
 
         private void createApplicationLifecycleObserver(IBackgroundService backgroundService)
