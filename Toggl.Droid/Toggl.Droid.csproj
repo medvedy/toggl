@@ -356,6 +356,7 @@
     <Compile Include="Presentation\AndroidPresenter.cs" />
     <Compile Include="Presentation\AndroidUrlHandler.cs" />
     <Compile Include="Presentation\DialogFragmentPresenter.cs" />
+    <Compile Include="Presentation\AndroidStartupHelper.cs" />
     <Compile Include="Presentation\ViewModelCache.cs" />
     <Compile Include="Startup\AndroidDependencyContainer.cs" />
     <Compile Include="Extensions\FloatingActionButtonExtensions.cs" />

@@ -98,7 +98,7 @@ namespace Toggl.Droid.Presentation
                 tags
             );
             
-            clearSubViewModelsState();
+            AndroidStartupHelper.ClearSubViewModelsState();
 
             var viewModelLoader = new ViewModelLoader(AndroidDependencyContainer.Instance);
             var viewModel = viewModelLoader.Load<StartTimeEntryParameters, Unit>(typeof(StartTimeEntryViewModel), startTimeEntryParameters).GetAwaiter().GetResult();
@@ -116,8 +116,8 @@ namespace Toggl.Droid.Presentation
             var timeEntryId = args.GetValueAsLong(ApplicationUrls.TimeEntry.TimeEntryId);
             if (timeEntryId.HasValue)
             {
-                clearSubViewModelsState();
-                
+                AndroidStartupHelper.ClearSubViewModelsState();
+
                 var viewModelLoader = new ViewModelLoader(AndroidDependencyContainer.Instance);
                 var vmCache = AndroidDependencyContainer.Instance.ViewModelCache;
                 var viewModel = viewModelLoader.Load<long[], Unit>(typeof(EditTimeEntryViewModel), new[] { timeEntryId.Value }).GetAwaiter().GetResult();
@@ -191,41 +191,13 @@ namespace Toggl.Droid.Presentation
         
         private void navigateToMainTabBarWithExtras(Activity activity, Bundle extras)
         {
-            clearSubViewModelsState();
+            AndroidStartupHelper.ClearSubViewModelsState();
 
             var intent = new Intent(activity, typeof(MainTabBarActivity))
                 .AddFlags(ActivityFlags.ClearTop | ActivityFlags.SingleTop)
                 .PutExtras(extras);
             
             activity.StartActivity(intent);
-        }
-
-        private void clearSubViewModelsState()
-        {
-            var mainViewModel = loadMainViewModel();
-            
-            AndroidDependencyContainer
-                .Instance
-                .ViewModelCache
-                .ClearAll();
-            
-            AndroidDependencyContainer
-                .Instance
-                .ViewModelCache
-                .Cache(mainViewModel);
-        }
-        
-        private MainTabBarViewModel loadMainViewModel()
-        {
-            var vmCache = AndroidDependencyContainer.Instance.ViewModelCache;
-            var cachedViewModel = vmCache.Get<MainTabBarViewModel>();
-            if (cachedViewModel != null)
-                return cachedViewModel;
-
-            var viewModelLoader = new ViewModelLoader(AndroidDependencyContainer.Instance);
-            var viewModel = viewModelLoader.Load<Unit, Unit>(typeof(MainTabBarViewModel), Unit.Default).GetAwaiter().GetResult();
-
-            return (MainTabBarViewModel) viewModel;
         }
     }
 }
