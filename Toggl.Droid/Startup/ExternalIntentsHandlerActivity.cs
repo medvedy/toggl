@@ -58,8 +58,11 @@ namespace Toggl.Droid.Startup
                 return;
             }
 
-            var androidHandler = (AndroidUrlHandler)AndroidDependencyContainer.Instance.UrlHandler;
-            androidHandler.HandleUrlForAppStart(navigationUrl, this);
+            var timeService = dependencyContainer.TimeService;
+            var interactorFactory = dependencyContainer.InteractorFactory;
+            var urlHandler = dependencyContainer.UrlHandler;
+            var androidUrlHandler = new AndroidUrlHandler(timeService, interactorFactory, urlHandler);
+            androidUrlHandler.HandleUrlForAppStart(navigationUrl, this);
         }
         
         private string getTrackUrlFromProcessedText()

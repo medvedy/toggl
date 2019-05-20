@@ -21,33 +21,25 @@ using TaskStackBuilder = Android.Support.V4.App.TaskStackBuilder;
 
 namespace Toggl.Droid.Presentation
 {
-    public class AndroidUrlHandler : IUrlHandler
+    public class AndroidUrlHandler
     {
         private readonly IUrlHandler urlHandler;
         private readonly ITimeService timeService;
         private readonly IInteractorFactory interactorFactory;
         
-        public AndroidUrlHandler(ITimeService timeService, IInteractorFactory interactorFactory, INavigationService navigationService, IPresenter viewPresenter)
+        public AndroidUrlHandler(ITimeService timeService, IInteractorFactory interactorFactory, IUrlHandler urlHandler)
         {
             Ensure.Argument.IsNotNull(timeService, nameof(timeService));
             Ensure.Argument.IsNotNull(interactorFactory, nameof(interactorFactory));
-            Ensure.Argument.IsNotNull(navigationService, nameof(navigationService));
-            Ensure.Argument.IsNotNull(viewPresenter, nameof(viewPresenter));
+            Ensure.Argument.IsNotNull(urlHandler, nameof(urlHandler));
 
             this.timeService = timeService;
             this.interactorFactory = interactorFactory;
-            urlHandler = new UrlHandler(timeService, interactorFactory, navigationService, viewPresenter);
+            this.urlHandler = urlHandler;
         }
 
-        public async Task<bool> Handle(Uri uri)
+        public void HandleUrlForAppStart(string navigationUrl, Activity activity)
         {
-            throw new InvalidOperationException("The AndroidUrlHandler shouldn't call HandleUrlForAppStart");
-        }
-        
-        internal void HandleUrlForAppStart(string navigationUrl, Activity activity)
-        {
-            handle(new Uri(navigationUrl), activity)
-                .ContinueWith(_ => { activity.Finish(); });
         }
         
         private async Task<bool> handle(Uri uri, Activity activity)

@@ -132,6 +132,6 @@ namespace Toggl.Droid
             => settingsStorage.Value;
 
         protected override IUrlHandler CreateUrlHandler()
-            => new AndroidUrlHandler(TimeService, InteractorFactory, NavigationService, viewPresenter);
+            => new UrlHandler(TimeService, InteractorFactory, NavigationService, viewPresenter);
     }
 }
