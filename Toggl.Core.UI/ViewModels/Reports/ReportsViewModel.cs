@@ -179,6 +179,8 @@ namespace Toggl.Core.UI.ViewModels.Reports
         {
             await base.Initialize();
 
+            await CalendarViewModel.Initialize();
+
             CalendarViewModel.SelectPeriod(ReportPeriod.ThisWeek);
 
             WorkspacesObservable
@@ -201,8 +203,12 @@ namespace Toggl.Core.UI.ViewModels.Reports
             reportSubject
                 .AsObservable()
                 .Do(setLoadingState)
-                .SelectMany(_ => interactorFactory.GetProjectSummary(workspaceId, startDate, endDate).Execute())
-                .Subscribe(onReport, onError)
+                .SelectMany( _ =>
+                    startDate == default(DateTimeOffset) || endDate == default
+                        ? Observable.Empty<ProjectSummaryReport>()
+                        : interactorFactory.GetProjectSummary(workspaceId, startDate, endDate).Execute())
+                .Catch(Observable.Return<ProjectSummaryReport>(null))
+                .Subscribe(onReport)
                 .DisposedBy(disposeBag);
 
             dataSource.Preferences.Current
@@ -213,8 +219,6 @@ namespace Toggl.Core.UI.ViewModels.Reports
                 .Select(currentUser => currentUser.BeginningOfWeek)
                 .Subscribe(onBeginningOfWeekChanged)
                 .DisposedBy(disposeBag);
-
-            await CalendarViewModel.Initialize();
         }
 
         public override void ViewAppeared()
@@ -262,18 +266,19 @@ namespace Toggl.Core.UI.ViewModels.Reports
 
         private void onReport(ProjectSummaryReport report)
         {
+            if (report == null)
+            {
+                isLoading.OnNext(false);
+                trackReportsEvent(false);
+                return;
+            }
+
             totalTimeSubject.OnNext(TimeSpan.FromSeconds(report.TotalSeconds));
             billablePercentageSubject.OnNext(report.TotalSeconds is 0 ? null : (float?)report.BillablePercentage);
             segmentsSubject.OnNext(report.Segments);
             isLoading.OnNext(false);
 
             trackReportsEvent(true);
-        }
-
-        private void onError(Exception ex)
-        {
-            isLoading.OnNext(false);
-            trackReportsEvent(false);
         }
 
         private void trackReportsEvent(bool success)

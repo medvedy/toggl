@@ -38,7 +38,7 @@ namespace Toggl.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            
+
             var dependencyContainer = AndroidDependencyContainer.Instance;
             var app = new App<LoginViewModel, CredentialsParameter>(dependencyContainer);
 
@@ -62,14 +62,12 @@ namespace Toggl.Droid
                 .ContinueWith(_ => Finish());
             return;
         }
-        
+
         private void createApplicationLifecycleObserver(IBackgroundService backgroundService)
         {
-            //TODO: Reimplement this
-            //var mvxApplication = MvxAndroidApplication.Instance;
-            //var appLifecycleObserver = new ApplicationLifecycleObserver(backgroundService);
-            //mvxApplication.RegisterActivityLifecycleCallbacks(appLifecycleObserver);
-            //mvxApplication.RegisterComponentCallbacks(appLifecycleObserver);
+            var appLifecycleObserver = new ApplicationLifecycleObserver(backgroundService);
+            Application.RegisterActivityLifecycleCallbacks(appLifecycleObserver);
+            Application.RegisterComponentCallbacks(appLifecycleObserver);
         }
 
         public IObservable<bool> Confirm(string title, string message, string confirmButtonText, string dismissButtonText)

@@ -83,9 +83,6 @@ namespace Toggl.Droid
         protected override INotificationService CreateNotificationService()
             => new NotificationServiceAndroid();
 
-        protected override IPasswordManagerService CreatePasswordManagerService()
-            => new StubPasswordManagerService();
-
         protected override IPermissionsChecker CreatePermissionsChecker()
             => new PermissionsCheckerAndroid();
 

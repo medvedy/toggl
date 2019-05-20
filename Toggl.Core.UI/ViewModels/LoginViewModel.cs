@@ -9,7 +9,6 @@ using Toggl.Core.Extensions;
 using Toggl.Core.Login;
 using Toggl.Core.UI.Extensions;
 using Toggl.Core.UI.Parameters;
-using Toggl.Core.UI.Services;
 using Toggl.Core.Services;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
@@ -32,7 +31,6 @@ namespace Toggl.Core.UI.ViewModels
         private readonly IUserAccessManager userAccessManager;
         private readonly IAnalyticsService analyticsService;
         private readonly IOnboardingStorage onboardingStorage;
-        private readonly IPasswordManagerService passwordManagerService;
         private readonly IErrorHandlingService errorHandlingService;
         private readonly ILastTimeUsageStorage lastTimeUsageStorage;
         private readonly ITimeService timeService;
@@ -49,7 +47,6 @@ namespace Toggl.Core.UI.ViewModels
         private readonly BehaviorSubject<Email> emailSubject = new BehaviorSubject<Email>(Shared.Email.Empty);
         private readonly BehaviorSubject<Password> passwordSubject = new BehaviorSubject<Password>(Shared.Password.Empty);
 
-        public bool IsPasswordManagerAvailable { get; }
         public IObservable<string> Email { get; }
         public IObservable<string> Password { get; }
         public IObservable<bool> HasError { get; }
@@ -62,14 +59,12 @@ namespace Toggl.Core.UI.ViewModels
 
         public UIAction Signup { get; }
         public UIAction ForgotPassword { get; }
-        public UIAction StartPasswordManager { get; }
 
         public LoginViewModel(
             IUserAccessManager userAccessManager,
             IAnalyticsService analyticsService,
             IOnboardingStorage onboardingStorage,
             INavigationService navigationService,
-            IPasswordManagerService passwordManagerService,
             IErrorHandlingService errorHandlingService,
             ILastTimeUsageStorage lastTimeUsageStorage,
             ITimeService timeService,
@@ -80,7 +75,6 @@ namespace Toggl.Core.UI.ViewModels
             Ensure.Argument.IsNotNull(userAccessManager, nameof(userAccessManager));
             Ensure.Argument.IsNotNull(analyticsService, nameof(analyticsService));
             Ensure.Argument.IsNotNull(onboardingStorage, nameof(onboardingStorage));
-            Ensure.Argument.IsNotNull(passwordManagerService, nameof(passwordManagerService));
             Ensure.Argument.IsNotNull(errorHandlingService, nameof(errorHandlingService));
             Ensure.Argument.IsNotNull(lastTimeUsageStorage, nameof(lastTimeUsageStorage));
             Ensure.Argument.IsNotNull(timeService, nameof(timeService));
@@ -93,14 +87,12 @@ namespace Toggl.Core.UI.ViewModels
             this.onboardingStorage = onboardingStorage;
             this.errorHandlingService = errorHandlingService;
             this.lastTimeUsageStorage = lastTimeUsageStorage;
-            this.passwordManagerService = passwordManagerService;
             this.schedulerProvider = schedulerProvider;
 
             var emailObservable = emailSubject.Select(email => email.TrimmedEnd());
 
             Signup = rxActionFactory.FromAsync(signup);
             ForgotPassword = rxActionFactory.FromAsync(forgotPassword);
-            StartPasswordManager = rxActionFactory.FromAsync(startPasswordManager);
 
             Shake = shakeSubject.AsDriver(this.schedulerProvider);
 
@@ -144,8 +136,6 @@ namespace Toggl.Core.UI.ViewModels
                     (email, password, isLoading) => email.IsValid && password.IsValid && !isLoading)
                 .DistinctUntilChanged()
                 .AsDriver(this.schedulerProvider);
-
-            IsPasswordManagerAvailable = passwordManagerService.IsAvailable;
         }
 
         public override Task Initialize(CredentialsParameter parameter)
@@ -222,26 +212,6 @@ namespace Toggl.Core.UI.ViewModels
             emailParameter = await Navigate<ForgotPasswordViewModel, EmailParameter, EmailParameter>(emailParameter);
             if (emailParameter != null)
                 emailSubject.OnNext(emailParameter.Email);
-        }
-
-        private async Task startPasswordManager()
-        {
-            if (!passwordManagerService.IsAvailable) return;
-            if (isLoadingSubject.Value) return;
-
-            analyticsService.PasswordManagerButtonClicked.Track();
-
-            var loginInfo = await passwordManagerService.GetLoginInformation();
-
-            emailSubject.OnNext(loginInfo.Email);
-            if (!emailSubject.Value.IsValid) return;
-            analyticsService.PasswordManagerContainsValidEmail.Track();
-
-            passwordSubject.OnNext(loginInfo.Password);
-            if (!passwordSubject.Value.IsValid) return;
-            analyticsService.PasswordManagerContainsValidPassword.Track();
-
-            Login();
         }
 
         private async void onAuthenticated()

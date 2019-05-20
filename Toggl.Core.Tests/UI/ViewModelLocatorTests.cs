@@ -6,19 +6,19 @@ using Toggl.Core.Analytics;
 using Toggl.Core.Diagnostics;
 using Toggl.Core.Interactors;
 using Toggl.Core.Login;
-using Toggl.Core.UI;
-using Toggl.Core.UI.Services;
-using Toggl.Core.UI.ViewModels;
 using Toggl.Core.Services;
 using Toggl.Core.Shortcuts;
 using Toggl.Core.Suggestions;
 using Toggl.Core.Sync;
+using Toggl.Core.UI;
+using Toggl.Core.UI.Services;
+using Toggl.Core.UI.ViewModels;
+using Toggl.Core.UI.Navigation;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using Toggl.Storage;
 using Toggl.Storage.Settings;
 using Xunit;
-using Toggl.Core.UI.Navigation;
 
 namespace Toggl.Core.Tests.UI
 {
@@ -43,7 +43,6 @@ namespace Toggl.Core.Tests.UI
                 MockNavigationService = Substitute.For<INavigationService>(),
                 MockNotificationService = Substitute.For<INotificationService>(),
                 MockOnboardingStorage = Substitute.For<IOnboardingStorage>(),
-                MockPasswordManagerService = Substitute.For<IPasswordManagerService>(),
                 MockPermissionsChecker = Substitute.For<IPermissionsChecker>(),
                 MockPlatformInfo = Substitute.For<IPlatformInfo>(),
                 MockPrivateSharedStorageService = Substitute.For<IPrivateSharedStorageService>(),

@@ -173,14 +173,19 @@ namespace Toggl.Core.UI.ViewModels
                 return;
 
             viewAppearedOnce = true;
-            var initialShortcut = QuickSelectShortcuts.Single(shortcut => shortcut.Period == reportPeriod);
-            selectedDateRangeSubject.OnNext(initialShortcut.GetDateRange().WithSource(ReportsSource.Initial));
-            highlightedDateRangeSubject.OnNext(initialShortcut.GetDateRange().WithSource(ReportsSource.Initial));
+            SelectInitialShortcut();
         }
 
         public void Reload()
         { 
             reloadSubject.OnNext(Unit.Default);
+        }
+
+        public void SelectInitialShortcut()
+        {
+            var initialShortcut = QuickSelectShortcuts.Single(shortcut => shortcut.Period == reportPeriod);
+            selectedDateRangeSubject.OnNext(initialShortcut.GetDateRange().WithSource(ReportsSource.Initial));
+            highlightedDateRangeSubject.OnNext(initialShortcut.GetDateRange().WithSource(ReportsSource.Initial));
         }
 
         public void SelectPeriod(ReportPeriod period)

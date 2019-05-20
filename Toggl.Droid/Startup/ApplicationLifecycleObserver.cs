@@ -1,13 +1,12 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.Content.Res;
 using Android.OS;
-using Android.Runtime;
+using Toggl.Core;
 using Toggl.Core.Services;
 using Toggl.Shared;
 
-namespace Toggl.Droid.Startup
+namespace Toggl.Droid
 {
     public sealed class ApplicationLifecycleObserver : Java.Lang.Object, Application.IActivityLifecycleCallbacks, IComponentCallbacks2
     {
@@ -34,11 +33,11 @@ namespace Toggl.Droid.Startup
 
         public void OnActivityResumed(Activity activity)
         {
-            if (isInBackground)
-            {
-                isInBackground = false;
-                backgroundService.EnterForeground();
-            }
+            if (!isInBackground)
+                return;
+
+            isInBackground = false;
+            backgroundService.EnterForeground();
         }
 
         public void OnActivitySaveInstanceState(Activity activity, Bundle outState)
@@ -63,10 +62,19 @@ namespace Toggl.Droid.Startup
 
         public void OnTrimMemory(TrimMemory level)
         {
-            if (level == TrimMemory.UiHidden)
+            switch (level)
             {
-                isInBackground = true;
-                backgroundService.EnterBackground();
+                case TrimMemory.RunningCritical:
+                case TrimMemory.RunningLow:
+                    AndroidDependencyContainer.Instance
+                        .AnalyticsService
+                        .ReceivedLowMemoryWarning
+                        .Track(Platform.Giskard);
+                    break;
+                case TrimMemory.UiHidden:
+                    isInBackground = true;
+                    backgroundService.EnterBackground();
+                    break;
             }
         }
     }

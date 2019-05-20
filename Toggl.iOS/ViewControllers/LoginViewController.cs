@@ -56,8 +56,6 @@ namespace Toggl.iOS.ViewControllers
             SignUpForFreeLabel.Text = Resources.SignUpTitle;
 
             NavigationController.NavigationBarHidden = true;
-            IosDependencyContainer.Instance.OnePasswordService.SetSourceView(PasswordManagerButton);
-            PasswordManagerButton.Hidden = !ViewModel.IsPasswordManagerAvailable;
 
             UIKeyboard.Notifications.ObserveWillShow(KeyboardWillShow);
             UIKeyboard.Notifications.ObserveWillHide(KeyboardWillHide);
@@ -126,10 +124,6 @@ namespace Toggl.iOS.ViewControllers
 
             ForgotPasswordButton.Rx()
                 .BindAction(ViewModel.ForgotPassword)
-                .DisposedBy(DisposeBag);
-
-            PasswordManagerButton.Rx()
-                .BindAction(ViewModel.StartPasswordManager)
                 .DisposedBy(DisposeBag);
 
             ShowPasswordButton.Rx().Tap()

@@ -89,10 +89,6 @@ namespace Toggl.Core.UI
         protected override IOnboardingStorage CreateOnboardingStorage()
             => MockOnboardingStorage;
 
-        internal IPasswordManagerService MockPasswordManagerService { get; set; }
-        protected override IPasswordManagerService CreatePasswordManagerService()
-            => MockPasswordManagerService;
-
         internal IPermissionsChecker MockPermissionsChecker { get; set; }
         protected override IPermissionsChecker CreatePermissionsChecker()
             => MockPermissionsChecker;

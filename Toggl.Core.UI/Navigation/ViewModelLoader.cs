@@ -75,7 +75,6 @@ namespace Toggl.Core.UI.Navigation
                     dependencyContainer.AnalyticsService,
                     dependencyContainer.OnboardingStorage,
                     dependencyContainer.NavigationService,
-                    dependencyContainer.PasswordManagerService,
                     dependencyContainer.ErrorHandlingService,
                     dependencyContainer.LastTimeUsageStorage,
                     dependencyContainer.TimeService,

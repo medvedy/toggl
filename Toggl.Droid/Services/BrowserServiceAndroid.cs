@@ -14,7 +14,11 @@ namespace Toggl.Droid.Services
 
         public void OpenUrl(string url)
         {
-            var intent = new Intent(Intent.ActionView).SetData(Uri.Parse(url));
+            var uri = Uri.Parse(url);
+            var intent = new Intent(Intent.ActionView, uri);
+            intent.SetFlags(ActivityFlags.ClearTop);
+            intent.SetFlags(ActivityFlags.NewTask);
+
             Application.Context.StartActivity(intent);
         }
     }

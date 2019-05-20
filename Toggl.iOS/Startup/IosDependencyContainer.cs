@@ -40,8 +40,6 @@ namespace Toggl.iOS
             UIDependencyContainer.Instance = Instance;
         }
 
-        public OnePasswordServiceIos OnePasswordService => PasswordManagerService as OnePasswordServiceIos;
-
         private IosDependencyContainer(CompositePresenter viewPresenter, ApiEnvironment environment, Platform platform, string version)
             : base(environment, new UserAgent(platform.ToString(), version))
         {
@@ -78,9 +76,6 @@ namespace Toggl.iOS
 
         protected override INotificationService CreateNotificationService()
             => new NotificationServiceIos(PermissionsChecker, TimeService);
-
-        protected override IPasswordManagerService CreatePasswordManagerService()
-            => new OnePasswordServiceIos();
 
         protected override IPermissionsChecker CreatePermissionsChecker()
             => new PermissionsCheckerIos();

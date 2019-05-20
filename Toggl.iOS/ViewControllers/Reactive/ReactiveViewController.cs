@@ -82,6 +82,9 @@ namespace Toggl.iOS.ViewControllers
         {
             base.DismissViewController(animated, completionHandler);
 
+            if (!IsBeingDismissed)
+                return;
+
             ViewModel?.DetachView();
             ViewModel?.ViewDestroyed();
         }

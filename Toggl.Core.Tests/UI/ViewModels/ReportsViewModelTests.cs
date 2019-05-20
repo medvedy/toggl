@@ -472,6 +472,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
             {
                 TimeService.CurrentDateTime.Returns(DateTimeOffset.Now);
                 await ViewModel.Initialize();
+                ViewModel.CalendarViewModel.ViewAppeared();
                 TestScheduler.Start();
 
                 var mockWorkspace = new MockWorkspace { Id = WorkspaceId + 1 };
@@ -653,6 +654,8 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 Interactor.Execute()
                     .ReturnsForAnyArgs(Observable.Empty<ProjectSummaryReport>(SchedulerProvider.TestScheduler));
                 await ViewModel.Initialize();
+                ViewModel.CalendarViewModel.ViewAppeared();
+                InteractorFactory.ClearReceivedCalls();
 
                 for (int i = 0; i < numberOfAppearances; ++i)
                 {
