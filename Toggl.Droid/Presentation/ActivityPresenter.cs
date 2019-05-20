@@ -13,6 +13,7 @@ namespace Toggl.Droid.Presentation
     public sealed class ActivityPresenter : AndroidPresenter
     {
         private const ActivityFlags clearBackStackFlags = ActivityFlags.ClearTop | ActivityFlags.SingleTop;
+        private const ActivityFlags startNewTaskFlags = ActivityFlags.ClearTop | ActivityFlags.ClearTask | ActivityFlags.NewTask;
 
         protected override HashSet<Type> AcceptedViewModels { get; } = new HashSet<Type>
         {
@@ -45,17 +46,17 @@ namespace Toggl.Droid.Presentation
             [typeof(EditProjectViewModel)] = new ActivityPresenterInfo(typeof(EditProjectActivity)),
             [typeof(EditTimeEntryViewModel)] = new ActivityPresenterInfo(typeof(EditTimeEntryActivity)),
             [typeof(ForgotPasswordViewModel)] = new ActivityPresenterInfo(typeof(ForgotPasswordActivity)),
-            [typeof(LoginViewModel)] = new ActivityPresenterInfo(typeof(LoginActivity), clearBackStackFlags),
+            [typeof(LoginViewModel)] = new ActivityPresenterInfo(typeof(LoginActivity), startNewTaskFlags),
             [typeof(MainTabBarViewModel)] = new ActivityPresenterInfo(typeof(MainTabBarActivity), clearBackStackFlags),
-            [typeof(OutdatedAppViewModel)] = new ActivityPresenterInfo(typeof(OutdatedAppActivity), clearBackStackFlags),
+            [typeof(OutdatedAppViewModel)] = new ActivityPresenterInfo(typeof(OutdatedAppActivity), startNewTaskFlags),
             [typeof(SelectClientViewModel)] = new ActivityPresenterInfo(typeof(SelectClientActivity)),
             [typeof(SelectCountryViewModel)] = new ActivityPresenterInfo(typeof(SelectCountryActivity)),
             [typeof(SelectProjectViewModel)] = new ActivityPresenterInfo(typeof(SelectProjectActivity)),
             [typeof(SelectTagsViewModel)] = new ActivityPresenterInfo(typeof(SelectTagsActivity)),
             [typeof(SendFeedbackViewModel)] = new ActivityPresenterInfo(typeof(SendFeedbackActivity)),
-            [typeof(SignupViewModel)] = new ActivityPresenterInfo(typeof(SignUpActivity), clearBackStackFlags),
+            [typeof(SignupViewModel)] = new ActivityPresenterInfo(typeof(SignUpActivity), startNewTaskFlags),
             [typeof(StartTimeEntryViewModel)] = new ActivityPresenterInfo(typeof(StartTimeEntryActivity)),
-            [typeof(TokenResetViewModel)] = new ActivityPresenterInfo(typeof(TokenResetActivity), clearBackStackFlags)
+            [typeof(TokenResetViewModel)] = new ActivityPresenterInfo(typeof(TokenResetActivity), startNewTaskFlags)
         };
 
         protected override void PresentOnMainThread<TInput, TOutput>(ViewModel<TInput, TOutput> viewModel, IView sourceView)
