@@ -29,6 +29,11 @@ namespace Toggl.Droid.Presentation
 
         public void ClearAll()
         {
+            foreach (var cacheValue in cache.Values)
+            {
+                cacheValue?.Cancel();
+            }
+
             cache.Clear();
         }
     }
