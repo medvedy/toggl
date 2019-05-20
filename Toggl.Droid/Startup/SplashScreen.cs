@@ -25,7 +25,7 @@ namespace Toggl.Droid
               Theme = "@style/Theme.Splash",
               ScreenOrientation = ScreenOrientation.Portrait,
               ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
-    public class SplashScreen : AppCompatActivity, IView
+    public class SplashScreen : AppCompatActivity
     {
         public SplashScreen()
             : base()
@@ -67,32 +67,5 @@ namespace Toggl.Droid
             Application.RegisterActivityLifecycleCallbacks(appLifecycleObserver);
             Application.RegisterComponentCallbacks(appLifecycleObserver);
         }
-
-        public IObservable<bool> Confirm(string title, string message, string confirmButtonText, string dismissButtonText) 
-            => throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
-
-        public IObservable<Unit> Alert(string title, string message, string buttonTitle) 
-            => throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
-
-        public IObservable<bool> ConfirmDestructiveAction(ActionType type, params object[] formatArguments) 
-            => throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
-
-        public IObservable<T> Select<T>(string title, IEnumerable<SelectOption<T>> options, int initialSelectionIndex) 
-            => throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
-
-        public IObservable<bool> RequestCalendarAuthorization(bool force = false) 
-            => throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
-
-        public IObservable<bool> RequestNotificationAuthorization(bool force = false) 
-            => throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
-
-        public void OpenAppSettings() 
-            => throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
-
-        public IObservable<string> GetGoogleToken() 
-            => throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
-
-        public Task Close() 
-            => throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
     }
 }
