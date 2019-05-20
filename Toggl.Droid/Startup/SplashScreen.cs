@@ -1,19 +1,19 @@
 using System;
+using System.Collections.Generic;
+using System.Reactive;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Support.V7.App;
-using Toggl.Core;
 using Toggl.Core.Services;
 using Toggl.Core.UI;
 using Toggl.Core.UI.Navigation;
 using Toggl.Core.UI.Parameters;
 using Toggl.Core.UI.ViewModels;
+using Toggl.Core.UI.Views;
 using Toggl.Droid.BroadcastReceivers;
-using Toggl.Droid.Helper;
-using Toggl.Droid.Presentation;
 using static Android.Content.Intent;
 
 namespace Toggl.Droid
@@ -24,16 +24,7 @@ namespace Toggl.Droid
               Theme = "@style/Theme.Splash",
               ScreenOrientation = ScreenOrientation.Portrait,
               ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
-    [IntentFilter(
-        new[] { "android.intent.action.VIEW", "android.intent.action.EDIT" },
-        Categories = new[] { "android.intent.category.BROWSABLE", "android.intent.category.DEFAULT" },
-        DataSchemes = new[] { "toggl" },
-        DataHost = "*")]
-    [IntentFilter(
-        new[] { "android.intent.action.PROCESS_TEXT" },
-        Categories = new[] { "android.intent.category.DEFAULT" },
-        DataMimeType = "text/plain")]
-    public class SplashScreen : AppCompatActivity
+    public class SplashScreen : AppCompatActivity, IView
     {
         public SplashScreen()
             : base()
@@ -47,7 +38,7 @@ namespace Toggl.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-
+            
             var dependencyContainer = AndroidDependencyContainer.Instance;
             var app = new App<LoginViewModel, CredentialsParameter>(dependencyContainer);
 
@@ -65,33 +56,13 @@ namespace Toggl.Droid
                 return;
             }
 
-            var navigationUrl = Intent.Data?.ToString() ?? getTrackUrlFromProcessedText();
-            if (string.IsNullOrEmpty(navigationUrl))
-            {
-                AndroidDependencyContainer.Instance
-                    .NavigationService
-                    .Navigate<MainTabBarViewModel>(null)
-                    .ContinueWith(_ => Finish());
-                return;
-            }
-
-            AndroidUrlHandler androidHandler = null; //TODO: Get reference to actual handler
-            androidHandler.HandleUrlForAppStart(navigationUrl, this);
+            AndroidDependencyContainer.Instance
+                .NavigationService
+                .Navigate<MainTabBarViewModel>(this)
+                .ContinueWith(_ => Finish());
+            return;
         }
-
-        private string getTrackUrlFromProcessedText()
-        {
-            if (MarshmallowApis.AreNotAvailable)
-                return null;
-
-            var description = Intent.GetStringExtra(ExtraProcessText);
-            if (string.IsNullOrWhiteSpace(description))
-                return null;
-
-            var applicationUrl = ApplicationUrls.Track.Default(description);
-            return applicationUrl;
-        }
-
+        
         private void createApplicationLifecycleObserver(IBackgroundService backgroundService)
         {
             //TODO: Reimplement this
@@ -100,5 +71,50 @@ namespace Toggl.Droid
             //mvxApplication.RegisterActivityLifecycleCallbacks(appLifecycleObserver);
             //mvxApplication.RegisterComponentCallbacks(appLifecycleObserver);
         }
-}
+
+        public IObservable<bool> Confirm(string title, string message, string confirmButtonText, string dismissButtonText)
+        {
+            throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
+        }
+
+        public IObservable<Unit> Alert(string title, string message, string buttonTitle)
+        {
+            throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
+        }
+
+        public IObservable<bool> ConfirmDestructiveAction(ActionType type, params object[] formatArguments)
+        {
+            throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
+        }
+
+        public IObservable<T> Select<T>(string title, IEnumerable<SelectOption<T>> options, int initialSelectionIndex)
+        {
+            throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
+        }
+
+        public IObservable<bool> RequestCalendarAuthorization(bool force = false)
+        {
+            throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
+        }
+
+        public IObservable<bool> RequestNotificationAuthorization(bool force = false)
+        {
+            throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
+        }
+
+        public void OpenAppSettings()
+        {
+            throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
+        }
+
+        public IObservable<string> GetGoogleToken()
+        {
+            throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
+        }
+
+        public Task Close()
+        {
+            throw new InvalidOperationException("You shouldn't be doing this from a splash screen");
+        }
+    }
 }
