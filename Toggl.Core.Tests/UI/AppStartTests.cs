@@ -49,14 +49,42 @@ namespace Toggl.Core.Tests.UI
             }
         }
 
-        public sealed class TheStartMethod : AppStartTest
+        public sealed class TheInitializeMethod : AppStartTest
+        {
+            [Fact, LogIfTooSlow]
+            public async Task SetsFirstOpenedTime()
+            {
+                TimeService.CurrentDateTime.Returns(new DateTimeOffset(2020, 1, 2, 3, 4, 5, TimeSpan.Zero));
+
+                App.Initialize();
+
+                OnboardingStorage.Received().SetFirstOpened(TimeService.CurrentDateTime);
+            }
+
+            [Fact, LogIfTooSlow]
+            public async Task MarksTheUserAsNotNewWhenUsingTheAppForTheFirstTimeAfterSixtyDays()
+            {
+                var now = DateTimeOffset.Now;
+
+                TimeService.CurrentDateTime.Returns(now);
+                OnboardingStorage.GetLastOpened().Returns(now.AddDays(-60));
+
+                App.Initialize();
+
+                OnboardingStorage.Received().SetLastOpened(now);
+                OnboardingStorage.Received().SetIsNewUser(false);
+            }
+        }
+
+        public sealed class TheCheckIfUserHasFullAppAccessMethod : AppStartTest
         {
             [Fact, LogIfTooSlow]
             public async Task ShowsTheOutdatedViewIfTheCurrentVersionOfTheAppIsOutdated()
             {
                 AccessRestrictionStorage.IsClientOutdated().Returns(true);
 
-                await App.Start();
+                App.Initialize();
+                await App.CheckIfUserHasFullAppAccess();
 
                 await NavigationService.Received().Navigate<OutdatedAppViewModel>(null);
                 UserAccessManager.DidNotReceive().CheckIfLoggedIn();
@@ -67,7 +95,8 @@ namespace Toggl.Core.Tests.UI
             {
                 AccessRestrictionStorage.IsApiOutdated().Returns(true);
 
-                await App.Start();
+                App.Initialize();
+                await App.CheckIfUserHasFullAppAccess();
 
                 await NavigationService.Received().Navigate<OutdatedAppViewModel>(null);
                 UserAccessManager.DidNotReceive().CheckIfLoggedIn();
@@ -78,7 +107,8 @@ namespace Toggl.Core.Tests.UI
             {
                 AccessRestrictionStorage.IsUnauthorized(Arg.Any<string>()).Returns(true);
 
-                await App.Start();
+                App.Initialize();
+                await App.CheckIfUserHasFullAppAccess();
 
                 await NavigationService.Received().Navigate<TokenResetViewModel>(null);
             }
@@ -89,7 +119,8 @@ namespace Toggl.Core.Tests.UI
                 AccessRestrictionStorage.IsUnauthorized(Arg.Any<string>()).Returns(true);
                 AccessRestrictionStorage.IsClientOutdated().Returns(true);
 
-                await App.Start();
+                App.Initialize();
+                await App.CheckIfUserHasFullAppAccess();
 
                 await NavigationService.Received().Navigate<OutdatedAppViewModel>(null);
                 UserAccessManager.DidNotReceive().CheckIfLoggedIn();
@@ -101,7 +132,8 @@ namespace Toggl.Core.Tests.UI
                 AccessRestrictionStorage.IsUnauthorized(Arg.Any<string>()).Returns(true);
                 AccessRestrictionStorage.IsApiOutdated().Returns(true);
 
-                await App.Start();
+                App.Initialize();
+                await App.CheckIfUserHasFullAppAccess();
 
                 await NavigationService.Received().Navigate<OutdatedAppViewModel>(null);
                 await NavigationService.DidNotReceive().Navigate<TokenResetViewModel>(null);
@@ -121,9 +153,11 @@ namespace Toggl.Core.Tests.UI
                 AccessRestrictionStorage.IsApiOutdated().Returns(false);
                 AccessRestrictionStorage.IsClientOutdated().Returns(false);
 
-                await App.Start();
+                App.Initialize();
+                await App.CheckIfUserHasFullAppAccess();
 
-                await NavigationService.Received().Navigate<MainTabBarViewModel>(null);
+                await NavigationService.DidNotReceive().Navigate<TokenResetViewModel>(null);
+                await NavigationService.DidNotReceive().Navigate<OutdatedAppViewModel>(null);
             }
 
             [Fact, LogIfTooSlow]
@@ -131,41 +165,10 @@ namespace Toggl.Core.Tests.UI
             {
                 UserAccessManager.CheckIfLoggedIn().Returns(false);
 
-                await App.Start();
+                App.Initialize();
+                await App.CheckIfUserHasFullAppAccess();
 
                 await NavigationService.Received().Navigate<OnboardingViewModel>(null);
-            }
-
-            [Fact, LogIfTooSlow]
-            public async Task CallsNavigateToMainTabBarViewModelIfTheUserHasLoggedInPreviously()
-            {
-                await App.Start();
-
-                await NavigationService.Received().Navigate<MainTabBarViewModel>(null);
-            }
-
-            [Fact, LogIfTooSlow]
-            public async Task SetsFirstOpenedTime()
-            {
-                TimeService.CurrentDateTime.Returns(new DateTimeOffset(2020, 1, 2, 3, 4, 5, TimeSpan.Zero));
-
-                await App.Start();
-
-                OnboardingStorage.Received().SetFirstOpened(TimeService.CurrentDateTime);
-            }
-
-            [Fact, LogIfTooSlow]
-            public async Task MarksTheUserAsNotNewWhenUsingTheAppForTheFirstTimeAfterSixtyDays()
-            {
-                var now = DateTimeOffset.Now;
-
-                TimeService.CurrentDateTime.Returns(now);
-                OnboardingStorage.GetLastOpened().Returns(now.AddDays(-60));
-
-                await App.Start();
-
-                OnboardingStorage.Received().SetLastOpened(now);
-                OnboardingStorage.Received().SetIsNewUser(false);
             }
         }
     }
