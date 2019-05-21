@@ -74,7 +74,7 @@ namespace Toggl.Droid.Startup
             if (string.IsNullOrWhiteSpace(description))
                 return null;
 
-            var applicationUrl = ApplicationUrls.Track.Default(description);
+            var applicationUrl = ApplicationUrls.TimeEntry.Start.WithDescription(description);
             return applicationUrl;
         }
     }

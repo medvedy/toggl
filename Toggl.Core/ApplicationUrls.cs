@@ -37,6 +37,9 @@ namespace Toggl.Core
 
                 public static string Default
                     => $"{Scheme}://{Host}{Path}";
+
+                public static string WithDescription(string description)
+                    => $"{Default}?description={description}";
             }
 
             public static class Stop
@@ -114,14 +117,6 @@ namespace Toggl.Core
 
             public static string ForId(string eventId)
                 => $"{Scheme}://{Host}{Path}?eventId={eventId}";
-        }
-
-        public static class Track
-        {
-            public const string Path = "/track";
-
-            public static string Default(string description)
-                => $"{Scheme}://{Host}{Path}?description={description}";
         }
     }
 }
