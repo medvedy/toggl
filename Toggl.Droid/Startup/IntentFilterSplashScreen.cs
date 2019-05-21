@@ -28,7 +28,7 @@ namespace Toggl.Droid.Startup
         new[] { "android.intent.action.PROCESS_TEXT" },
         Categories = new[] { "android.intent.category.DEFAULT" },
         DataMimeType = "text/plain")]
-    public class ExternalIntentsHandlerActivity : AppCompatActivity
+    public class IntentFilterSplashScreen : AppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -41,7 +41,7 @@ namespace Toggl.Droid.Startup
                 new IntentFilter(ActionTimezoneChanged));
             
             var hasAppAccess = app.Initialize()
-                .CheckIfUserHasFullAppAccess().GetAwaiter().GetResult();
+                .NavigateWhenUserDoesNotHaveFullAppAccess().GetAwaiter().GetResult();
 
             if (!hasAppAccess)
             {

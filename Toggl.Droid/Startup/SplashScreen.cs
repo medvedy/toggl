@@ -49,7 +49,7 @@ namespace Toggl.Droid
             createApplicationLifecycleObserver(dependencyContainer.BackgroundService);
 
             var hasAppAccess = app.Initialize()
-                .CheckIfUserHasFullAppAccess().GetAwaiter().GetResult();
+                .NavigateWhenUserDoesNotHaveFullAppAccess().GetAwaiter().GetResult();
 
             if (!hasAppAccess)
             {

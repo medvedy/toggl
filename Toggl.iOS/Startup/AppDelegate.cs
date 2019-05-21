@@ -52,7 +52,7 @@ namespace Toggl.iOS
 
             var userHasAccess = app
                 .Initialize()
-                .CheckIfUserHasFullAppAccess().GetAwaiter().GetResult();
+                .NavigateWhenUserDoesNotHaveFullAppAccess().GetAwaiter().GetResult();
 
             if (userHasAccess)
             {

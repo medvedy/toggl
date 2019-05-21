@@ -68,10 +68,8 @@ namespace Toggl.Droid.Presentation
             
             var intent = new Intent(getContextFromView(sourceView), presentableInfo.ActivityType).AddFlags(presentableInfo.Flags);
 
-            if (presentationRequiresViewModelCleaning(presentableInfo.Flags))
-            {
+            if (presentationRequiresViewModelCleaning(presentableInfo.Flags)) 
                 AndroidDependencyContainer.Instance.ViewModelCache.ClearAll();
-            }
 
             AndroidDependencyContainer
                 .Instance
@@ -82,10 +80,7 @@ namespace Toggl.Droid.Presentation
         }
 
         private bool presentationRequiresViewModelCleaning(ActivityFlags activityFlags)
-        {
-            return activityFlags == clearBackStackFlags
-                   || activityFlags == startNewTaskFlags;
-        }
+            => activityFlags == clearBackStackFlags || activityFlags == startNewTaskFlags;
 
         private Context getContextFromView(IView view)
         {

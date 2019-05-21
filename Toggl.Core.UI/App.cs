@@ -31,7 +31,7 @@ namespace Toggl.Core.UI
             return this;
         }
 
-        public async Task<bool> CheckIfUserHasFullAppAccess()
+        public async Task<bool> NavigateWhenUserDoesNotHaveFullAppAccess()
         {
             var navigationService = dependencyContainer.NavigationService;
             var accessRestrictionStorage = dependencyContainer.AccessRestrictionStorage;
