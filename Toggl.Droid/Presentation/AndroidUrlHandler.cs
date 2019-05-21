@@ -166,7 +166,7 @@ namespace Toggl.Droid.Presentation
         
         private void navigateToReports(Activity activity, long? workspaceId, DateTimeOffset? startDate, DateTimeOffset? endDate)
         {
-            var bundle = Bundle.Empty;
+            var bundle = new Bundle();
             bundle.PutInt(MainTabBarActivity.StartingTabExtra, Resource.Id.MainTabReportsItem);
             bundle.PutLong(MainTabBarActivity.WorkspaceIdExtra, workspaceId ?? 0L);
             bundle.PutLong(MainTabBarActivity.StartDateExtra, startDate?.ToUnixTimeSeconds() ?? 0L);
