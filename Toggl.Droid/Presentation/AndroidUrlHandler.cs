@@ -43,7 +43,7 @@ namespace Toggl.Droid.Presentation
             var handled = handle(new Uri(navigationUrl), activity).GetAwaiter().GetResult();
             if (!handled) 
                 AndroidStartupHelper.StartMainTabBarActivity(activity);
-            
+
             activity.Finish();
         }
         
@@ -63,9 +63,8 @@ namespace Toggl.Droid.Presentation
                 case ApplicationUrls.Calendar.Path:
                     return await handleCalendar(args, activity);
                 default:
-                    return await urlHandler.Handle(uri)
-                        .ContinueWith(_ => AndroidStartupHelper.StartMainTabBarActivity(activity))
-                        .ContinueWith(_ => true);
+                    await urlHandler.Handle(uri);
+                    return false;
             }
         }
 
@@ -90,7 +89,7 @@ namespace Toggl.Droid.Presentation
                 tags
             );
             
-            AndroidStartupHelper.ClearSubViewModelsState();
+            AndroidStartupHelper.EnsureCleanRootViewModelState();
 
             var viewModelLoader = new ViewModelLoader(AndroidDependencyContainer.Instance);
             var viewModel = viewModelLoader.Load<StartTimeEntryParameters, Unit>(typeof(StartTimeEntryViewModel), startTimeEntryParameters).GetAwaiter().GetResult();
@@ -108,7 +107,7 @@ namespace Toggl.Droid.Presentation
             var timeEntryId = args.GetValueAsLong(ApplicationUrls.TimeEntry.TimeEntryId);
             if (timeEntryId.HasValue)
             {
-                AndroidStartupHelper.ClearSubViewModelsState();
+                AndroidStartupHelper.EnsureCleanRootViewModelState();
 
                 var viewModelLoader = new ViewModelLoader(AndroidDependencyContainer.Instance);
                 var vmCache = AndroidDependencyContainer.Instance.ViewModelCache;
@@ -183,7 +182,7 @@ namespace Toggl.Droid.Presentation
         
         private void navigateToMainTabBarWithExtras(Activity activity, Bundle extras)
         {
-            AndroidStartupHelper.ClearSubViewModelsState();
+            AndroidStartupHelper.EnsureCleanRootViewModelState();
 
             var intent = new Intent(activity, typeof(MainTabBarActivity))
                 .AddFlags(ActivityFlags.ClearTop | ActivityFlags.SingleTop)

@@ -9,27 +9,19 @@ namespace Toggl.Droid.Presentation
 {
     public static class AndroidStartupHelper
     {
-        public static void ClearSubViewModelsState()
+        public static void EnsureCleanRootViewModelState()
         {
             var mainTabBarViewModel = loadMainTabBarViewModel();
+            var instanceViewModelCache = AndroidDependencyContainer.Instance.ViewModelCache;
             
-            AndroidDependencyContainer
-                .Instance
-                .ViewModelCache
-                .ClearAll();
-            
-            AndroidDependencyContainer
-                .Instance
-                .ViewModelCache
-                .Cache(mainTabBarViewModel);
+            instanceViewModelCache.Clear<MainTabBarViewModel>();
+            instanceViewModelCache.ClearAll();
+            instanceViewModelCache.Cache(mainTabBarViewModel);
         }
 
         public static void StartMainTabBarActivity(Activity activity)
         {
-            AndroidDependencyContainer
-                .Instance
-                .ViewModelCache
-                .Cache(locateMainTabBarViewModel());
+            EnsureCleanRootViewModelState();
 
             var intent = new Intent(activity, typeof(MainTabBarActivity))
                 .AddFlags(ActivityFlags.ClearTop | ActivityFlags.SingleTop);
