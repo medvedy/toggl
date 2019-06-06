@@ -1,11 +1,9 @@
-﻿using System.Net;
-using System.Net.Http;
-using Toggl.Shared;
+﻿using System.Net.Http;
 using Toggl.Networking.ApiClients;
 using Toggl.Networking.ApiClients.Interfaces;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
-using static System.Net.DecompressionMethods;
+using Toggl.Shared;
 
 namespace Toggl.Networking
 {
@@ -58,16 +56,15 @@ namespace Toggl.Networking
 
     public static class TogglApiFactory
     {
-        internal static IApiClient CreateDefaultApiClient(UserAgent userAgent)
+        internal static IApiClient CreateDefaultApiClient(UserAgent userAgent, HttpMessageHandler httpHandler)
         {
-            var httpHandler = new HttpClientHandler { AutomaticDecompression = GZip | Deflate };
             var httpClient = new HttpClient(httpHandler);
             return new ApiClient(httpClient, userAgent);
         }
 
-        public static ITogglApi WithConfiguration(ApiConfiguration configuration)
+        public static ITogglApi WithConfiguration(ApiConfiguration configuration, HttpMessageHandler httpHandler)
         {
-            var apiClient = CreateDefaultApiClient(configuration.UserAgent);
+            var apiClient = CreateDefaultApiClient(configuration.UserAgent, httpHandler);
             return new TogglApi(configuration, apiClient);
         }
     }
