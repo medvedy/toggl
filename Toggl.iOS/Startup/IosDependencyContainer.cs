@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net.Http;
+using Foundation;
 using Toggl.Core;
 using Toggl.Core.Analytics;
 using Toggl.Core.Diagnostics;
@@ -130,5 +132,11 @@ namespace Toggl.iOS
 
         protected override IAccessRestrictionStorage CreateAccessRestrictionStorage()
             => settingsStorage.Value;
+
+        protected override IApiFactory CreateApiFactory()
+        {
+            var managedClientHandler = new NSUrlSessionHandler(NSUrlSessionConfiguration.DefaultSessionConfiguration);
+            return new ApiFactory(ApiEnvironment, UserAgent, managedClientHandler);
+        }
     }
 }

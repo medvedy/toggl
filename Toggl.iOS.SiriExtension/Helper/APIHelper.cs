@@ -1,3 +1,4 @@
+using System.Net.Http;
 using Foundation;
 using Toggl.iOS.ExtensionKit;
 using Toggl.Networking;
@@ -24,7 +25,8 @@ namespace SiriExtension
             var version = NSBundle.MainBundle.InfoDictionary["CFBundleShortVersionString"].ToString();
             var userAgent = new UserAgent("Daneel", $"{version} SiriExtension");
             var apiConfiguration = new ApiConfiguration(environment, Credentials.WithApiToken(apiToken), userAgent);
-            return TogglApiFactory.WithConfiguration(apiConfiguration);
+            var httpClientHandler = new NSUrlSessionHandler(NSUrlSessionConfiguration.DefaultSessionConfiguration);
+            return TogglApiFactory.WithConfiguration(apiConfiguration, httpClientHandler);
         }
     }
 }
