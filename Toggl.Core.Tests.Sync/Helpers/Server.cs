@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Toggl.Core.Exceptions;
@@ -15,6 +16,7 @@ using Toggl.Networking.Exceptions;
 using Toggl.Networking.Helpers;
 using Toggl.Networking.Network;
 using Toggl.Networking.Tests.Integration.Helper;
+using static System.Net.DecompressionMethods;
 
 namespace Toggl.Core.Tests.Sync.Helpers
 {
@@ -259,7 +261,8 @@ namespace Toggl.Core.Tests.Sync.Helpers
 
             private static IApiClient createApiClient()
             {
-                var realApiClient = Networking.TogglApiFactory.CreateDefaultApiClient(userAgent);
+                var managedHandler = new HttpClientHandler { AutomaticDecompression = GZip | Deflate };
+                var realApiClient = Networking.TogglApiFactory.CreateDefaultApiClient(userAgent, managedHandler);
 
                 return new SlowApiClient(new RetryingApiClient(realApiClient));
             }
