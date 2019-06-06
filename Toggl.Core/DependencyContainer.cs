@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Reactive.Linq;
 using System.Reactive.Disposables;
 using Toggl.Core.Analytics;
@@ -17,12 +18,12 @@ using Toggl.Networking;
 using Toggl.Networking.Network;
 using Toggl.Storage.Settings;
 using System.Threading.Tasks;
+using static System.Net.DecompressionMethods;
 
 namespace Toggl.Core
 {
     public abstract class DependencyContainer
     {
-        private readonly UserAgent userAgent;
         private readonly CompositeDisposable disposeBag = new CompositeDisposable();
 
         // Require recreation during login/logout
@@ -63,6 +64,7 @@ namespace Toggl.Core
         // Non lazy
         public virtual IUserAccessManager UserAccessManager { get; }
         public ApiEnvironment ApiEnvironment { get; }
+        public UserAgent UserAgent { get; }
 
         public ISyncManager SyncManager => syncManager.Value;
         public IInteractorFactory InteractorFactory => interactorFactory.Value;
@@ -94,7 +96,7 @@ namespace Toggl.Core
 
         protected DependencyContainer(ApiEnvironment apiEnvironment, UserAgent userAgent)
         {
-            this.userAgent = userAgent;
+            this.UserAgent = userAgent;
 
             ApiEnvironment = apiEnvironment;
 
@@ -188,7 +190,10 @@ namespace Toggl.Core
             => new RxActionFactory(SchedulerProvider);
 
         protected virtual IApiFactory CreateApiFactory()
-            => new ApiFactory(ApiEnvironment, userAgent);
+        {
+            var managedHandler = new HttpClientHandler { AutomaticDecompression = GZip | Deflate };
+            return new ApiFactory(ApiEnvironment, UserAgent, managedHandler);
+        }
 
         protected virtual ISyncManager CreateSyncManager()
         {
