@@ -7,25 +7,26 @@ namespace Toggl.Core.Login
 {
     public sealed class ApiFactory : IApiFactory
     {
-        private readonly HttpMessageHandler httpClientHandler;
+        private readonly HttpMessageHandler httpHandler;
 
         public UserAgent UserAgent { get; }
         public ApiEnvironment Environment { get; }
 
-        public ApiFactory(ApiEnvironment apiEnvironment, UserAgent userAgent, HttpMessageHandler httpClientHandler)
+        public ApiFactory(ApiEnvironment apiEnvironment, UserAgent userAgent, HttpMessageHandler httpHandler)
         {
             Ensure.Argument.IsNotNull(userAgent, nameof(userAgent));
+            Ensure.Argument.IsNotNull(httpHandler, nameof(httpHandler));
 
             UserAgent = userAgent;
             Environment = apiEnvironment;
 
-            this.httpClientHandler = httpClientHandler;
+            this.httpHandler = httpHandler;
         }
 
         public ITogglApi CreateApiWith(Credentials credentials)
         {
             var configuration = new ApiConfiguration(Environment, credentials, UserAgent);
-            return TogglApiFactory.WithConfiguration(configuration, httpClientHandler);
+            return TogglApiFactory.WithConfiguration(configuration, httpHandler);
         }
     }
 }
