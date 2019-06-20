@@ -29,12 +29,16 @@ namespace Toggl.iOS
             if (!dependencyContainer.UserAccessManager.CheckIfLoggedIn())
                 return;
 
-            var shouldBeSubscribedToPushNotifications = dependencyContainer.RemoteConfigService.ShouldBeSubscribedToPushNotifications();
-            var subscribeToPushNotificationsInteractor = interactorFactory.SubscribeToPushNotifications();
+            var shouldBeSubscribedToPushNotifications = dependencyContainer
+                .RemoteConfigService
+                .GetPushNotificationsConfiguration()
+                .RegisterPushNotificationsTokenWithServer;
 
-            shouldBeSubscribedToPushNotifications.SelectMany(willSubscribe => willSubscribe
-                    ? subscribeToPushNotificationsInteractor.Execute().Take(1).SelectUnit()
-                    : Observable.Return(Unit.Default))
+            if (!shouldBeSubscribedToPushNotifications) return;
+
+            interactorFactory.SubscribeToPushNotifications()
+                .Execute()
+                .Take(1)
                 .Subscribe();
         }
 
@@ -49,16 +53,22 @@ namespace Toggl.iOS
                 return;
             }
 
+            var shouldHandlePushNotifications = dependencyContainer
+                .RemoteConfigService
+                .GetPushNotificationsConfiguration()
+                .HandlePushNotifications;
+
+            if (!shouldHandlePushNotifications)
+            {
+                completionHandler(UIBackgroundFetchResult.NoData);
+                return;
+            }
+
             var syncInteractor = application.ApplicationState == UIApplicationState.Active
                 ? interactorFactory.RunPushNotificationInitiatedSyncInForeground()
                 : interactorFactory.RunPushNotificationInitiatedSyncInBackground();
 
-            var shouldHandlePushNotifications = dependencyContainer.RemoteConfigService.ShouldHandlePushNotifications(); 
-
-            shouldHandlePushNotifications
-                .SelectMany(willHandlePushNotification => willHandlePushNotification
-                    ? syncInteractor.Execute()
-                    : Observable.Return(Core.Models.SyncOutcome.NoData))
+            syncInteractor.Execute()
                 .Select(mapToNativeOutcomes)
                 .Subscribe(completionHandler);
         }
