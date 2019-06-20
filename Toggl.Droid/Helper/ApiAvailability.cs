@@ -22,4 +22,10 @@ namespace Toggl.Droid.Helper
         public static bool AreAvailable
             => Build.VERSION.SdkInt >= BuildVersionCodes.O;
     }
+
+    public static class PieApis
+    {
+        public static bool AreAvailable
+            => Build.VERSION.SdkInt >= BuildVersionCodes.P;
+    }
 }
