@@ -133,5 +133,7 @@ namespace Toggl.Droid
         protected override IAccessRestrictionStorage CreateAccessRestrictionStorage()
             => settingsStorage.Value;
 
+        protected override IRemoteConfigUpdateService CreateRemoteConfigUpdateService()
+            => new RemoteConfigUpdateServiceAndroid(KeyValueStorage);
     }
 }

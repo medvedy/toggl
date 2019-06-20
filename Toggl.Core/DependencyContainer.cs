@@ -56,6 +56,7 @@ namespace Toggl.Core
         private readonly Lazy<IAutomaticSyncingService> automaticSyncingService;
         private readonly Lazy<IAccessRestrictionStorage> accessRestrictionStorage;
         private readonly Lazy<ISyncErrorHandlingService> syncErrorHandlingService;
+        private readonly Lazy<IRemoteConfigUpdateService> remoteConfigUpdateService;
         private readonly Lazy<IPrivateSharedStorageService> privateSharedStorageService;
         private readonly Lazy<ISuggestionProviderContainer> suggestionProviderContainer;
         private readonly Lazy<IPushNotificationsTokenService> pushNotificationsTokenService;
@@ -89,6 +90,7 @@ namespace Toggl.Core
         public IAutomaticSyncingService AutomaticSyncingService => automaticSyncingService.Value;
         public IAccessRestrictionStorage AccessRestrictionStorage => accessRestrictionStorage.Value;
         public ISyncErrorHandlingService SyncErrorHandlingService => syncErrorHandlingService.Value;
+        public IRemoteConfigUpdateService RemoteConfigUpdateService => remoteConfigUpdateService.Value;
         public IPrivateSharedStorageService PrivateSharedStorageService => privateSharedStorageService.Value;
         public ISuggestionProviderContainer SuggestionProviderContainer => suggestionProviderContainer.Value;
         public IPushNotificationsTokenService PushNotificationsTokenService => pushNotificationsTokenService.Value;
@@ -126,10 +128,10 @@ namespace Toggl.Core
             automaticSyncingService = new Lazy<IAutomaticSyncingService>(CreateAutomaticSyncingService);
             accessRestrictionStorage = new Lazy<IAccessRestrictionStorage>(CreateAccessRestrictionStorage);
             syncErrorHandlingService = new Lazy<ISyncErrorHandlingService>(CreateSyncErrorHandlingService);
+            remoteConfigUpdateService = new Lazy<IRemoteConfigUpdateService>(CreateRemoteConfigUpdateService);
             privateSharedStorageService = new Lazy<IPrivateSharedStorageService>(CreatePrivateSharedStorageService);
             suggestionProviderContainer = new Lazy<ISuggestionProviderContainer>(CreateSuggestionProviderContainer);
             pushNotificationsTokenService = new Lazy<IPushNotificationsTokenService>(CreatePushNotificationsTokenService);
-
 
             api = apiFactory.Select(factory => factory.CreateApiWith(Credentials.None));
             UserAccessManager = new UserAccessManager(
@@ -166,6 +168,7 @@ namespace Toggl.Core
         protected abstract IApplicationShortcutCreator CreateShortcutCreator();
         protected abstract IBackgroundSyncService CreateBackgroundSyncService();
         protected abstract IAccessRestrictionStorage CreateAccessRestrictionStorage();
+        protected abstract IRemoteConfigUpdateService CreateRemoteConfigUpdateService();
         protected abstract IPrivateSharedStorageService CreatePrivateSharedStorageService();
         protected abstract ISuggestionProviderContainer CreateSuggestionProviderContainer();
         protected abstract IPushNotificationsTokenService CreatePushNotificationsTokenService();
