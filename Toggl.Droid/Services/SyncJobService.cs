@@ -48,9 +48,12 @@ namespace Toggl.Droid.Services
                 return;
             }
 
-            var shouldHandlePushNotifications = dependencyContainer.RemoteConfigService.ShouldHandlePushNotifications();
-            var shouldRunSync = shouldHandlePushNotifications.Wait();
-            if (shouldRunSync)
+            var shouldHandlePushNotifications = dependencyContainer
+                .RemoteConfigService
+                .GetPushNotificationsConfiguration()
+                .HandlePushNotifications;
+            
+            if (shouldHandlePushNotifications)
             {
                 var interactorFactory = dependencyContainer.InteractorFactory;
                 var syncInteractor = Application.IsInForeground
