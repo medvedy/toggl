@@ -46,10 +46,9 @@ namespace Toggl.Core.Sync.States.Push
             => handlePushNotificationTokenSubscription().SelectValue(Done.Transition());
 
         private IObservable<Unit> handlePushNotificationTokenSubscription()
-            => remoteConfigService.ShouldBeSubscribedToPushNotifications()
-                .SelectMany(shouldBeSubscribedToPushNotifications => shouldBeSubscribedToPushNotifications
-                    ? createSubscriptionInteractor().Execute()
-                    : createUnsubscriptionInteractor().Execute());
+            => remoteConfigService.GetPushNotificationsConfiguration().RegisterPushNotificationsTokenWithServer
+                ? createSubscriptionInteractor().Execute()
+                : createUnsubscriptionInteractor().Execute();
 
         private IInteractor<IObservable<Unit>> createSubscriptionInteractor()
             => new SubscribeToPushNotificationsInteractor(keyValueStorage, togglApi, pushNotificationsTokenService, timeService);
