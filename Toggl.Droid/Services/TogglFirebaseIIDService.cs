@@ -28,12 +28,15 @@ namespace Toggl.Droid.Services
             var userLoggedIn = dependencyContainer.UserAccessManager.CheckIfLoggedIn();
             if (!userLoggedIn) return;
 
-            var shouldBeSubscribedToPushNotifications = dependencyContainer.RemoteConfigService.ShouldBeSubscribedToPushNotifications();
-            var subscribeToPushNotificationsInteractor = dependencyContainer.InteractorFactory.SubscribeToPushNotifications();
+            var shouldBeSubscribedToPushNotifications = dependencyContainer
+                .RemoteConfigService
+                .GetPushNotificationsConfiguration()
+                .RegisterPushNotificationsTokenWithServer;
+            
+            if (!shouldBeSubscribedToPushNotifications) return;
 
-            shouldBeSubscribedToPushNotifications.SelectMany(willSubscribe => willSubscribe
-                    ? subscribeToPushNotificationsInteractor.Execute().SelectUnit()
-                    : Observable.Return(Unit.Default))
+            dependencyContainer.InteractorFactory.SubscribeToPushNotifications()
+                .Execute()
                 .ObserveOn(dependencyContainer.SchedulerProvider.BackgroundScheduler)
                 .Subscribe(_ => StopSelf())
                 .DisposedBy(disposeBag);
