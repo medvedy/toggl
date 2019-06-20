@@ -1,16 +1,14 @@
-﻿using Toggl.Core.Extensions;
-using Toggl.Core.Services;
+using Toggl.Core.Extensions;
 using Toggl.Shared;
 using Toggl.Storage.Settings;
-using GmsTask = Android.Gms.Tasks.Task;
 
-namespace Toggl.Droid.Services
+namespace Toggl.Core.Services
 {
-    public class RemoteConfigServiceAndroid : IRemoteConfigService
+    public class RemoteConfigService : IRemoteConfigService
     {
         private readonly IKeyValueStorage keyValueStorage;
 
-        public RemoteConfigServiceAndroid(IKeyValueStorage keyValueStorage)
+        public RemoteConfigService(IKeyValueStorage keyValueStorage)
         {
             Ensure.Argument.IsNotNull(keyValueStorage, nameof(keyValueStorage));
             this.keyValueStorage = keyValueStorage;

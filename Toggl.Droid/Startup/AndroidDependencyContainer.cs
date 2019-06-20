@@ -97,9 +97,6 @@ namespace Toggl.Droid
         protected override IRatingService CreateRatingService()
             => new RatingServiceAndroid(Application.Context);
 
-        protected override IRemoteConfigService CreateRemoteConfigService()
-            => new RemoteConfigServiceAndroid(KeyValueStorage);
-
         protected override ISchedulerProvider CreateSchedulerProvider()
             => new AndroidSchedulerProvider(AnalyticsService);
 

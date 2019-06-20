@@ -102,9 +102,6 @@ namespace Toggl.iOS
         protected override IRatingService CreateRatingService()
             => new RatingServiceIos();
 
-        protected override IRemoteConfigService CreateRemoteConfigService()
-            => new RemoteConfigServiceIos();
-
         protected override ISchedulerProvider CreateSchedulerProvider()
             => new IOSSchedulerProvider();
 
