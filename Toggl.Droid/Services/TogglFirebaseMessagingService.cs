@@ -3,6 +3,7 @@ using Android.App;
 using Android.App.Job;
 using Android.Content;
 using Firebase.Messaging;
+using Toggl.Droid.Helper;
 using Toggl.Storage.Settings;
 using static Toggl.Droid.Services.JobServicesConstants;
 
@@ -22,19 +23,19 @@ namespace Toggl.Droid.Services
 
             var keyValueStorage = dependencyContainer.KeyValueStorage;
             if (!shouldScheduleSyncJob(keyValueStorage)) return;
-            
-            keyValueStorage.SetBool(HasPendingSyncJobServiceScheduledKey, true);
-            keyValueStorage.SetDateTimeOffset(LastSyncJobScheduledAtKey, DateTimeOffset.Now);
 
             var jobClass = Java.Lang.Class.FromType(typeof(SyncJobService));
             var jobScheduler = (JobScheduler) GetSystemService(JobSchedulerService);
             var serviceName = new ComponentName(this, jobClass);
-            var jobInfo = new JobInfo.Builder(SyncJobServiceJobId, serviceName)
-                .SetImportantWhileForeground(true)
-                .SetRequiredNetworkType(NetworkType.Any)
-                .Build();
+            var jobInfoBuilder = new JobInfo.Builder(SyncJobServiceJobId, serviceName)
+                .SetRequiredNetworkType(NetworkType.Any);
 
-            jobScheduler.Schedule(jobInfo);
+            if (PieApis.AreAvailable)
+                jobInfoBuilder = jobInfoBuilder.SetImportantWhileForeground(true);
+            
+            jobScheduler.Schedule(jobInfoBuilder.Build());
+            keyValueStorage.SetBool(HasPendingSyncJobServiceScheduledKey, true);
+            keyValueStorage.SetDateTimeOffset(LastSyncJobScheduledAtKey, DateTimeOffset.Now);
         }
 
         private bool shouldScheduleSyncJob(IKeyValueStorage keyValueStorage)
