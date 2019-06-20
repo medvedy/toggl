@@ -1,15 +1,19 @@
-using System;
-using System.Reactive.Linq;
 using Toggl.Core.Services;
+using Toggl.Shared;
+using Toggl.Storage.Settings;
 
 namespace Toggl.Core.Extensions
 {
     public static class RemoteConfigExtensions
     {
-        public static IObservable<bool> ShouldHandlePushNotifications(this IRemoteConfigService remoteConfig)
-            => remoteConfig.PushNotificationsConfiguration.Select(pushConfig => pushConfig.HandlePushNotifications);
+        public static RatingViewConfiguration ReadStoredRatingViewConfiguration(this IKeyValueStorage keyValueStorage)
+            => new RatingViewConfiguration(
+                keyValueStorage.GetInt(RemoteConfigKeys.RatingViewDelayParameter, 5),
+                (keyValueStorage.GetString(RemoteConfigKeys.RatingViewTriggerParameter) ?? string.Empty).ToRatingViewCriterion());
 
-        public static IObservable<bool> ShouldBeSubscribedToPushNotifications(this IRemoteConfigService remoteConfig)
-            => remoteConfig.PushNotificationsConfiguration.Select(pushConfig => pushConfig.RegisterPushNotificationsTokenWithServer);
+        public static PushNotificationsConfiguration ReadStoredPushNotificationsConfiguration(this IKeyValueStorage keyValueStorage)
+            => new PushNotificationsConfiguration(
+                keyValueStorage.GetBool(RemoteConfigKeys.RegisterPushNotificationsTokenWithServerParameter),
+                keyValueStorage.GetBool(RemoteConfigKeys.HandlePushNotificationsParameter));
     }
 }
