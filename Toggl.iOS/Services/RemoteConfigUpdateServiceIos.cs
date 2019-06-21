@@ -14,11 +14,13 @@ namespace Toggl.iOS.Services
     {
         private const string remoteConfigDefaultsFileName = "RemoteConfigDefaults";
         
+        private bool isRunning;
         private IKeyValueStorage keyValueStorage;
-        public IObservable<Unit> RemoteConfigChanged { get; }
-
+        private readonly object updateLock = new object();
         private readonly ISubject<Unit> remoteConfigUpdatedSubject = new BehaviorSubject<Unit>(Unit.Default);
         
+        public IObservable<Unit> RemoteConfigChanged { get; }
+
         public RemoteConfigUpdateServiceIos(IKeyValueStorage keyValueStorage)
         {
             Ensure.Argument.IsNotNull(keyValueStorage, nameof(keyValueStorage));
@@ -31,6 +33,12 @@ namespace Toggl.iOS.Services
         
         public void FetchAndStoreRemoteConfigData()
         {
+            lock (updateLock)
+            {
+                if (isRunning) return;
+                isRunning = true;
+            }
+            
             var remoteConfig = RemoteConfig.SharedInstance;
             remoteConfig.Fetch((status, error) =>
             {
@@ -46,6 +54,11 @@ namespace Toggl.iOS.Services
                 keyValueStorage.SetBool(HandlePushNotificationsParameter, pushNotificationsConfiguration.HandlePushNotifications);
                 
                 remoteConfigUpdatedSubject.OnNext(Unit.Default);
+
+                lock (updateLock)
+                {
+                    isRunning = false;
+                }
             });
         }
         

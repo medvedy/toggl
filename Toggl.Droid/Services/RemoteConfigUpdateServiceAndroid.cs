@@ -15,7 +15,9 @@ namespace Toggl.Droid.Services
 {
     public class RemoteConfigUpdateServiceAndroid : IRemoteConfigUpdateService
     {
-        private readonly IKeyValueStorage keyValueStorage;
+        private bool isRunning;
+        private IKeyValueStorage keyValueStorage;
+        private readonly object updateLock = new object();
         private readonly ISubject<Unit> remoteConfigUpdatedSubject = new BehaviorSubject<Unit>(Unit.Default);
         
         public IObservable<Unit> RemoteConfigChanged { get; }
@@ -41,10 +43,14 @@ namespace Toggl.Droid.Services
         
         public void FetchAndStoreRemoteConfigData()
         {
+            lock (updateLock)
+            {
+                if (isRunning) return;
+                isRunning = true;
+            }
+            
             var remoteConfig = FirebaseRemoteConfig.Instance;
-
             enableDeveloperModeInDebugModel(remoteConfig);
-
             remoteConfig.SetDefaults(Resource.Xml.RemoteConfigDefaults);
 
             remoteConfig.Fetch(error =>
@@ -61,6 +67,11 @@ namespace Toggl.Droid.Services
                 keyValueStorage.SetBool(HandlePushNotificationsParameter, pushNotificationsConfiguration.HandlePushNotifications);
                 
                 remoteConfigUpdatedSubject.OnNext(Unit.Default);
+
+                lock (updateLock)
+                {
+                    isRunning = false;
+                }
             });
         }
 
