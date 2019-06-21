@@ -11,22 +11,22 @@ namespace Toggl.Core.Services
     {
         private readonly ITimeService timeService;
         private readonly IAnalyticsService analyticsService;
-        private readonly IRemoteConfigUpdateService remoteConfigUpdateService;
+        private readonly IUpdateRemoteConfigCacheService updateRemoteConfigCacheService;
 
         private DateTimeOffset? lastEnteredBackground { get; set; }
         private ISubject<TimeSpan> appBecameActiveSubject { get; }
 
         public IObservable<TimeSpan> AppResumedFromBackground { get; }
 
-        public BackgroundService(ITimeService timeService, IAnalyticsService analyticsService, IRemoteConfigUpdateService remoteConfigUpdateService)
+        public BackgroundService(ITimeService timeService, IAnalyticsService analyticsService, IUpdateRemoteConfigCacheService updateRemoteConfigCacheService)
         {
             Ensure.Argument.IsNotNull(timeService, nameof(timeService));
             Ensure.Argument.IsNotNull(analyticsService, nameof(analyticsService));
-            Ensure.Argument.IsNotNull(remoteConfigUpdateService, nameof(remoteConfigUpdateService));
+            Ensure.Argument.IsNotNull(updateRemoteConfigCacheService, nameof(updateRemoteConfigCacheService));
 
             this.timeService = timeService;
             this.analyticsService = analyticsService;
-            this.remoteConfigUpdateService = remoteConfigUpdateService;
+            this.updateRemoteConfigCacheService = updateRemoteConfigCacheService;
 
             appBecameActiveSubject = new Subject<TimeSpan>();
             lastEnteredBackground = null;
@@ -42,10 +42,10 @@ namespace Toggl.Core.Services
 
         public void EnterForeground()
         {
-            var timeSinceLastRemoteConfigFetch = remoteConfigUpdateService.TimeSpanSinceLastFetch();
+            var timeSinceLastRemoteConfigFetch = updateRemoteConfigCacheService.TimeSpanSinceLastFetch();
             if (!timeSinceLastRemoteConfigFetch.HasValue || timeSinceLastRemoteConfigFetch.Value > RemoteConfigConstants.RemoteConfigExpiration)
             {
-                Task.Run(() => remoteConfigUpdateService.FetchAndStoreRemoteConfigData())
+                Task.Run(() => updateRemoteConfigCacheService.FetchAndStoreRemoteConfigData())
                     .ConfigureAwait(false);
             }
 

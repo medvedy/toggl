@@ -1400,7 +1400,7 @@
     <Compile Include="Extensions\Reactive\UIViewExtensions.cs" />
     <Compile Include="Services\PushNotificationsTokenServiceIos.cs" />
     <Compile Include="Services\IntentDonationService.cs" />
-    <Compile Include="Services\RemoteConfigUpdateServiceIos.cs" />
+    <Compile Include="Services\FetchRemoteConfigServiceIos.cs" />
     <Compile Include="Services\UserDefaultsStorageIos.cs" />
     <Compile Include="Startup\AppDelegate.Deeplink.cs">
       <DependentUpon>AppDelegate.cs</DependentUpon>

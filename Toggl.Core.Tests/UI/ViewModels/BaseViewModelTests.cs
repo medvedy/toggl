@@ -30,7 +30,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
         protected IPlatformInfo PlatformInfo { get; } = Substitute.For<IPlatformInfo>();
         protected IOnboardingStorage OnboardingStorage { get; } = Substitute.For<IOnboardingStorage>();
         protected IRemoteConfigService RemoteConfigService { get; } = Substitute.For<IRemoteConfigService>();
-        protected IRemoteConfigUpdateService RemoteConfigUpdateService { get; } = Substitute.For<IRemoteConfigUpdateService>();
+        protected IUpdateRemoteConfigCacheService UpdateRemoteConfigCacheService { get; } = Substitute.For<IUpdateRemoteConfigCacheService>();
         protected IErrorHandlingService ErrorHandlingService { get; } = Substitute.For<IErrorHandlingService>();
 
         protected ISuggestionProviderContainer SuggestionProviderContainer { get; } =

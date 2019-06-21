@@ -64,6 +64,9 @@ namespace Toggl.Droid
         protected override IBackgroundSyncService CreateBackgroundSyncService()
             => new BackgroundSyncServiceAndroid();
 
+        protected override IFetchRemoteConfigService CreateFetchRemoteConfigService()
+            => new FetchRemoteConfigServiceAndroid();
+
         protected override IBrowserService CreateBrowserService()
             => new BrowserServiceAndroid();
 
@@ -133,7 +136,6 @@ namespace Toggl.Droid
         protected override IAccessRestrictionStorage CreateAccessRestrictionStorage()
             => settingsStorage.Value;
 
-        protected override IRemoteConfigUpdateService CreateRemoteConfigUpdateService()
-            => new RemoteConfigUpdateServiceAndroid(KeyValueStorage, TimeService);
+        
     }
 }

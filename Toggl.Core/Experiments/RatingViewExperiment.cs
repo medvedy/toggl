@@ -17,10 +17,10 @@ namespace Toggl.Core.Experiments
         private readonly ITogglDataSource dataSource;
         private readonly IOnboardingStorage onboardingStorage;
         private readonly IRemoteConfigService remoteConfigService;
-        private readonly IRemoteConfigUpdateService remoteConfigUpdateService;
+        private readonly IUpdateRemoteConfigCacheService updateRemoteConfigCacheService;
 
         public IObservable<bool> RatingViewShouldBeVisible
-            => remoteConfigUpdateService.RemoteConfigChanged
+            => updateRemoteConfigCacheService.RemoteConfigChanged
                 .Select(_ => remoteConfigService.GetRatingViewConfiguration())
                 .SelectMany(criterionMatched)
                 .Select(tuple => tuple.criterionMatched && dayCountPassed(tuple.configuration));
@@ -30,19 +30,19 @@ namespace Toggl.Core.Experiments
             ITogglDataSource dataSource,
             IOnboardingStorage onboardingStorage,
             IRemoteConfigService remoteConfigService,
-            IRemoteConfigUpdateService remoteConfigUpdateService)
+            IUpdateRemoteConfigCacheService updateRemoteConfigCacheService)
         {
             Ensure.Argument.IsNotNull(dataSource, nameof(dataSource));
             Ensure.Argument.IsNotNull(timeService, nameof(timeService));
             Ensure.Argument.IsNotNull(onboardingStorage, nameof(onboardingStorage));
             Ensure.Argument.IsNotNull(remoteConfigService, nameof(remoteConfigService));
-            Ensure.Argument.IsNotNull(remoteConfigUpdateService, nameof(remoteConfigUpdateService));
+            Ensure.Argument.IsNotNull(updateRemoteConfigCacheService, nameof(updateRemoteConfigCacheService));
 
             this.dataSource = dataSource;
             this.timeService = timeService;
             this.onboardingStorage = onboardingStorage;
             this.remoteConfigService = remoteConfigService;
-            this.remoteConfigUpdateService = remoteConfigUpdateService;
+            this.updateRemoteConfigCacheService = updateRemoteConfigCacheService;
         }
 
         private bool dayCountPassed(RatingViewConfiguration ratingViewConfiguration)

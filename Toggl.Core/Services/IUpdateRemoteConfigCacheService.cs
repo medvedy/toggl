@@ -3,7 +3,7 @@ using System.Reactive;
 
 namespace Toggl.Core.Services
 {
-    public interface IRemoteConfigUpdateService
+    public interface IUpdateRemoteConfigCacheService
     {
         IObservable<Unit> RemoteConfigChanged { get; }
         void FetchAndStoreRemoteConfigData();

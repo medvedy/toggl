@@ -72,6 +72,9 @@ namespace Toggl.iOS
         protected override IBackgroundSyncService CreateBackgroundSyncService()
             => new BackgroundSyncServiceIos();
 
+        protected override IFetchRemoteConfigService CreateFetchRemoteConfigService()
+            => new FetchRemoteConfigServiceIos();
+
         protected override IBrowserService CreateBrowserService()
             => new BrowserServiceIos();
 
@@ -133,8 +136,5 @@ namespace Toggl.iOS
 
         protected override IAccessRestrictionStorage CreateAccessRestrictionStorage()
             => settingsStorage.Value;
-
-        protected override IRemoteConfigUpdateService CreateRemoteConfigUpdateService()
-            => new RemoteConfigUpdateServiceIos(KeyValueStorage, TimeService);
     }
 }

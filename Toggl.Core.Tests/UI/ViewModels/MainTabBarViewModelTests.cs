@@ -30,7 +30,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     PermissionsChecker,
                     NavigationService,
                     RemoteConfigService,
-                    RemoteConfigUpdateService,
+                    UpdateRemoteConfigCacheService,
                     SuggestionProviderContainer,
                     AccessRestrictionStorage,
                     StopwatchProvider,
@@ -90,7 +90,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var permissionsService = usePermissionsChecker ? PermissionsChecker : null;
                 var navigationService = useNavigationService ? NavigationService : null;
                 var remoteConfigService = useRemoteConfigService ? RemoteConfigService : null;
-                var remoteConfigUpdateService = useRemoteConfigUpdateService ? RemoteConfigUpdateService : null;
+                var remoteConfigUpdateService = useRemoteConfigUpdateService ? UpdateRemoteConfigCacheService : null;
                 var accessRestrictionStorage = useAccessRestrictionStorage ? AccessRestrictionStorage : null;
                 var suggestionProviderContainer = useSuggestionProviderContainer ? SuggestionProviderContainer : null;
                 var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;

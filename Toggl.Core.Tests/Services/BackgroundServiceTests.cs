@@ -17,13 +17,13 @@ namespace Toggl.Core.Tests.Services
         {
             protected readonly ITimeService TimeService;
             protected readonly IAnalyticsService AnalyticsService;
-            protected readonly IRemoteConfigUpdateService RemoteConfigUpdateService;
+            protected readonly IUpdateRemoteConfigCacheService UpdateRemoteConfigCacheService;
 
             public BackgroundServiceTest()
             {
                 TimeService = Substitute.For<ITimeService>();
                 AnalyticsService = Substitute.For<IAnalyticsService>();
-                RemoteConfigUpdateService = Substitute.For<IRemoteConfigUpdateService>();
+                UpdateRemoteConfigCacheService = Substitute.For<IUpdateRemoteConfigCacheService>();
             }
         }
 
@@ -35,7 +35,7 @@ namespace Toggl.Core.Tests.Services
             {
                 var timeService = useTimeService ? Substitute.For<ITimeService>() : null;
                 var analyticsService = useAnalyticsService ? Substitute.For<IAnalyticsService>() : null;
-                var remoteConfigUpdateService = useRemoteConfigUpdateService ? Substitute.For<IRemoteConfigUpdateService>() : null;
+                var remoteConfigUpdateService = useRemoteConfigUpdateService ? Substitute.For<IUpdateRemoteConfigCacheService>() : null;
                 Action constructor = () => new BackgroundService(timeService, analyticsService, remoteConfigUpdateService);
 
                 constructor.Should().Throw<ArgumentNullException>();
@@ -50,7 +50,7 @@ namespace Toggl.Core.Tests.Services
             public void DoesNotEmitAnythingWhenItHasNotEnterBackgroundFirst()
             {
                 bool emitted = false;
-                var backgroundService = new BackgroundService(TimeService, AnalyticsService, RemoteConfigUpdateService);
+                var backgroundService = new BackgroundService(TimeService, AnalyticsService, UpdateRemoteConfigCacheService);
                 backgroundService
                     .AppResumedFromBackground
                     .Subscribe(_ => emitted = true);
@@ -64,7 +64,7 @@ namespace Toggl.Core.Tests.Services
             public void EmitsValueWhenEnteringForegroundAfterBeingInBackground()
             {
                 bool emitted = false;
-                var backgroundService = new BackgroundService(TimeService, AnalyticsService, RemoteConfigUpdateService);
+                var backgroundService = new BackgroundService(TimeService, AnalyticsService, UpdateRemoteConfigCacheService);
                 TimeService.CurrentDateTime.Returns(now);
                 backgroundService
                     .AppResumedFromBackground
@@ -80,7 +80,7 @@ namespace Toggl.Core.Tests.Services
             public void DoesNotEmitAnythingWhenTheEnterForegroundIsCalledMultipleTimes()
             {
                 bool emitted = false;
-                var backgroundService = new BackgroundService(TimeService, AnalyticsService, RemoteConfigUpdateService);
+                var backgroundService = new BackgroundService(TimeService, AnalyticsService, UpdateRemoteConfigCacheService);
                 TimeService.CurrentDateTime.Returns(now);
                 backgroundService.EnterBackground();
                 TimeService.CurrentDateTime.Returns(now.AddMinutes(1));
@@ -99,7 +99,7 @@ namespace Toggl.Core.Tests.Services
             public void EmitsAValueWhenEnteringForegroundAfterBeingInBackgroundForMoreThanTheLimit(NonNegativeInt waitingTime)
             {
                 TimeSpan? resumedAfter = null;
-                var backgroundService = new BackgroundService(TimeService, AnalyticsService, RemoteConfigUpdateService);
+                var backgroundService = new BackgroundService(TimeService, AnalyticsService, UpdateRemoteConfigCacheService);
                 backgroundService
                     .AppResumedFromBackground
                     .Subscribe(timeInBackground => resumedAfter = timeInBackground);
@@ -116,7 +116,7 @@ namespace Toggl.Core.Tests.Services
             [Fact]
             public void TracksEventWhenAppResumed()
             {
-                var backgroundService = new BackgroundService(TimeService, AnalyticsService, RemoteConfigUpdateService);
+                var backgroundService = new BackgroundService(TimeService, AnalyticsService, UpdateRemoteConfigCacheService);
                 backgroundService.EnterBackground();
                 backgroundService.EnterForeground();
                 AnalyticsService.Received().AppDidEnterForeground.Track();
@@ -125,7 +125,7 @@ namespace Toggl.Core.Tests.Services
             [Fact]
             public void TracksEventWhenAppGoesToBackground()
             {
-                var backgroundService = new BackgroundService(TimeService, AnalyticsService, RemoteConfigUpdateService);
+                var backgroundService = new BackgroundService(TimeService, AnalyticsService, UpdateRemoteConfigCacheService);
                 backgroundService.EnterBackground();
                 AnalyticsService.Received().AppSentToBackground.Track();
             }
@@ -136,7 +136,7 @@ namespace Toggl.Core.Tests.Services
             [Fact, LogIfTooSlow]
             public async Task TriggersRemoteConfigUpdateWhenRemoteConfigDataIsOlderThan12HoursAndAHalf()
             {
-                var remoteConfigUpdateService = Substitute.For<IRemoteConfigUpdateService>();
+                var remoteConfigUpdateService = Substitute.For<IUpdateRemoteConfigCacheService>();
                 remoteConfigUpdateService.TimeSpanSinceLastFetch().Returns(TimeSpan.FromHours(12.51f));
                 var backgroundService = new BackgroundService(TimeService, AnalyticsService, remoteConfigUpdateService);
 
@@ -151,7 +151,7 @@ namespace Toggl.Core.Tests.Services
             [Fact, LogIfTooSlow]
             public async Task TriggersRemoteConfigUpdateWhenRemoteConfigDataHasNeverBeenFetched()
             {
-                var remoteConfigUpdateService = Substitute.For<IRemoteConfigUpdateService>();
+                var remoteConfigUpdateService = Substitute.For<IUpdateRemoteConfigCacheService>();
                 TimeSpan? nullTimeSpan = null;
                 remoteConfigUpdateService.TimeSpanSinceLastFetch().Returns(nullTimeSpan);
                 var backgroundService = new BackgroundService(TimeService, AnalyticsService, remoteConfigUpdateService);
@@ -167,7 +167,7 @@ namespace Toggl.Core.Tests.Services
             [Fact, LogIfTooSlow]
             public async Task DoesNotTriggerRemoteConfigUpdateWhenRemoteConfigDataIsYoungerThan12Hours()
             {
-                var remoteConfigUpdateService = Substitute.For<IRemoteConfigUpdateService>();
+                var remoteConfigUpdateService = Substitute.For<IUpdateRemoteConfigCacheService>();
                 remoteConfigUpdateService.TimeSpanSinceLastFetch().Returns(TimeSpan.FromHours(12.49f));
                 var backgroundService = new BackgroundService(TimeService, AnalyticsService, remoteConfigUpdateService);
 

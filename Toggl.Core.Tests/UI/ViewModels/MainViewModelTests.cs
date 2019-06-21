@@ -52,7 +52,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     InteractorFactory,
                     NavigationService,
                     RemoteConfigService,
-                    RemoteConfigUpdateService,
+                    UpdateRemoteConfigCacheService,
                     SuggestionProviderContainer,
                     AccessRestrictionStorage,
                     SchedulerProvider,
@@ -123,7 +123,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var interactorFactory = useInteractorFactory ? InteractorFactory : null;
                 var onboardingStorage = useOnboardingStorage ? OnboardingStorage : null;
                 var remoteConfigService = useRemoteConfigService ? RemoteConfigService : null;
-                var remoteConfigUpdateService = useRemoteConfigUpdateService ? RemoteConfigUpdateService : null;
+                var remoteConfigUpdateService = useRemoteConfigUpdateService ? UpdateRemoteConfigCacheService : null;
                 var suggestionProviderContainer = useSuggestionProviderContainer ? SuggestionProviderContainer : null;
                 var schedulerProvider = useSchedulerProvider ? SchedulerProvider : null;
                 var accessRestrictionStorage = useAccessRestrictionStorage ? AccessRestrictionStorage : null;
