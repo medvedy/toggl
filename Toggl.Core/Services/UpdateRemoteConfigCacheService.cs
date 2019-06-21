@@ -8,7 +8,7 @@ using static Toggl.Core.Services.RemoteConfigKeys;
 
 namespace Toggl.Core.Services
 {
-    public sealed class CacheUpdateRemoteConfigCacheService : IUpdateRemoteConfigCacheService
+    public sealed class UpdateRemoteConfigCacheService : IUpdateRemoteConfigCacheService
     {
         private readonly object updateLock = new object();
         private readonly ITimeService timeService;
@@ -19,7 +19,7 @@ namespace Toggl.Core.Services
 
         public IObservable<Unit> RemoteConfigChanged => remoteConfigUpdatedSubject.AsObservable();
 
-        public CacheUpdateRemoteConfigCacheService(ITimeService timeService, IKeyValueStorage keyValueStorage, IFetchRemoteConfigService fetchRemoteConfigService)
+        public UpdateRemoteConfigCacheService(ITimeService timeService, IKeyValueStorage keyValueStorage, IFetchRemoteConfigService fetchRemoteConfigService)
         {
             Ensure.Argument.IsNotNull(timeService, nameof(timeService));
             Ensure.Argument.IsNotNull(keyValueStorage, nameof(keyValueStorage));

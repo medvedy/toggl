@@ -198,7 +198,7 @@ namespace Toggl.Core
             => new ApiFactory(ApiEnvironment, userAgent);
 
         protected virtual IUpdateRemoteConfigCacheService CreateUpdateRemoteConfigCacheService()
-            => new CacheUpdateRemoteConfigCacheService(TimeService, KeyValueStorage, FetchRemoteConfigService);
+            => new UpdateRemoteConfigCacheService(TimeService, KeyValueStorage, FetchRemoteConfigService);
 
         protected virtual ISyncManager CreateSyncManager()
         {
