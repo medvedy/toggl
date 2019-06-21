@@ -16,7 +16,7 @@ namespace Toggl.Droid.Services
     public class RemoteConfigUpdateServiceAndroid : IRemoteConfigUpdateService
     {
         private readonly IKeyValueStorage keyValueStorage;
-        private readonly ISubject<Unit> remoteConfigUpdatedSubject = new Subject<Unit>();
+        private readonly ISubject<Unit> remoteConfigUpdatedSubject = new BehaviorSubject<Unit>(Unit.Default);
         
         public IObservable<Unit> RemoteConfigChanged { get; }
 

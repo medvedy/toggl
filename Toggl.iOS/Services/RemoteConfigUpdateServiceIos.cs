@@ -17,9 +17,8 @@ namespace Toggl.iOS.Services
         private IKeyValueStorage keyValueStorage;
         public IObservable<Unit> RemoteConfigChanged { get; }
 
-        private readonly ISubject<Unit> remoteConfigUpdatedSubject = new Subject<Unit>();
-
-
+        private readonly ISubject<Unit> remoteConfigUpdatedSubject = new BehaviorSubject<Unit>(Unit.Default);
+        
         public RemoteConfigUpdateServiceIos(IKeyValueStorage keyValueStorage)
         {
             Ensure.Argument.IsNotNull(keyValueStorage, nameof(keyValueStorage));
