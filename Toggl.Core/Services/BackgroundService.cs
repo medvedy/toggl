@@ -22,6 +22,7 @@ namespace Toggl.Core.Services
         {
             Ensure.Argument.IsNotNull(timeService, nameof(timeService));
             Ensure.Argument.IsNotNull(analyticsService, nameof(analyticsService));
+            Ensure.Argument.IsNotNull(remoteConfigUpdateService, nameof(remoteConfigUpdateService));
 
             this.timeService = timeService;
             this.analyticsService = analyticsService;
