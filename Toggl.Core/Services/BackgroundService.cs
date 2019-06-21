@@ -42,6 +42,13 @@ namespace Toggl.Core.Services
 
         public void EnterForeground()
         {
+            var timeSinceLastRemoteConfigFetch = remoteConfigUpdateService.TimeSpanSinceLastFetch();
+            if (timeSinceLastRemoteConfigFetch > RemoteConfigConstants.RemoteConfigExpiration)
+            {
+                Task.Run(() => remoteConfigUpdateService.FetchAndStoreRemoteConfigData())
+                    .ConfigureAwait(false);
+            }
+
             if (lastEnteredBackground.HasValue == false)
                 return;
 
@@ -49,13 +56,6 @@ namespace Toggl.Core.Services
             lastEnteredBackground = null;
             appBecameActiveSubject.OnNext(timeInBackground);
             analyticsService.AppDidEnterForeground.Track();
-
-            var timeSinceLastRemoteConfigFetch = remoteConfigUpdateService.TimeSpanSinceLastFetch();
-            if (timeSinceLastRemoteConfigFetch > RemoteConfigConstants.RemoteConfigExpiration)
-            {
-                Task.Run(() => remoteConfigUpdateService.FetchAndStoreRemoteConfigData())
-                    .ConfigureAwait(false);
-            }
         }
     }
 }
