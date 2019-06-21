@@ -7,7 +7,7 @@ namespace Toggl.Core.Services
     {
         IObservable<Unit> RemoteConfigChanged { get; }
         void FetchAndStoreRemoteConfigData();
-        TimeSpan TimeSpanSinceLastFetch();
+        TimeSpan? TimeSpanSinceLastFetch();
     }
 
     public static class RemoteConfigKeys

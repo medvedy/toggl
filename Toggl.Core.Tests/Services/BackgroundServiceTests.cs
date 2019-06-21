@@ -149,6 +149,22 @@ namespace Toggl.Core.Tests.Services
             }
 
             [Fact, LogIfTooSlow]
+            public async Task TriggersRemoteConfigUpdateWhenRemoteConfigDataHasNeverBeenFetched()
+            {
+                var remoteConfigUpdateService = Substitute.For<IRemoteConfigUpdateService>();
+                TimeSpan? nullTimeSpan = null;
+                remoteConfigUpdateService.TimeSpanSinceLastFetch().Returns(nullTimeSpan);
+                var backgroundService = new BackgroundService(TimeService, AnalyticsService, remoteConfigUpdateService);
+
+                backgroundService.EnterForeground();
+
+                // This delay is make sure FetchAndStoreRemoteConfigData has time to execute, since it's called inside a
+                // fire and forget TaskTask.Run(() => {}).ConfigureAwait(false))
+                await Task.Delay(1);
+                remoteConfigUpdateService.Received().FetchAndStoreRemoteConfigData();
+            }
+
+            [Fact, LogIfTooSlow]
             public async Task DoesNotTriggerRemoteConfigUpdateWhenRemoteConfigDataIsYoungerThan12Hours()
             {
                 var remoteConfigUpdateService = Substitute.For<IRemoteConfigUpdateService>();

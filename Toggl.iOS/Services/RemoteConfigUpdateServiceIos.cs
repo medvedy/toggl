@@ -68,10 +68,13 @@ namespace Toggl.iOS.Services
             });
         }
         
-        public TimeSpan TimeSpanSinceLastFetch()
+        public TimeSpan? TimeSpanSinceLastFetch()
         {
+            var lastFetchAt = keyValueStorage.GetDateTimeOffset(LastFetchAtKey);
+            if (!lastFetchAt.HasValue) return null;
+            
             var now = timeService.CurrentDateTime;
-            return now.Subtract(keyValueStorage.GetDateTimeOffset(LastFetchAtKey) ?? default(DateTimeOffset));
+            return now.Subtract(lastFetchAt.Value);
         }
         
         private RatingViewConfiguration extractRatingViewConfiguration(RemoteConfig remoteConfig) 
