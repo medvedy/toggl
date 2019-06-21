@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using FsCheck;
 using NSubstitute;
@@ -127,6 +128,39 @@ namespace Toggl.Core.Tests.Services
                 var backgroundService = new BackgroundService(TimeService, AnalyticsService, RemoteConfigUpdateService);
                 backgroundService.EnterBackground();
                 AnalyticsService.Received().AppSentToBackground.Track();
+            }
+        }
+
+        public sealed class TheEnterForegroundMethod : BackgroundServiceTest
+        {
+            [Fact, LogIfTooSlow]
+            public async Task TriggersRemoteConfigUpdateWhenRemoteConfigDataIsOlderThan12HoursAndAHalf()
+            {
+                var remoteConfigUpdateService = Substitute.For<IRemoteConfigUpdateService>();
+                remoteConfigUpdateService.TimeSpanSinceLastFetch().Returns(TimeSpan.FromHours(12.51f));
+                var backgroundService = new BackgroundService(TimeService, AnalyticsService, remoteConfigUpdateService);
+
+                backgroundService.EnterForeground();
+
+                // This delay is make sure FetchAndStoreRemoteConfigData has time to execute, since it's called inside a
+                // fire and forget TaskTask.Run(() => {}).ConfigureAwait(false))
+                await Task.Delay(1);
+                remoteConfigUpdateService.Received().FetchAndStoreRemoteConfigData();
+            }
+
+            [Fact, LogIfTooSlow]
+            public async Task DoesNotTriggerRemoteConfigUpdateWhenRemoteConfigDataIsYoungerThan12Hours()
+            {
+                var remoteConfigUpdateService = Substitute.For<IRemoteConfigUpdateService>();
+                remoteConfigUpdateService.TimeSpanSinceLastFetch().Returns(TimeSpan.FromHours(12.49f));
+                var backgroundService = new BackgroundService(TimeService, AnalyticsService, remoteConfigUpdateService);
+
+                backgroundService.EnterForeground();
+
+                // This delay is make sure FetchAndStoreRemoteConfigData has time to execute, since it's called inside a
+                // fire and forget TaskTask.Run(() => {}).ConfigureAwait(false))
+                await Task.Delay(1);
+                remoteConfigUpdateService.DidNotReceive().FetchAndStoreRemoteConfigData();
             }
         }
     }
