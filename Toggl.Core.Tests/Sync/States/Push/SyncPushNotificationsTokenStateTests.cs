@@ -135,10 +135,8 @@ namespace Toggl.Core.Tests.Sync.States.Push
 
             private void configureRemoteConfig(bool shouldSubscribeToPushes)
             {
-                remoteConfigService.PushNotificationsConfiguration
-                    .Returns(Observable.Return(
-                        new PushNotificationsConfiguration(shouldSubscribeToPushes, true))
-                    );
+                remoteConfigService.GetPushNotificationsConfiguration()
+                    .Returns(new PushNotificationsConfiguration(shouldSubscribeToPushes, true));
             }
         }
     }

@@ -36,6 +36,10 @@ namespace Toggl.Core.UI
         protected override IAccessRestrictionStorage CreateAccessRestrictionStorage()
             => MockAccessRestrictionStorage;
 
+        internal IRemoteConfigUpdateService MockRemoteConfigUpdateService { get; set; }
+        protected override IRemoteConfigUpdateService CreateRemoteConfigUpdateService()
+            => MockRemoteConfigUpdateService;
+
         internal IAnalyticsService MockAnalyticsService { get; set; }
         protected override IAnalyticsService CreateAnalyticsService()
             => MockAnalyticsService;
