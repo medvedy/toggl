@@ -23,7 +23,6 @@ namespace Toggl.Core.Experiments
             => remoteConfigUpdateService.RemoteConfigChanged
                 .StartWith(Unit.Default)
                 .SelectValue(remoteConfigService.GetRatingViewConfiguration())
-
                 .SelectMany(criterionMatched)
                 .Select(tuple => tuple.criterionMatched && dayCountPassed(tuple.configuration));
 
