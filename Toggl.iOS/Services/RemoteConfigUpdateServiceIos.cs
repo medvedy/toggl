@@ -3,6 +3,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Firebase.RemoteConfig;
+using Toggl.Core;
 using Toggl.Core.Services;
 using Toggl.Shared;
 using Toggl.Storage.Settings;
@@ -15,15 +16,18 @@ namespace Toggl.iOS.Services
         private const string remoteConfigDefaultsFileName = "RemoteConfigDefaults";
         
         private bool isRunning;
-        private IKeyValueStorage keyValueStorage;
+        private readonly ITimeService timeService;
+        private readonly IKeyValueStorage keyValueStorage;
         private readonly object updateLock = new object();
         private readonly ISubject<Unit> remoteConfigUpdatedSubject = new BehaviorSubject<Unit>(Unit.Default);
         
         public IObservable<Unit> RemoteConfigChanged { get; }
-
-        public RemoteConfigUpdateServiceIos(IKeyValueStorage keyValueStorage)
+        
+        public RemoteConfigUpdateServiceIos(IKeyValueStorage keyValueStorage, ITimeService timeService)
         {
+            Ensure.Argument.IsNotNull(timeService, nameof(timeService));
             Ensure.Argument.IsNotNull(keyValueStorage, nameof(keyValueStorage));
+            this.timeService = timeService;
             this.keyValueStorage = keyValueStorage;
 
             RemoteConfigChanged = remoteConfigUpdatedSubject.AsObservable();
@@ -53,6 +57,8 @@ namespace Toggl.iOS.Services
                 keyValueStorage.SetBool(RegisterPushNotificationsTokenWithServerParameter, pushNotificationsConfiguration.RegisterPushNotificationsTokenWithServer);
                 keyValueStorage.SetBool(HandlePushNotificationsParameter, pushNotificationsConfiguration.HandlePushNotifications);
                 
+                keyValueStorage.SetDateTimeOffset(LastFetchAtKey, timeService.CurrentDateTime);
+                
                 remoteConfigUpdatedSubject.OnNext(Unit.Default);
 
                 lock (updateLock)
@@ -60,6 +66,12 @@ namespace Toggl.iOS.Services
                     isRunning = false;
                 }
             });
+        }
+        
+        public TimeSpan TimeSpanSinceLastFetch()
+        {
+            var now = timeService.CurrentDateTime;
+            return now.Subtract(keyValueStorage.GetDateTimeOffset(LastFetchAtKey) ?? default(DateTimeOffset));
         }
         
         private RatingViewConfiguration extractRatingViewConfiguration(RemoteConfig remoteConfig) 

@@ -134,6 +134,6 @@ namespace Toggl.Droid
             => settingsStorage.Value;
 
         protected override IRemoteConfigUpdateService CreateRemoteConfigUpdateService()
-            => new RemoteConfigUpdateServiceAndroid(KeyValueStorage);
+            => new RemoteConfigUpdateServiceAndroid(KeyValueStorage, TimeService);
     }
 }

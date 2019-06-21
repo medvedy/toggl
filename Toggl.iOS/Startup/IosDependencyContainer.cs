@@ -135,6 +135,6 @@ namespace Toggl.iOS
             => settingsStorage.Value;
 
         protected override IRemoteConfigUpdateService CreateRemoteConfigUpdateService()
-            => new RemoteConfigUpdateServiceIos(KeyValueStorage);
+            => new RemoteConfigUpdateServiceIos(KeyValueStorage, TimeService);
     }
 }
