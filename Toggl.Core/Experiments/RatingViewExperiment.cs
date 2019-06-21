@@ -21,7 +21,7 @@ namespace Toggl.Core.Experiments
 
         public IObservable<bool> RatingViewShouldBeVisible
             => remoteConfigUpdateService.RemoteConfigChanged
-                .SelectValue(remoteConfigService.GetRatingViewConfiguration())
+                .Select(_ => remoteConfigService.GetRatingViewConfiguration())
                 .SelectMany(criterionMatched)
                 .Select(tuple => tuple.criterionMatched && dayCountPassed(tuple.configuration));
 
