@@ -42,12 +42,8 @@ namespace Toggl.Core.Services
 
         public void EnterForeground()
         {
-            var timeSinceLastRemoteConfigFetch = updateRemoteConfigCacheService.TimeSpanSinceLastFetch();
-            if (!timeSinceLastRemoteConfigFetch.HasValue || timeSinceLastRemoteConfigFetch.Value > RemoteConfigConstants.RemoteConfigExpiration)
-            {
-                Task.Run(() => updateRemoteConfigCacheService.FetchAndStoreRemoteConfigData())
-                    .ConfigureAwait(false);
-            }
+            if (updateRemoteConfigCacheService.NeedsToUpdateStoredRemoteConfigData())
+                Task.Run(() => updateRemoteConfigCacheService.FetchAndStoreRemoteConfigData()).ConfigureAwait(false);
 
             if (lastEnteredBackground.HasValue == false)
                 return;
