@@ -10,6 +10,8 @@ namespace Toggl.Core.Services
 {
     public sealed class UpdateRemoteConfigCacheService : IUpdateRemoteConfigCacheService
     {
+        public static readonly TimeSpan RemoteConfigExpiration = TimeSpan.FromHours(12.5f);
+
         private readonly object updateLock = new object();
         private readonly ITimeService timeService;
         private readonly IKeyValueStorage keyValueStorage;
@@ -30,15 +32,6 @@ namespace Toggl.Core.Services
             this.fetchRemoteConfigService = fetchRemoteConfigService;
         }
 
-        public TimeSpan? TimeSpanSinceLastFetch()
-        {
-            var lastFetchAt = keyValueStorage.GetDateTimeOffset(LastFetchAtKey);
-            if (!lastFetchAt.HasValue) return null;
-
-            var now = timeService.CurrentDateTime;
-            return now.Subtract(lastFetchAt.Value);
-        }
-
         public void FetchAndStoreRemoteConfigData()
         {
             lock (updateLock)
@@ -48,6 +41,18 @@ namespace Toggl.Core.Services
             }
 
             fetchRemoteConfigService.FetchRemoteConfigData(onFetchSucceeded, onFetchFailed);
+        }
+
+        public bool NeedsToUpdateStoredRemoteConfigData()
+        {
+            lock (updateLock)
+            {
+                var lastFetchAt = keyValueStorage.GetDateTimeOffset(LastFetchAtKey);
+                if (!lastFetchAt.HasValue) return true;
+
+                var now = timeService.CurrentDateTime;
+                return now.Subtract(lastFetchAt.Value) > RemoteConfigExpiration;
+            }
         }
 
         private void onFetchSucceeded()
@@ -60,12 +65,10 @@ namespace Toggl.Core.Services
             keyValueStorage.SetBool(RegisterPushNotificationsTokenWithServerParameter, pushNotificationsConfiguration.RegisterPushNotificationsTokenWithServer);
             keyValueStorage.SetBool(HandlePushNotificationsParameter, pushNotificationsConfiguration.HandlePushNotifications);
 
-            keyValueStorage.SetDateTimeOffset(LastFetchAtKey, timeService.CurrentDateTime);
-
-            remoteConfigUpdatedSubject.OnNext(Unit.Default);
-
             lock (updateLock)
             {
+                keyValueStorage.SetDateTimeOffset(LastFetchAtKey, timeService.CurrentDateTime);
+                remoteConfigUpdatedSubject.OnNext(Unit.Default);
                 isRunning = false;
             }
         }

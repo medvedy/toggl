@@ -7,7 +7,7 @@ namespace Toggl.Core.Services
     {
         IObservable<Unit> RemoteConfigChanged { get; }
         void FetchAndStoreRemoteConfigData();
-        TimeSpan? TimeSpanSinceLastFetch();
+        bool NeedsToUpdateStoredRemoteConfigData();
     }
 
     public static class RemoteConfigKeys
@@ -16,12 +16,6 @@ namespace Toggl.Core.Services
         public static string RatingViewTriggerParameter = "criterion";
         public static string RegisterPushNotificationsTokenWithServerParameter = "register_push_notifications_token_with_server";
         public static string HandlePushNotificationsParameter = "handle_push_notifications";
-
         public static string LastFetchAtKey = "LastFetchAtKey";
-    }
-
-    public static class RemoteConfigConstants
-    {
-        public static readonly TimeSpan RemoteConfigExpiration = TimeSpan.FromHours(12.5f);
     }
 }
