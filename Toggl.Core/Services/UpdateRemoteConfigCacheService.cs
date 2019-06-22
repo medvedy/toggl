@@ -44,7 +44,7 @@ namespace Toggl.Core.Services
             lock (updateLock)
             {
                 if (isRunning) return;
-                isRunning = false;
+                isRunning = true;
             }
 
             fetchRemoteConfigService.FetchRemoteConfigData(onFetchSucceeded, onFetchFailed);
