@@ -35,7 +35,7 @@ namespace Toggl.Core.Tests.Services
             {
                 var timeService = useTimeService ? Substitute.For<ITimeService>() : null;
                 var analyticsService = useAnalyticsService ? Substitute.For<IAnalyticsService>() : null;
-                var updateRemoteConfigCacheService= useRemoteConfigUpdateService ? Substitute.For<IUpdateRemoteConfigCacheService>() : null;
+                var updateRemoteConfigCacheService = useRemoteConfigUpdateService ? Substitute.For<IUpdateRemoteConfigCacheService>() : null;
                 Action constructor = () => new BackgroundService(timeService, analyticsService, updateRemoteConfigCacheService);
 
                 constructor.Should().Throw<ArgumentNullException>();
@@ -134,10 +134,10 @@ namespace Toggl.Core.Tests.Services
         public sealed class TheEnterForegroundMethod : BackgroundServiceTest
         {
             [Fact, LogIfTooSlow]
-            public async Task TriggersRemoteConfigUpdateWhenRemoteConfigDataIsOlderThan12HoursAndAHalf()
+            public async Task TriggersRemoteConfigUpdateWhenRemoteConfigDataNeedsToBeUpdated()
             {
                 var updateRemoteConfigCacheService = Substitute.For<IUpdateRemoteConfigCacheService>();
-                updateRemoteConfigCacheService.TimeSpanSinceLastFetch().Returns(TimeSpan.FromHours(12.51f));
+                updateRemoteConfigCacheService.NeedsToUpdateStoredRemoteConfigData().Returns(true);
                 var backgroundService = new BackgroundService(TimeService, AnalyticsService, updateRemoteConfigCacheService);
 
                 backgroundService.EnterForeground();
@@ -149,26 +149,10 @@ namespace Toggl.Core.Tests.Services
             }
 
             [Fact, LogIfTooSlow]
-            public async Task TriggersRemoteConfigUpdateWhenRemoteConfigDataHasNeverBeenFetched()
+            public async Task DoesNotTriggerRemoteConfigUpdateWhenRemoteConfigDataDoesNotNeedToBeUpdated()
             {
                 var updateRemoteConfigCacheService = Substitute.For<IUpdateRemoteConfigCacheService>();
-                TimeSpan? nullTimeSpan = null;
-                updateRemoteConfigCacheService.TimeSpanSinceLastFetch().Returns(nullTimeSpan);
-                var backgroundService = new BackgroundService(TimeService, AnalyticsService, updateRemoteConfigCacheService);
-
-                backgroundService.EnterForeground();
-
-                // This delay is make sure FetchAndStoreRemoteConfigData has time to execute, since it's called inside a
-                // fire and forget TaskTask.Run(() => {}).ConfigureAwait(false))
-                await Task.Delay(1);
-                updateRemoteConfigCacheService.Received().FetchAndStoreRemoteConfigData();
-            }
-
-            [Fact, LogIfTooSlow]
-            public async Task DoesNotTriggerRemoteConfigUpdateWhenRemoteConfigDataIsYoungerThan12Hours()
-            {
-                var updateRemoteConfigCacheService = Substitute.For<IUpdateRemoteConfigCacheService>();
-                updateRemoteConfigCacheService.TimeSpanSinceLastFetch().Returns(TimeSpan.FromHours(12.49f));
+                updateRemoteConfigCacheService.NeedsToUpdateStoredRemoteConfigData().Returns(false);
                 var backgroundService = new BackgroundService(TimeService, AnalyticsService, updateRemoteConfigCacheService);
 
                 backgroundService.EnterForeground();
