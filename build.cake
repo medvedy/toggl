@@ -356,6 +356,7 @@ private TemporaryFileTransformation GetIosEntitlementsConfigurationTransformatio
     if (target == "Build.Release.iOS.AdHoc")
     {
         groupId = "group.com.toggl.daneel.adhoc.extensions";
+        apsEnvironment = "<string>production</string>";
     }
     else if (target == "Build.Release.iOS.AppStore")
     {
