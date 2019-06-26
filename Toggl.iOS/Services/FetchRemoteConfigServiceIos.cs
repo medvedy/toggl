@@ -19,7 +19,7 @@ namespace Toggl.iOS.Services
         public void FetchRemoteConfigData(Action onFetchSucceeded, Action<Exception> onFetchFailed)
         {
             var remoteConfig = RemoteConfig.SharedInstance;
-            remoteConfig.Fetch((status, error) =>
+            remoteConfig.Fetch(30,(status, error) =>
             {
                 if (error != null)
                     onFetchFailed(new Exception(error.Description));

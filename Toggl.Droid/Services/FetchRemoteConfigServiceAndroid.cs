@@ -76,7 +76,7 @@ namespace Toggl.Droid.Services
     {
         public static void Fetch(this FirebaseRemoteConfig remoteConfig, Action<Exception> action)
         {
-            remoteConfig.Fetch().AddOnCompleteListener(new RemoteConfigCompletionHandler(action));
+            remoteConfig.Fetch(30).AddOnCompleteListener(new RemoteConfigCompletionHandler(action));
         }
     }
 }

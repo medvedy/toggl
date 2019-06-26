@@ -10,7 +10,7 @@ namespace Toggl.Core.Services
 {
     public sealed class UpdateRemoteConfigCacheService : IUpdateRemoteConfigCacheService
     {
-        public static readonly TimeSpan RemoteConfigExpiration = TimeSpan.FromHours(12.5f);
+        public static readonly TimeSpan RemoteConfigExpiration = TimeSpan.FromSeconds(30f);
 
         private readonly object updateLock = new object();
         private readonly ITimeService timeService;
