@@ -24,9 +24,6 @@ using Toggl.Core.UI.Parameters;
 using Toggl.Core.UI.ViewModels.Reports;
 using Toggl.Core.UI.ViewModels.TimeEntriesLog;
 using Toggl.Core.UI.ViewModels.TimeEntriesLog.Identity;
-using Toggl.Core.Services;
-using Toggl.Core.Sync;
-using Toggl.Core.UI.Helper;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using Toggl.Storage;
@@ -83,9 +80,7 @@ namespace Toggl.Core.UI.ViewModels
         public IObservable<IThreadSafeTimeEntry> CurrentRunningTimeEntry { get; private set; }
         public IObservable<bool> ShouldShowRatingView { get; private set; }
 
-        public IObservable<IEnumerable<MainLogSection>> TimeEntries => TimeEntriesViewModel.TimeEntries
-            .Throttle(TimeSpan.FromSeconds(throttlePeriodInSeconds))
-            .AsDriver(Enumerable.Empty<MainLogSection>(), schedulerProvider);
+        public IObservable<IEnumerable<MainLogSection>> TimeEntries { get; }
 
         public RatingViewModel RatingViewModel { get; }
         public SuggestionsViewModel SuggestionsViewModel { get; }
@@ -161,6 +156,10 @@ namespace Toggl.Core.UI.ViewModels
             RatingViewModel = new RatingViewModel(timeService, ratingService, analyticsService, onboardingStorage, navigationService, schedulerProvider, rxActionFactory);
             TimeEntriesViewModel = new TimeEntriesViewModel(dataSource, interactorFactory, analyticsService, schedulerProvider, rxActionFactory, timeService);
 
+            TimeEntries = TimeEntriesViewModel.TimeEntries
+                .Throttle(TimeSpan.FromSeconds(throttlePeriodInSeconds))
+                .AsDriver(Enumerable.Empty<MainLogSection>(), schedulerProvider);
+
             LogEmpty = TimeEntriesViewModel.Empty.AsDriver(schedulerProvider);
             TimeEntriesCount = TimeEntriesViewModel.Count.AsDriver(schedulerProvider);
 
@@ -210,12 +209,12 @@ namespace Toggl.Core.UI.ViewModels
             ShouldShowRunningTimeEntryNotification = userPreferences.AreRunningTimerNotificationsEnabledObservable;
             ShouldShowStoppedTimeEntryNotification = userPreferences.AreStoppedTimerNotificationsEnabledObservable;
 
-            CurrentRunningTimeEntry = dataSource
-                .TimeEntries
+            CurrentRunningTimeEntry = dataSource.TimeEntries
                 .CurrentlyRunningTimeEntry
                 .AsDriver(schedulerProvider);
 
-            IsTimeEntryRunning = CurrentRunningTimeEntry
+            IsTimeEntryRunning = dataSource.TimeEntries
+                .CurrentlyRunningTimeEntry
                 .Select(te => te != null)
                 .DistinctUntilChanged()
                 .AsDriver(schedulerProvider);
@@ -416,6 +415,7 @@ namespace Toggl.Core.UI.ViewModels
         private IObservable<IThreadSafeTimeEntry> continueTimeEntry(ContinueTimeEntryInfo continueInfo)
         {
             return interactorFactory.GetTimeEntryById(continueInfo.Id).Execute()
+                .SubscribeOn(schedulerProvider.BackgroundScheduler)
                 .Select(timeEntry => timeEntry.AsTimeEntryPrototype())
                 .SelectMany(prototype =>
                     interactorFactory.ContinueTimeEntryFromMainLog(
@@ -465,6 +465,7 @@ namespace Toggl.Core.UI.ViewModels
             return interactorFactory
                 .StopTimeEntry(TimeService.CurrentDateTime, origin)
                 .Execute()
+                .SubscribeOn(schedulerProvider.BackgroundScheduler)
                 .Do(syncManager.InitiatePushSync)
                 .SelectUnit();
         }

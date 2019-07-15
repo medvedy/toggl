@@ -18,6 +18,7 @@ namespace Toggl.Tests.UI
 
             var app = ConfigureApp.iOS
                 .InstalledApp("com.toggl.daneel.debug")
+                .PreferIdeSettings()
                 .StartApp();
 
             bootedDeviceId = app.Device.DeviceIdentifier;

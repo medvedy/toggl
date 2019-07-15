@@ -131,7 +131,8 @@ namespace Toggl.Core.UI.ViewModels
 
             var timeEntry = interactorFactory
                 .StartSuggestion(suggestion)
-                .Execute();
+                .Execute()
+                .SubscribeOn(schedulerProvider.BackgroundScheduler);
 
             analyticsService.SuggestionStarted.Track(suggestion.ProviderType);
 

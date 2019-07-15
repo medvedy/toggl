@@ -34,17 +34,6 @@ namespace Toggl.Droid.Fragments
         {
             base.OnViewCreated(view, savedInstanceState);
 
-            var adapter = new SimpleAdapter<SelectableWorkspaceViewModel>(
-                Resource.Layout.SettingsFragmentWorkspaceCell,
-                WorkspaceSelectionViewHolder.Create
-            );
-            adapter.ItemTapObservable
-                .Subscribe(ViewModel.SelectDefaultWorkspace.Inputs)
-                .DisposedBy(DisposeBag);
-
-            workspacesRecyclerView.SetAdapter(adapter);
-            workspacesRecyclerView.SetLayoutManager(new LinearLayoutManager(Context));
-
             versionTextView.Text = ViewModel.Version;
 
             ViewModel.Name
@@ -55,8 +44,8 @@ namespace Toggl.Droid.Fragments
                 .Subscribe(emailTextView.Rx().TextObserver())
                 .DisposedBy(DisposeBag);
 
-            ViewModel.Workspaces
-                .Subscribe(adapter.Rx().Items())
+            ViewModel.WorkspaceName
+                .Subscribe(defaultWorkspaceNameTextView.Rx().TextObserver())
                 .DisposedBy(DisposeBag);
 
             ViewModel.IsManualModeEnabled
@@ -123,6 +112,10 @@ namespace Toggl.Droid.Fragments
                 .BindAction(ViewModel.OpenAboutView)
                 .DisposedBy(DisposeBag);
 
+            defaultWorkspaceView.Rx()
+                .BindAction(ViewModel.PickDefaultWorkspace)
+                .DisposedBy(DisposeBag);
+
             feedbackView.Rx()
                 .BindAction(ViewModel.SubmitFeedback)
                 .DisposedBy(DisposeBag);
@@ -181,9 +174,6 @@ namespace Toggl.Droid.Fragments
             toast.SetGravity(GravityFlags.CenterHorizontal | GravityFlags.Bottom, 0, 0);
             toast.Show();
         }
-
-        private Bitmap userImageFromBytes(byte[] imageBytes)
-            => BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
 
         private void setupToolbar()
         {

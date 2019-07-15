@@ -378,6 +378,7 @@
     <Compile Include="Adapters\SelectProjectRecyclerAdapter.cs" />
     <Compile Include="DebugHelpers\ErrorTriggeringFragment.cs" />
     <Compile Include="DebugHelpers\ErrorTriggeringFragmentShortcut.cs" />
+    <Compile Include="Presentation\RunningTimeEntrySheetBehavior.cs" />
     <Compile Include="Services\JobServicesConstants.cs" />
     <Compile Include="Services\FetchRemoteConfigServiceAndroid.cs" />
     <Compile Include="Services\SyncJobService.cs" />
@@ -499,7 +500,6 @@
     <Compile Include="Extensions\NumberExtensions.cs" />
     <Compile Include="Activities\StartTimeEntryActivity.cs" />
     <Compile Include="Extensions\VisibilityExtensions.cs" />
-    <Compile Include="Extensions\CircularRevealAnimation.cs" />
     <Compile Include="Activities\EditTimeEntryActivity.cs" />
     <Compile Include="ApplicationShortcutCreator.cs" />
     <Compile Include="Adapters\StartTimeEntryRecyclerAdapter.cs" />
@@ -564,7 +564,6 @@
     </Compile>
     <Compile Include="Adapters\BaseRecyclerAdapter.cs" />
     <Compile Include="ViewHolders\BaseRecyclerViewHolder.cs" />
-    <Compile Include="ViewHolders\WorkspaceSelectionViewHolder.cs" />
     <Compile Include="Adapters\SimpleAdapter.cs" />
     <Compile Include="Activities\AboutActivity.cs" />
     <Compile Include="Services\RatingServiceAndroid.cs" />
@@ -697,7 +696,6 @@
     <AndroidResource Include="Resources\layout\SelectProjectActivityWorkspaceHeader.axml" />
     <AndroidResource Include="Resources\layout\SelectDateFormatFragment.axml" />
     <AndroidResource Include="Resources\layout\SelectDateFormatFragmentCell.axml" />
-    <AndroidResource Include="Resources\layout\SettingsFragmentWorkspaceCell.axml" />
     <AndroidResource Include="Resources\drawable\TransparentToLightGrayGradient.xml" />
     <GoogleServicesJson Include="google-services.json" />
     <AndroidResource Include="Resources\layout\SelectBeginningOfWeekFragment.axml" />
@@ -1155,6 +1153,18 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_launcher.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\animator\Collapse.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\animator\Expand.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />
