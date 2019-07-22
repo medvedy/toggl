@@ -145,7 +145,8 @@ namespace Toggl.Core.UI.ViewModels
             {
                 case SelectableTagCreationViewModel t:
                     var createdTag = await interactorFactory.CreateTag(t.Name, t.WorkspaceId).Execute();
-                    selectedTagIds.Add(createdTag.Id);
+                    if (createdTag != null)
+                        selectedTagIds.Add(createdTag.Id);
                     FilterText.OnNext(string.Empty);
                     break;
                 case SelectableTagViewModel t:

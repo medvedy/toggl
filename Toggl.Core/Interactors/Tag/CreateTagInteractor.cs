@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
 using Toggl.Core.DataSources.Interfaces;
 using Toggl.Core.Models;
 using Toggl.Core.Models.Interfaces;
@@ -38,6 +41,17 @@ namespace Toggl.Core.Interactors
         }
 
         public IObservable<IThreadSafeTag> Execute()
+            => tagAlreadyExists()
+                .SelectMany(tagExists => tagExists
+                    ? Observable.Return<IThreadSafeTag>(null)
+                    : createTag()
+                );
+
+        private IObservable<bool> tagAlreadyExists() => dataSource
+            .GetAll(tag => tag.Name == tagName && tag.WorkspaceId == workspaceId)
+            .Select(tags => tags.Any());
+
+        private IObservable<IThreadSafeTag> createTag()
             => idProvider
                 .GetNextIdentifier()
                 .Apply(Tag.Builder.Create)
