@@ -31,9 +31,8 @@ namespace Toggl.Core.UI.Navigation
         {
             var viewModel = viewModelLocator.Load<TViewModel>();
 
-            var initialize = viewModel.Initialize(payload);
-            var present = presenter.Present(viewModel, sourceView);
-            await Task.WhenAll(initialize, present).ConfigureAwait(false);
+            await viewModel.Initialize(payload).ConfigureAwait(false);
+            await presenter.Present(viewModel, sourceView).ConfigureAwait(false);
 
             analyticsService.CurrentPage.Track(typeof(TViewModel));
 
