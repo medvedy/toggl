@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Toggl.Networking.ApiClients;
 using Toggl.Networking.Exceptions;
 using Toggl.Networking.Network;
@@ -27,7 +28,7 @@ namespace Toggl.Networking.Tests.Clients
             }
 
             [Fact, LogIfTooSlow]
-            public void DoesNotHideThrownExceptions()
+            public async Task DoesNotHideThrownExceptions()
             {
                 bool caughtException = false;
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
@@ -36,12 +37,14 @@ namespace Toggl.Networking.Tests.Clients
                     .Returns(async x => throw new WebException());
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
-                statusApi.IsAvailable()
-                    .Catch((WebException exception) =>
-                    {
-                        caughtException = true;
-                        return Observable.Return(Unit.Default);
-                    }).Wait();
+                try
+                {
+                    await statusApi.IsAvailable();
+                }
+                catch
+                {
+                    caughtException = true;
+                }
 
                 caughtException.Should().BeTrue();
             }

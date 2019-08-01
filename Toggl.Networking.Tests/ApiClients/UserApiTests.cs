@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using NSubstitute;
 using System;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Toggl.Networking.ApiClients;
 using Toggl.Networking.Models;
@@ -38,12 +37,12 @@ namespace Toggl.Networking.Tests.ApiClients
                 var userWithValidApiToken = userWithApiToken(Guid.NewGuid().ToString());
                 setupMocksToReturnUser(userWithValidApiToken);
 
-                var user = CallEndpoint(api).SingleAsync().Wait();
+                var user = CallEndpoint(api).GetAwaiter().GetResult();
 
                 user.Should().Be(userWithValidApiToken);
             }
 
-            protected abstract IObservable<IUser> CallEndpoint(IUserApi api);
+            protected abstract Task<IUser> CallEndpoint(IUserApi api);
 
             private Action callingEndpointWithReturnedUser(User user)
             {
@@ -75,31 +74,31 @@ namespace Toggl.Networking.Tests.ApiClients
 
         public class TheGetMethod : Base
         {
-            protected override IObservable<IUser> CallEndpoint(IUserApi api)
+            protected override Task<IUser> CallEndpoint(IUserApi api)
                 => api.Get();
         }
 
         public class TheGetWithGoogleMethod : Base
         {
-            protected override IObservable<IUser> CallEndpoint(IUserApi api)
+            protected override Task<IUser> CallEndpoint(IUserApi api)
                 => api.GetWithGoogle();
         }
 
         public class TheUpdateMethod : Base
         {
-            protected override IObservable<IUser> CallEndpoint(IUserApi api)
+            protected override Task<IUser> CallEndpoint(IUserApi api)
                 => api.Update(new User());
         }
 
         public class TheSignUpMethod : Base
         {
-            protected override IObservable<IUser> CallEndpoint(IUserApi api)
+            protected override Task<IUser> CallEndpoint(IUserApi api)
                 => api.SignUp(Email.From("a@b.com"), Password.Empty, true, 237, null);
         }
 
         public class TheSignUpWithGoogleMethod : Base
         {
-            protected override IObservable<IUser> CallEndpoint(IUserApi api)
+            protected override Task<IUser> CallEndpoint(IUserApi api)
                 => api.SignUpWithGoogle("", true, 237, null);
         }
     }

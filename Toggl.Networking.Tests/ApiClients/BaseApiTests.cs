@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Toggl.Networking.Exceptions;
 using Toggl.Networking.Helpers;
@@ -56,22 +57,6 @@ namespace Toggl.Networking.Tests.ApiClients
             private IJsonSerializer serializer = Substitute.For<IJsonSerializer>();
 
             [Fact, LogIfTooSlow]
-            public async Task CreatesAnObservableThatReturnsASingleValue()
-            {
-                apiClient.Send(Arg.Any<Request>()).Returns(x => new Response("It lives", true, "text/plain", new List<KeyValuePair<string, IEnumerable<string>>>(), OK));
-
-                var credentials = Credentials.WithPassword(
-                    "susancalvin@psychohistorian.museum".ToEmail(),
-                    "theirobotmoviesucked123".ToPassword());
-                var endpoint = Endpoint.Get(BaseUrls.ForApi(ApiEnvironment.Staging), "");
-                var testApi = new TestApi(endpoint, apiClient, serializer, credentials, endpoint);
-
-                var observable = testApi.TestCreateObservable<string>(endpoint, Enumerable.Empty<HttpHeader>(), "");
-
-                await observable.SingleAsync();
-            }
-
-            [Fact, LogIfTooSlow]
             public void EmitsAnOfflineExceptionIfTheApiClientThrowsAnHttpRequestException()
             {
                 Exception caughtException = null;
@@ -83,7 +68,9 @@ namespace Toggl.Networking.Tests.ApiClients
 
                 try
                 {
-                    testApi.TestCreateObservable<string>(endpoint, Enumerable.Empty<HttpHeader>(), "").Wait();
+                    testApi.TestCreateObservable<string>(endpoint, Enumerable.Empty<HttpHeader>(), "")
+                        .ToObservable()
+                        .Wait();
                 }
                 catch (Exception e)
                 {

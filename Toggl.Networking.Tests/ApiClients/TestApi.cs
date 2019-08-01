@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Toggl.Networking.ApiClients;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
@@ -20,14 +20,11 @@ namespace Toggl.Networking.Tests.ApiClients
             this.endpoint = endpoint;
         }
 
-        public IObservable<T> TestCreateObservable<T>(Endpoint endpoint, IEnumerable<HttpHeader> headers,
+        public Task<T> TestCreateObservable<T>(Endpoint endpoint, IEnumerable<HttpHeader> headers,
             string body = "")
             => SendRequest<T>(endpoint, headers, body);
 
-        public IObservable<string> Get()
-        {
-            var observable = SendRequest<string>(endpoint, AuthHeader);
-            return observable;
-        }
+        public Task<string> Get()
+            => SendRequest<string>(endpoint, AuthHeader);
     }
 }
