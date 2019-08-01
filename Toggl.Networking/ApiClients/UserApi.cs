@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Toggl.Networking.Exceptions;
 using Toggl.Networking.Helpers;
 using Toggl.Networking.Models;
@@ -8,6 +9,7 @@ using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
 using Toggl.Networking.Serialization.Converters;
 using Toggl.Shared;
+using Toggl.Shared.Extensions;
 using Toggl.Shared.Models;
 
 namespace Toggl.Networking.ApiClients
@@ -27,23 +29,24 @@ namespace Toggl.Networking.ApiClients
             this.serializer = serializer;
         }
 
-        public IObservable<IUser> Get()
-            => SendRequest<User>(endPoints.Get, AuthHeader);
+        public Task<IUser> Get()
+            => SendRequest<User>(endPoints.Get, AuthHeader).Upcast<IUser, User>();
 
-        public IObservable<IUser> GetWithGoogle()
-            => SendRequest<User>(endPoints.GetWithGoogle, AuthHeader);
+        public Task<IUser> GetWithGoogle()
+            => SendRequest<User>(endPoints.GetWithGoogle, AuthHeader).Upcast<IUser, User>();
 
-        public IObservable<IUser> Update(IUser user)
-            => SendRequest(endPoints.Put, AuthHeader, user as User ?? new User(user), SerializationReason.Post);
+        public Task<IUser> Update(IUser user)
+            => SendRequest(endPoints.Put, AuthHeader, user as User ?? new User(user), SerializationReason.Post)
+            .Upcast<IUser, User>();
 
-        public IObservable<string> ResetPassword(Email email)
+        public Task<string> ResetPassword(Email email)
         {
             var json = $"{{\"email\":\"{email}\"}}";
             return SendRequest(endPoints.ResetPassword, new HttpHeader[0], json)
-                .Select(instructions => instructions.Trim('"'));
+                .ContinueWith(t => t.Result.Trim('"'));
         }
 
-        public IObservable<IUser> SignUp(
+        public async Task<IUser> SignUp(
             Email email,
             Password password,
             bool termsAccepted,
@@ -67,14 +70,20 @@ namespace Toggl.Networking.ApiClients
                 Timezone = timezone
             };
             var json = serializer.Serialize(dto, SerializationReason.Post);
-            return SendRequest<User>(endPoints.Post, new HttpHeader[0], json)
-                .Catch<IUser, BadRequestException>(badRequestException
-                    => badRequestException.LocalizedApiErrorMessage == userAlreadyExistsApiErrorMessage
-                        ? Observable.Throw<IUser>(new EmailIsAlreadyUsedException(badRequestException))
-                        : Observable.Throw<IUser>(badRequestException));
+            try
+            {
+                var user = await SendRequest<User>(endPoints.Post, new HttpHeader[0], json)
+                    .ConfigureAwait(false);
+                return user;
+            }
+            catch (BadRequestException ex)
+            when (ex.LocalizedApiErrorMessage == userAlreadyExistsApiErrorMessage)
+            {
+                throw new EmailIsAlreadyUsedException(ex);
+            }
         }
 
-        public IObservable<IUser> SignUpWithGoogle(string googleToken, bool termsAccepted, int countryId, string timezone)
+        public Task<IUser> SignUpWithGoogle(string googleToken, bool termsAccepted, int countryId, string timezone)
         {
             Ensure.Argument.IsNotNull(googleToken, nameof(googleToken));
             var parameters = new GoogleSignUpParameters
@@ -90,7 +99,8 @@ namespace Toggl.Networking.ApiClients
             };
 
             var json = serializer.Serialize(parameters, SerializationReason.Post);
-            return SendRequest<User>(endPoints.PostWithGoogle, new HttpHeader[0], json);
+            return SendRequest<User>(endPoints.PostWithGoogle, new HttpHeader[0], json)
+                .Upcast<IUser, User>();
         }
 
         [Preserve(AllMembers = true)]

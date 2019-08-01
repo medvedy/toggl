@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Toggl.Shared.Models;
 
 namespace Toggl.Networking.ApiClients
@@ -7,6 +7,6 @@ namespace Toggl.Networking.ApiClients
         : IPullingApiClient<IWorkspace>,
           ICreatingApiClient<IWorkspace>
     {
-        IObservable<IWorkspace> GetById(long id);
+        Task<IWorkspace> GetById(long id);
     }
 }

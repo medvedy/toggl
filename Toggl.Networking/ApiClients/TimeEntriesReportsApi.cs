@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Toggl.Networking.ApiClients.Interfaces;
 using Toggl.Networking.Models.Reports;
 using Toggl.Networking.Network;
@@ -31,7 +32,7 @@ namespace Toggl.Networking.ApiClients
             this.credentials = credentials;
         }
 
-        public IObservable<ITimeEntriesTotals> GetTotals(
+        public Task<ITimeEntriesTotals> GetTotals(
             long userId, long workspaceId, DateTimeOffset startDate, DateTimeOffset endDate)
         {
             if (endDate.Date - startDate.Date > maximumRange)
@@ -40,27 +41,18 @@ namespace Toggl.Networking.ApiClients
             var parameters = new TimeEntriesTotalsParameters(userId, startDate, endDate);
             var json = serializer.Serialize(parameters, SerializationReason.Post);
 
-            return Observable.Create<ITimeEntriesTotals>(async observer =>
-            {
-                var response = await SendRequest<TotalsResponse>(endPoints.Totals(workspaceId), credentials.Header, json);
-
-                var totals = new TimeEntriesTotals
+            return SendRequest<TotalsResponse>(endPoints.Totals(workspaceId), credentials.Header, json)
+                .ContinueWith<ITimeEntriesTotals>(t => new TimeEntriesTotals
                 {
                     StartDate = startDate,
                     EndDate = endDate,
-                    Resolution = response.Resolution,
-                    Groups = response.Graph.Select(group => new TimeEntriesTotalsGroup
+                    Resolution = t.Result.Resolution,
+                    Groups = t.Result.Graph.Select(group => new TimeEntriesTotalsGroup
                     {
                         Total = TimeSpan.FromSeconds(group.Seconds),
                         Billable = TimeSpan.FromSeconds(group.BillableSeconds)
                     }).ToArray<ITimeEntriesTotalsGroup>()
-                };
-
-                observer.OnNext(totals);
-                observer.OnCompleted();
-
-                return () => { };
-            });
+                });
         }
 
         [Preserve(AllMembers = true)]

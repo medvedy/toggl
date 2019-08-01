@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Toggl.Networking.ApiClients
 {
     public interface IPullingChangedApiClient<T>
     {
-        IObservable<List<T>> GetAllSince(DateTimeOffset threshold);
+        Task<List<T>> GetAllSince(DateTimeOffset threshold);
     }
 }

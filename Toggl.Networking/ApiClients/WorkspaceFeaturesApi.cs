@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Toggl.Networking.Models;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
@@ -18,7 +18,7 @@ namespace Toggl.Networking.ApiClients
             this.endPoints = endPoints.WorkspaceFeatures;
         }
 
-        public IObservable<List<IWorkspaceFeatureCollection>> GetAll()
+        public Task<List<IWorkspaceFeatureCollection>> GetAll()
             => SendRequest<WorkspaceFeatureCollection, IWorkspaceFeatureCollection>(endPoints.Get, AuthHeader);
 
     }

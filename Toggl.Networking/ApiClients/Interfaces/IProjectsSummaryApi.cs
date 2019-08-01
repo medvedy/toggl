@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Toggl.Shared.Models.Reports;
 
 namespace Toggl.Networking.ApiClients
 {
     public interface IProjectsSummaryApi
     {
-        IObservable<IProjectsSummary> GetByWorkspace(long workspaceId, DateTimeOffset startDate, DateTimeOffset? endDate);
+        Task<IProjectsSummary> GetByWorkspace(long workspaceId, DateTimeOffset startDate, DateTimeOffset? endDate);
     }
 }

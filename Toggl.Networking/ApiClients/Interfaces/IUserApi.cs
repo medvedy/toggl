@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Toggl.Shared;
 using Toggl.Shared.Models;
 
@@ -8,9 +8,9 @@ namespace Toggl.Networking.ApiClients
         : IUpdatingApiClient<IUser>,
           IPullingSingleApiClient<IUser>
     {
-        IObservable<IUser> GetWithGoogle();
-        IObservable<string> ResetPassword(Email email);
-        IObservable<IUser> SignUp(Email email, Password password, bool termsAccepted, int countryId, string timezone);
-        IObservable<IUser> SignUpWithGoogle(string googleToken, bool termsAccepted, int countryId, string timezone);
+        Task<IUser> GetWithGoogle();
+        Task<string> ResetPassword(Email email);
+        Task<IUser> SignUp(Email email, Password password, bool termsAccepted, int countryId, string timezone);
+        Task<IUser> SignUpWithGoogle(string googleToken, bool termsAccepted, int countryId, string timezone);
     }
 }

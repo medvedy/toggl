@@ -1,8 +1,8 @@
-﻿using System;
-using System.Reactive.Linq;
+﻿using System.Threading.Tasks;
 using Toggl.Networking.Models;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
+using Toggl.Shared.Extensions;
 using Toggl.Shared.Models;
 
 namespace Toggl.Networking.ApiClients
@@ -20,14 +20,15 @@ namespace Toggl.Networking.ApiClients
             this.serializer = serializer;
         }
 
-        public IObservable<IPreferences> Get()
-            => SendRequest<Preferences>(endPoints.Get, AuthHeader);
+        public Task<IPreferences> Get()
+            => SendRequest<Preferences>(endPoints.Get, AuthHeader)
+                .Upcast<IPreferences, Preferences>();
 
-        public IObservable<IPreferences> Update(IPreferences preferences)
+        public Task<IPreferences> Update(IPreferences preferences)
         {
             var body = serializer.Serialize(preferences as Preferences ?? new Preferences(preferences), SerializationReason.Post);
             return SendRequest(endPoints.Post, new[] { AuthHeader }, body)
-                .Select(_ => preferences);
+                .ContinueWith(_ => preferences);
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Toggl.Networking.Models;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
@@ -17,7 +17,7 @@ namespace Toggl.Networking.ApiClients
             this.endPoints = endPoints.Countries;
         }
 
-        public IObservable<List<ICountry>> GetAll()
+        public Task<List<ICountry>> GetAll()
             => SendRequest<Country, ICountry>(endPoints.Get, AuthHeader);
     }
 }

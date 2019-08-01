@@ -1,9 +1,10 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Toggl.Networking.ApiClients.Interfaces;
 using Toggl.Networking.Models;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
 using Toggl.Shared;
+using Toggl.Shared.Extensions;
 using Toggl.Shared.Models;
 
 namespace Toggl.Networking.ApiClients
@@ -20,7 +21,7 @@ namespace Toggl.Networking.ApiClients
             this.endPoints = endPoints.Location;
         }
 
-        public IObservable<ILocation> Get()
-            => SendRequest<Location>(endPoints.Get, AuthHeader);
+        public Task<ILocation> Get()
+            => SendRequest<Location>(endPoints.Get, AuthHeader).Upcast<ILocation, Location>();
     }
 }

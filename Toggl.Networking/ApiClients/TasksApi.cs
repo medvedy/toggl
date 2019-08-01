@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Toggl.Networking.Models;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
+using Toggl.Shared.Extensions;
 using Toggl.Shared.Models;
+using TogglTask = Toggl.Networking.Models.Task;
 
 namespace Toggl.Networking.ApiClients
 {
@@ -17,18 +20,18 @@ namespace Toggl.Networking.ApiClients
             this.endPoints = endPoints.Tasks;
         }
 
-        public IObservable<List<ITask>> GetAll()
-            => SendRequest<Task, ITask>(endPoints.Get, AuthHeader);
+        public Task<List<ITask>> GetAll()
+            => SendRequest<TogglTask, ITask>(endPoints.Get, AuthHeader);
 
-        public IObservable<List<ITask>> GetAllSince(DateTimeOffset threshold)
-            => SendRequest<Task, ITask>(endPoints.GetSince(threshold), AuthHeader);
+        public Task<List<ITask>> GetAllSince(DateTimeOffset threshold)
+            => SendRequest<TogglTask, ITask>(endPoints.GetSince(threshold), AuthHeader);
 
-        public IObservable<ITask> Create(ITask task)
+        public Task<ITask> Create(ITask task)
         {
             var endPoint = endPoints.Post(task.WorkspaceId, task.ProjectId);
-            var taskCopy = task as Task ?? new Task(task);
-            var observable = SendRequest(endPoint, AuthHeader, taskCopy, SerializationReason.Post);
-            return observable;
+            var taskCopy = task as TogglTask ?? new TogglTask(task);
+            return SendRequest(endPoint, AuthHeader, taskCopy, SerializationReason.Post)
+                .Upcast<ITask, TogglTask>();
         }
     }
 }

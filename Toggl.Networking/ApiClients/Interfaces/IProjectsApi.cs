@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Toggl.Shared.Models;
 
 namespace Toggl.Networking.ApiClients
@@ -9,6 +9,6 @@ namespace Toggl.Networking.ApiClients
           IPullingChangedApiClient<IProject>,
           ICreatingApiClient<IProject>
     {
-        IObservable<List<IProject>> Search(long workspaceId, long[] projectIds);
+        Task<List<IProject>> Search(long workspaceId, long[] projectIds);
     }
 }

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Toggl.Networking.ApiClients
 {
     public interface IPullingApiClient<T>
     {
-        IObservable<List<T>> GetAll();
+        Task<List<T>> GetAll();
     }
 }

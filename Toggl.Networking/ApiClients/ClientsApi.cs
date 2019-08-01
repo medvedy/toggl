@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Toggl.Networking.Models;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
+using Toggl.Shared.Extensions;
 using Toggl.Shared.Models;
 
 namespace Toggl.Networking.ApiClients
@@ -17,18 +19,18 @@ namespace Toggl.Networking.ApiClients
             this.endPoints = endPoints.Clients;
         }
 
-        public IObservable<List<IClient>> GetAll()
+        public Task<List<IClient>> GetAll()
             => SendRequest<Client, IClient>(endPoints.Get, AuthHeader);
 
-        public IObservable<List<IClient>> GetAllSince(DateTimeOffset threshold)
+        public Task<List<IClient>> GetAllSince(DateTimeOffset threshold)
             => SendRequest<Client, IClient>(endPoints.GetSince(threshold), AuthHeader);
 
-        public IObservable<IClient> Create(IClient client)
+        public Task<IClient> Create(IClient client)
         {
             var endPoint = endPoints.Post(client.WorkspaceId);
             var clientCopy = client as Client ?? new Client(client);
-            var observable = SendRequest(endPoint, AuthHeader, clientCopy, SerializationReason.Post);
-            return observable;
+            return SendRequest(endPoint, AuthHeader, clientCopy, SerializationReason.Post)
+                .Upcast<IClient, Client>();
         }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
+using System.Threading.Tasks;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
 using Toggl.Networking.Serialization.Converters;
@@ -24,7 +23,7 @@ namespace Toggl.Networking.ApiClients
             this.serializer = serializer;
         }
 
-        public IObservable<Unit> Send(Email email, string message, IDictionary<string, string> data)
+        public Task Send(Email email, string message, IDictionary<string, string> data)
         {
             Ensure.Argument.IsValidEmail(email, nameof(email));
             Ensure.Argument.IsNotNullOrWhiteSpaceString(message, nameof(message));
@@ -38,7 +37,7 @@ namespace Toggl.Networking.ApiClients
 
             var json = serializer.Serialize(feedback, SerializationReason.Post);
 
-            return SendRequest(endPoints.Post, AuthHeader, json).SelectUnit();
+            return SendRequest(endPoints.Post, AuthHeader, json);
         }
 
         [Preserve(AllMembers = true)]

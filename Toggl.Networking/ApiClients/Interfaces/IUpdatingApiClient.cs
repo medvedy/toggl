@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Toggl.Networking.ApiClients
 {
     public interface IUpdatingApiClient<T>
     {
-        IObservable<T> Update(T entity);
+        Task<T> Update(T entity);
     }
 }

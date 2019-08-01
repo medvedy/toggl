@@ -1,10 +1,9 @@
-﻿using System;
-using System.Reactive;
+﻿using System.Threading.Tasks;
 
 namespace Toggl.Networking.ApiClients.Interfaces
 {
     public interface IDeletingApiClient<T>
     {
-        IObservable<Unit> Delete(T entity);
+        Task Delete(T entity);
     }
 }

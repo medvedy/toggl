@@ -1,10 +1,10 @@
-using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Toggl.Networking.ApiClients
 {
     public interface ITimeZonesApi
     {
-        IObservable<List<string>> GetAll();
+        Task<List<string>> GetAll();
     }
 }

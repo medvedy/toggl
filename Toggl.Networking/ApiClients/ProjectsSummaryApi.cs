@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Globalization;
-using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Toggl.Networking.Models.Reports;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
@@ -26,7 +26,7 @@ namespace Toggl.Networking.ApiClients
             this.credentials = credentials;
         }
 
-        public IObservable<IProjectsSummary> GetByWorkspace(long workspaceId, DateTimeOffset startDate, DateTimeOffset? endDate)
+        public Task<IProjectsSummary> GetByWorkspace(long workspaceId, DateTimeOffset startDate, DateTimeOffset? endDate)
         {
             var interval = endDate - startDate;
             if (interval.HasValue && interval > TimeSpan.FromDays(365))
@@ -34,16 +34,13 @@ namespace Toggl.Networking.ApiClients
 
             var parameters = new ProjectsSummaryParameters(startDate, endDate);
             var json = serializer.Serialize(parameters, SerializationReason.Post);
-            return Observable.Create<IProjectsSummary>(async observer =>
-            {
-                var projectsSummaries = await SendRequest<ProjectSummary, IProjectSummary>(endPoints.Summary(workspaceId), credentials.Header, json);
-                var summary = new ProjectsSummary { StartDate = startDate, EndDate = endDate, ProjectsSummaries = projectsSummaries };
-
-                observer.OnNext(summary);
-                observer.OnCompleted();
-
-                return () => { };
-            });
+            return SendRequest<ProjectSummary, IProjectSummary>(endPoints.Summary(workspaceId), credentials.Header, json)
+                .ContinueWith<IProjectsSummary>(t => new ProjectsSummary
+                {
+                    StartDate = startDate,
+                    EndDate = endDate,
+                    ProjectsSummaries = t.Result
+                });
         }
 
         [Preserve(AllMembers = true)]

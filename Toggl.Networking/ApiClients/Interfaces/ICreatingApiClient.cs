@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Toggl.Networking.ApiClients
 {
     public interface ICreatingApiClient<T>
     {
-        IObservable<T> Create(T entity);
+        Task<T> Create(T entity);
     }
 }

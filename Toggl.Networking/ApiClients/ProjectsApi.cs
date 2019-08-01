@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Toggl.Networking.Models;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
 using Toggl.Shared;
+using Toggl.Shared.Extensions;
 using Toggl.Shared.Models;
 
 namespace Toggl.Networking.ApiClients
@@ -20,21 +22,21 @@ namespace Toggl.Networking.ApiClients
             this.reportsEndPoints = endPoints.ReportsEndpoints.Projects;
         }
 
-        public IObservable<List<IProject>> GetAll()
+        public Task<List<IProject>> GetAll()
             => SendRequest<Project, IProject>(endPoints.Get, AuthHeader);
 
-        public IObservable<List<IProject>> GetAllSince(DateTimeOffset threshold)
+        public Task<List<IProject>> GetAllSince(DateTimeOffset threshold)
             => SendRequest<Project, IProject>(endPoints.GetSince(threshold), AuthHeader);
 
-        public IObservable<IProject> Create(IProject project)
+        public Task<IProject> Create(IProject project)
         {
             var endPoint = endPoints.Post(project.WorkspaceId);
             var projectCopy = project as Project ?? new Project(project);
-            var observable = SendRequest(endPoint, AuthHeader, projectCopy, SerializationReason.Post);
-            return observable;
+            return SendRequest(endPoint, AuthHeader, projectCopy, SerializationReason.Post)
+                .Upcast<IProject, Project>();
         }
 
-        public IObservable<List<IProject>> Search(long workspaceId, long[] projectIds)
+        public Task<List<IProject>> Search(long workspaceId, long[] projectIds)
         {
             Ensure.Argument.IsNotNull(projectIds, nameof(projectIds));
 

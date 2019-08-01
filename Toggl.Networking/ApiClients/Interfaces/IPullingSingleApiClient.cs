@@ -1,9 +1,9 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 
 namespace Toggl.Networking.ApiClients
 {
     public interface IPullingSingleApiClient<T>
     {
-        IObservable<T> Get();
+        Task<T> Get();
     }
 }

@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Toggl.Networking.Network;
 using Toggl.Networking.Serialization;
-
 
 namespace Toggl.Networking.ApiClients
 {
@@ -16,7 +15,7 @@ namespace Toggl.Networking.ApiClients
             this.endPoints = endPoints.Timezones;
         }
 
-        public IObservable<List<string>> GetAll()
+        public Task<List<string>> GetAll()
             => SendRequest<string, string>(endPoints.Get, AuthHeader);
     }
 }

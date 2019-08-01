@@ -38,65 +38,70 @@ namespace Toggl.Networking.ApiClients
 
         // String result
 
-        protected IObservable<string> SendRequest(Endpoint endpoint, HttpHeader header, string body = "")
+        protected Task<string> SendRequest(Endpoint endpoint, HttpHeader header, string body = "")
             => SendRequest(endpoint, new[] { header }, body);
 
-        protected IObservable<string> SendRequest(Endpoint endpoint, IEnumerable<HttpHeader> headers, string body = "")
+        protected async Task<string> SendRequest(Endpoint endpoint, IEnumerable<HttpHeader> headers, string body = "")
         {
             var request = new Request(body, endpoint.Url, headers, endpoint.Method);
-            return sendRequest(request, headers)
-                .Select(response => response.RawData);
+            var response = await sendRequest(request, headers).ConfigureAwait(false);
+            return response.RawData;
         }
 
         // Entity List result
 
-        protected IObservable<List<TInterface>> SendRequest<TModel, TInterface>(Endpoint endpoint, HttpHeader header, string body = "")
+        protected Task<List<TInterface>> SendRequest<TModel, TInterface>(Endpoint endpoint, HttpHeader header, string body = "")
             where TModel : class, TInterface
             => SendRequest<TModel, TInterface>(endpoint, new[] { header }, body);
 
 
-        protected IObservable<List<TInterface>> SendRequest<TModel, TInterface>(Endpoint endpoint,
+        protected async Task<List<TInterface>> SendRequest<TModel, TInterface>(Endpoint endpoint,
             IEnumerable<HttpHeader> headers, string body = "")
             where TModel : class, TInterface
         {
-            return SendRequest<List<TModel>>(endpoint, headers, body)
-                .Select(items => items?.ToList<TInterface>());
+            var items = await SendRequest<List<TModel>>(endpoint, headers, body).ConfigureAwait(false);
+            return items?.ToList<TInterface>();
         }
 
         // Entity result
 
-        protected IObservable<T> SendRequest<T>(Endpoint endpoint, HttpHeader header, T entity,
+        protected Task<T> SendRequest<T>(Endpoint endpoint, HttpHeader header, T entity,
             SerializationReason serializationReason)
         {
             var body = serializer.Serialize(entity, serializationReason);
             return SendRequest<T>(endpoint, header, body);
         }
 
-        protected IObservable<T> SendRequest<T>(Endpoint endpoint, HttpHeader header, string body = "")
+        protected Task<T> SendRequest<T>(Endpoint endpoint, HttpHeader header, string body = "")
             => SendRequest<T>(endpoint, new[] { header }, body);
 
-        protected IObservable<T> SendRequest<T>(Endpoint endpoint, IEnumerable<HttpHeader> headers, string body = "")
+        protected async Task<T> SendRequest<T>(Endpoint endpoint, IEnumerable<HttpHeader> headers, string body = "")
         {
             var request = new Request(body, endpoint.Url, headers, endpoint.Method);
-            return sendRequest(request, headers)
-                .Select(response =>
-                    !string.IsNullOrEmpty(response.RawData)
-                        ? deserialize<T>(response.RawData, request, response)
-                        : default(T));
+            var response = await sendRequest(request, headers).ConfigureAwait(false);
+            return !string.IsNullOrEmpty(response.RawData)
+                ? deserialize<T>(response.RawData, request, response)
+                : default(T);
         }
 
         // Private methods
 
-        private IObservable<IResponse> sendRequest(IRequest request, IEnumerable<HttpHeader> headers)
+        private Task<IResponse> sendRequest(IRequest request, IEnumerable<HttpHeader> headers)
         {
-            return sendRequestAsync(request, headers).ToObservable()
-                .Catch<IResponse, HttpRequestException>(e => throw new OfflineException(e));
+            try
+            {
+                return sendRequestAsync(request, headers);
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new OfflineException(ex);
+            }
         }
 
         private async Task<IResponse> sendRequestAsync(IRequest request, IEnumerable<HttpHeader> headers)
         {
             var response = await apiClient.Send(request).ConfigureAwait(false);
-            await throwIfRequestFailed(request, response, headers);
+            await throwIfRequestFailed(request, response, headers).ConfigureAwait(false);
             return response;
         }
 
