@@ -1,12 +1,9 @@
-﻿using System;
-using System.Reactive;
-using System.Threading.Tasks;
-using Toggl.Shared;
+﻿using System.Threading.Tasks;
 
 namespace Toggl.Networking.ApiClients
 {
     public interface IStatusApi
     {
-        Task<Either<Unit, Exception>> IsAvailable();
+        Task IsAvailable();
     }
 }

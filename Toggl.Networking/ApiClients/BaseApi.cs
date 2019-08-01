@@ -86,11 +86,13 @@ namespace Toggl.Networking.ApiClients
 
         // Private methods
 
-        private Task<IResponse> sendRequest(IRequest request, IEnumerable<HttpHeader> headers)
+        private async Task<IResponse> sendRequest(IRequest request, IEnumerable<HttpHeader> headers)
         {
             try
             {
-                return sendRequestAsync(request, headers);
+                var response = await sendRequestAsync(request, headers)
+                    .ConfigureAwait(false);
+                return response;
             }
             catch (HttpRequestException ex)
             {
