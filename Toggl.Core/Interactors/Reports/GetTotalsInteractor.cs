@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Threading.Tasks;
 using Toggl.Networking.ApiClients.Interfaces;
 using Toggl.Shared;
 using Toggl.Shared.Models.Reports;
@@ -31,6 +32,6 @@ namespace Toggl.Core.Interactors.Reports
         }
 
         public IObservable<ITimeEntriesTotals> Execute()
-            => api.GetTotals(userId, workspaceId, startDate, endDate);
+            => api.GetTotals(userId, workspaceId, startDate, endDate).ToObservable();
     }
 }

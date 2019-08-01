@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using Toggl.Core.DataSources.Interfaces;
 using Toggl.Core.Extensions;
 using Toggl.Core.Models;
@@ -64,6 +65,7 @@ namespace Toggl.Core.Sync.States.Pull
             => projectsApi.Search(
                     workspaceId: projectsToFetch.Key,
                     projectIds: projectsToFetch.Select(p => p.Id).ToArray())
+                .ToObservable()
                 .Flatten()
                 .Select(Project.Clean)
                 .SelectMany(dataSource.Update)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using Toggl.Core.Analytics;
 using Toggl.Core.Models;
 using Toggl.Core.Reports;
@@ -60,6 +61,7 @@ namespace Toggl.Core.Interactors
         public IObservable<ProjectSummaryReport> Execute()
             => projectSummaryApi
                 .GetByWorkspace(workspaceId, startDate, endDate)
+                .ToObservable()
                 .SelectMany(response => summaryReportFromResponse(response, workspaceId));
 
         private IObservable<ProjectSummaryReport> summaryReportFromResponse(IProjectsSummary response, long workspaceId)
@@ -178,6 +180,7 @@ namespace Toggl.Core.Interactors
 
         private IObservable<List<IProject>> searchApi(long workspaceId, long[] projectIds)
             => projectsApi.Search(workspaceId, projectIds)
+                .ToObservable()
                 .Do(memoryCache.PersistInCache);
 
         private IObservable<long[]> projectsIdsNotInDatabase(long[] projectIds)

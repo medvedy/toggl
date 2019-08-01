@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Threading.Tasks;
 using Toggl.Core.Extensions;
 using Toggl.Networking;
 using Toggl.Shared.Extensions;
@@ -40,17 +41,17 @@ namespace Toggl.Core.Sync.States.Pull
         {
             var workspaces =
                 limiter.WaitForFreeSlot()
-                    .ThenExecute(() => Api.Workspaces.GetAll())
+                    .ThenExecute(() => Api.Workspaces.GetAll().ToObservable())
                     .ConnectedReplay();
 
             var user =
                 limiter.WaitForFreeSlot()
-                    .ThenExecute(() => Api.User.Get())
+                    .ThenExecute(() => Api.User.Get().ToObservable())
                     .ConnectedReplay();
 
             var features =
                 limiter.WaitForFreeSlot()
-                    .ThenExecute(() => Api.WorkspaceFeatures.GetAll())
+                    .ThenExecute(() => Api.WorkspaceFeatures.GetAll().ToObservable())
                     .ConnectedReplay();
 
             return (workspaces, user, features);
@@ -63,7 +64,7 @@ namespace Toggl.Core.Sync.States.Pull
         {
             var preferences =
                 workspaces.ThenExecute(limiter.WaitForFreeSlot)
-                    .ThenExecute(() => Api.Preferences.Get())
+                    .ThenExecute(() => Api.Preferences.Get().ToObservable())
                     .ConnectedReplay();
 
             var tags =

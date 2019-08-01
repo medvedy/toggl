@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
+using System.Threading.Tasks;
 using Toggl.Networking;
 using Toggl.Shared.Extensions;
 using Toggl.Shared.Models;
@@ -53,20 +55,21 @@ namespace Toggl.Core.Sync.States.Pull
 
         protected abstract IFetchObservables Fetch();
 
-        protected IObservable<List<ITimeEntry>> FetchTwoMonthsOfTimeEntries()
+        protected Task<List<ITimeEntry>> FetchTwoMonthsOfTimeEntries()
             => Api.TimeEntries.GetAll(
                 start: timeService.CurrentDateTime.AddMonths(-FetchTimeEntriesForMonths),
                 end: timeService.CurrentDateTime.AddDays(TimeEntriesEndDateInclusiveExtraDaysCount));
 
         protected IObservable<List<T>> FetchRecentIfPossible<T>(
-            Func<DateTimeOffset, IObservable<List<T>>> getAllSince,
-            Func<IObservable<List<T>>> getAll)
+            Func<DateTimeOffset, Task<List<T>>> getAllSince,
+            Func<Task<List<T>>> getAll)
             where T : ILastChangedDatable
         {
             var threshold = since.Get<T>();
-            return threshold.HasValue && IsWithinLimit(threshold.Value)
+            var task = threshold.HasValue && IsWithinLimit(threshold.Value)
                 ? getAllSince(threshold.Value)
                 : getAll();
+            return task.ToObservable();
         }
 
         protected bool IsWithinLimit(DateTimeOffset threshold)

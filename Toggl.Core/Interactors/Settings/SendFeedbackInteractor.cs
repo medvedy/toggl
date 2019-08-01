@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using Toggl.Core.DataSources.Interfaces;
 using Toggl.Core.Models.Interfaces;
 using Toggl.Networking.ApiClients;
@@ -116,7 +117,7 @@ namespace Toggl.Core.Interactors.Settings
                 combineData)
                 .SelectMany(data =>
                     userDataSource.Get().SelectMany(user =>
-                        feedbackApi.Send(user.Email, message, data)));
+                        feedbackApi.Send(user.Email, message, data).ToObservable()));
 
         private Dictionary<string, string> combineData(
             int workspaces,

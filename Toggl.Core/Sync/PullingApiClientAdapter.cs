@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Toggl.Networking.ApiClients;
 using Toggl.Shared;
 
@@ -17,7 +18,7 @@ namespace Toggl.Core.Sync
             this.pullingSingleApiClient = pullingSingleApiClient;
         }
 
-        public IObservable<List<T>> GetAll()
-            => pullingSingleApiClient.Get().Select(entity => new List<T> { entity });
+        public Task<List<T>> GetAll()
+            => pullingSingleApiClient.Get().ContinueWith(t => new List<T> { t.Result });
     }
 }

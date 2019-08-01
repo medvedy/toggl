@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using Toggl.Core.Analytics;
 using Toggl.Core.DataSources.Interfaces;
 using Toggl.Core.Extensions;
@@ -101,6 +102,6 @@ namespace Toggl.Core.Sync.States.Push
             => entity == null
                 ? Observable.Throw<TModel>(new ArgumentNullException(nameof(entity)))
                 : limiter.WaitForFreeSlot()
-                    .ThenExecute(() => api.Update(entity));
+                    .ThenExecute(() => api.Update(entity).ToObservable());
     }
 }

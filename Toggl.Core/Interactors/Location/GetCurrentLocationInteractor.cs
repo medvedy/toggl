@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Threading.Tasks;
 using Toggl.Networking;
 using Toggl.Shared;
 using Toggl.Shared.Models;
@@ -17,6 +18,6 @@ namespace Toggl.Core.Interactors.Location
         }
 
         public IObservable<ILocation> Execute()
-            => api.Location.Get();
+            => api.Location.Get().ToObservable();
     }
 }

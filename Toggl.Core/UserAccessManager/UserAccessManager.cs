@@ -2,6 +2,7 @@
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Reactive.Threading.Tasks;
 using Toggl.Core.Models;
 using Toggl.Core.Services;
 using Toggl.Networking;
@@ -91,7 +92,7 @@ namespace Toggl.Core.Login
                 throw new ArgumentException($"A valid {nameof(email)} must be provided when trying to reset forgotten password.");
 
             var api = apiFactory.Value.CreateApiWith(Credentials.None);
-            return api.User.ResetPassword(email);
+            return api.User.ResetPassword(email).ToObservable();
         }
 
         public bool CheckIfLoggedIn()
@@ -191,7 +192,8 @@ namespace Toggl.Core.Login
             return apiFactory.Value
                 .CreateApiWith(Credentials.None)
                 .User
-                .SignUp(email, password, termsAccepted, countryId, timezone);
+                .SignUp(email, password, termsAccepted, countryId, timezone)
+                .ToObservable();
         }
 
         private IObservable<Unit> signUpWithGoogle(string googleToken, bool termsAccepted, int countryId, string timezone)
@@ -199,6 +201,7 @@ namespace Toggl.Core.Login
             var api = apiFactory.Value.CreateApiWith(Credentials.None);
             return api.User
                 .SignUpWithGoogle(googleToken, termsAccepted, countryId, timezone)
+                .ToObservable()
                 .Select(User.Clean)
                 .SelectMany(database.Value.User.Create)
                 .Select(apiFromUser)
