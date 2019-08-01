@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Toggl.Core.Sync;
 using Toggl.Core.Sync.States;
 using Toggl.Core.Sync.States.PullTimeEntries;
+using Toggl.Core.Tests.TestExtensions;
 using Toggl.Networking;
 using Toggl.Shared.Models;
 using Toggl.Storage;
@@ -65,8 +66,9 @@ namespace Toggl.Core.Tests.Sync.States.PullTimeEntries
                 var delay = TimeSpan.FromSeconds(1);
                 rateLimiter.WaitForFreeSlot().Returns(Observable.Return(Unit.Default).Delay(delay, scheduler));
 
-                api.TimeEntries.GetAll(Arg.Any<DateTimeOffset>(), Arg.Any<DateTimeOffset>())
-                    .Returns(Observable.Return<List<ITimeEntry>>(null));
+                api.TimeEntries
+                    .GetAll(Arg.Any<DateTimeOffset>(), Arg.Any<DateTimeOffset>())
+                    .ReturnsTaskOf(null);
 
                 state.Start().Subscribe();
 
@@ -119,8 +121,9 @@ namespace Toggl.Core.Tests.Sync.States.PullTimeEntries
             [Fact, LogIfTooSlow]
             public void ReturnsReplayingApiCallObservables()
             {
-                api.TimeEntries.GetAll(Arg.Any<DateTimeOffset>(), Arg.Any<DateTimeOffset>())
-                    .Returns(Observable.Return<List<ITimeEntry>>(null));
+                api.TimeEntries
+                    .GetAll(Arg.Any<DateTimeOffset>(), Arg.Any<DateTimeOffset>())
+                    .ReturnsTaskOf(null);
 
                 var transition = (Transition<IFetchObservables>)state.Start().SingleAsync().Wait();
 

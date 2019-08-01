@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ using Toggl.Core.Models.Interfaces;
 using Toggl.Core.Sync.States;
 using Toggl.Core.Sync.States.Pull;
 using Toggl.Core.Tests.Mocks;
+using Toggl.Core.Tests.TestExtensions;
 using Toggl.Networking.ApiClients;
 using Toggl.Networking.Exceptions;
 using Toggl.Shared;
@@ -80,7 +82,7 @@ namespace Toggl.Core.Tests.Sync.States.Pull
             };
             setStoredProjects(project);
             api.Search(project.WorkspaceId, Arg.Is<long[]>(ids => ids.Contains(project.Id)))
-                .Returns(Observable.Return(new List<IProject> { project }));
+                .ReturnsTaskOf(new List<IProject> { project });
 
             var transition = await state.Start(fetch);
 
@@ -98,7 +100,7 @@ namespace Toggl.Core.Tests.Sync.States.Pull
             );
 
             api.Search(Arg.Any<long>(), Arg.Any<long[]>())
-                .Returns(Observable.Return(new List<IProject>()));
+                .ReturnsTaskOf(new List<IProject>());
 
             await state.Start(fetch);
 
@@ -119,7 +121,7 @@ namespace Toggl.Core.Tests.Sync.States.Pull
             };
             setStoredProjects(project);
             api.Search(project.WorkspaceId, Arg.Is<long[]>(ids => ids.Contains(project.Id)))
-                .Returns(Observable.Return(new List<IProject> { project }));
+                .ReturnsTaskOf(new List<IProject> { project });
 
             await state.Start(fetch);
 
@@ -141,7 +143,7 @@ namespace Toggl.Core.Tests.Sync.States.Pull
             };
             setStoredProjects(project);
             api.Search(project.WorkspaceId, Arg.Is<long[]>(ids => ids.Contains(project.Id)))
-                .Returns(Observable.Return(new List<IProject>()));
+                .ReturnsTaskOf(new List<IProject>());
 
             await state.Start(fetch);
 
@@ -163,12 +165,11 @@ namespace Toggl.Core.Tests.Sync.States.Pull
             );
 
             api.Search(1, Arg.Any<long[]>())
-                .Returns(Observable.Return(
-                    new List<IProject>
-                    {
-                        new MockProject { Id = 1, WorkspaceId = 1, At = now.AddHours(-1) },
-                        new MockProject { Id = 4, WorkspaceId = 1, At = now.AddHours(-2) },
-                    }));
+                .ReturnsTaskOf(new List<IProject>
+                {
+                    new MockProject { Id = 1, WorkspaceId = 1, At = now.AddHours(-1) },
+                    new MockProject { Id = 4, WorkspaceId = 1, At = now.AddHours(-2) },
+                });
 
             await state.Start(fetch);
 
@@ -197,8 +198,7 @@ namespace Toggl.Core.Tests.Sync.States.Pull
                     SyncStatus = SyncStatus.RefetchingNeeded,
                     At = now.AddHours(-35)
                 });
-            api.Search(1, Arg.Any<long[]>())
-                .Returns(Observable.Throw<List<IProject>>(new OfflineException(new Exception())));
+            api.Search(1, Arg.Any<long[]>()).Throws(new OfflineException(new Exception()));
 
             Action startingState = () => state.Start(fetch).SingleAsync().Wait();
 

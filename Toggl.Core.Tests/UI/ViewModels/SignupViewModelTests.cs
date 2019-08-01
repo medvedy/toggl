@@ -2,6 +2,7 @@
 using FsCheck;
 using Microsoft.Reactive.Testing;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using Toggl.Core.Analytics;
 using Toggl.Core.Exceptions;
 using Toggl.Core.Interactors;
 using Toggl.Core.Tests.Generators;
+using Toggl.Core.Tests.TestExtensions;
 using Toggl.Core.UI;
 using Toggl.Core.UI.Navigation;
 using Toggl.Core.UI.Parameters;
@@ -61,7 +63,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 Location.CountryCode.Returns("LV");
                 Location.CountryName.Returns("Latvia");
 
-                Api.Location.Get().Returns(Observable.Return(Location));
+                Api.Location.Get().ReturnsTaskOf(Location);
 
                 ApiFactory.CreateApiWith(Arg.Any<Credentials>()).Returns(Api);
 
@@ -183,7 +185,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var observer = TestScheduler.CreateObserver<string>();
                 ViewModel.CountryButtonTitle.Subscribe(observer);
 
-                Api.Location.Get().Returns(Observable.Throw<ILocation>(new Exception()));
+                Api.Location.Get().ReturnsThrowingTaskOf(new Exception());
 
                 await ViewModel.Initialize(DefaultParameters);
 
@@ -199,7 +201,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var observer = TestScheduler.CreateObserver<bool>();
                 ViewModel.IsCountryErrorVisible.Subscribe(observer);
 
-                Api.Location.Get().Returns(Observable.Throw<ILocation>(new Exception()));
+                Api.Location.Get().ReturnsThrowingTaskOf(new Exception());
 
                 await ViewModel.Initialize(DefaultParameters);
 
@@ -216,7 +218,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
             [Fact, LogIfTooSlow]
             public async Task NavigatesToSelectCountryViewModelPassingNullIfLocationApiFailed()
             {
-                Api.Location.Get().Returns(Observable.Throw<ILocation>(new Exception()));
+                Api.Location.Get().ReturnsThrowingTaskOf(new Exception());
                 await ViewModel.Initialize(DefaultParameters);
 
                 ViewModel.PickCountry.Execute();
@@ -270,7 +272,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var observer = TestScheduler.CreateObserver<bool>();
                 ViewModel.IsCountryErrorVisible.Subscribe(observer);
 
-                Api.Location.Get().Returns(Observable.Throw<ILocation>(new Exception()));
+                Api.Location.Get().ReturnsThrowingTaskOf(new Exception());
                 NavigationService
                     .Navigate<SelectCountryViewModel, long?, long?>(Arg.Any<long?>(), ViewModel.View)
                     .Returns(1);
@@ -632,7 +634,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
 
                 if (!countryIsSelected)
                 {
-                    Api.Location.Get().Returns(Observable.Throw<ILocation>(new Exception()));
+                    Api.Location.Get().ReturnsThrowingTaskOf(new Exception());
                 }
 
                 await ViewModel.Initialize(DefaultParameters);

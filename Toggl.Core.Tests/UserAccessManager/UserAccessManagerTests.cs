@@ -13,6 +13,7 @@ using Toggl.Core.Login;
 using Toggl.Core.Services;
 using Toggl.Core.Sync;
 using Toggl.Core.Tests.Generators;
+using Toggl.Core.Tests.TestExtensions;
 using Toggl.Networking;
 using Toggl.Networking.Exceptions;
 using Toggl.Networking.Network;
@@ -61,9 +62,9 @@ namespace Toggl.Core.Tests.Login
                     new Lazy<IPrivateSharedStorageService>(() => PrivateSharedStorageService)
                 );
 
-                Api.User.Get().Returns(Observable.Return(User));
-                Api.User.SignUp(Email, Password, TermsAccepted, CountryId, Timezone).Returns(Observable.Return(User));
-                Api.User.GetWithGoogle().Returns(Observable.Return(User));
+                Api.User.Get().ReturnsTaskOf(User);
+                Api.User.SignUp(Email, Password, TermsAccepted, CountryId, Timezone).ReturnsTaskOf(User);
+                Api.User.GetWithGoogle().ReturnsTaskOf(User);
                 ApiFactory.CreateApiWith(Arg.Any<Credentials>()).Returns(Api);
                 Database.Clear().Returns(Observable.Return(Unit.Default));
             }
@@ -182,7 +183,7 @@ namespace Toggl.Core.Tests.Login
             public void DoesNotRetryWhenTheApiThrowsSomethingOtherThanUserIsMissingApiTokenException()
             {
                 var serverErrorException = Substitute.For<ServerErrorException>(Substitute.For<IRequest>(), Substitute.For<IResponse>(), "Some Exception");
-                Api.User.Get().Returns(Observable.Throw<IUser>(serverErrorException));
+                Api.User.Get().ReturnsThrowingTaskOf(serverErrorException);
 
                 Action tryingToLoginWhenTheApiIsThrowingSomeRandomServerErrorException =
                     () => UserAccessManager.Login(Email, Password).Wait();
@@ -423,7 +424,8 @@ namespace Toggl.Core.Tests.Login
             public void DoesNotRetryWhenTheApiThrowsSomethingOtherThanUserIsMissingApiTokenException()
             {
                 var serverErrorException = Substitute.For<ServerErrorException>(Substitute.For<IRequest>(), Substitute.For<IResponse>(), "Some Exception");
-                Api.User.SignUp(Email, Password, TermsAccepted, CountryId, Timezone).Returns(Observable.Throw<IUser>(serverErrorException));
+                Api.User.SignUp(Email, Password, TermsAccepted, CountryId, Timezone)
+                    .ReturnsThrowingTaskOf(serverErrorException);
 
                 Action tryingToSignUpWhenTheApiIsThrowingSomeRandomServerErrorException =
                     () => UserAccessManager.SignUp(Email, Password, TermsAccepted, CountryId, Timezone).Wait();

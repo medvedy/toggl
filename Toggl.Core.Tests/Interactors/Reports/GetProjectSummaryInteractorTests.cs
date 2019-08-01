@@ -11,6 +11,7 @@ using Toggl.Core.Helper;
 using Toggl.Core.Interactors;
 using Toggl.Core.Reports;
 using Toggl.Core.Tests.Generators;
+using Toggl.Core.Tests.TestExtensions;
 using Toggl.Networking;
 using Toggl.Networking.ApiClients;
 using Toggl.Networking.Models.Reports;
@@ -96,7 +97,7 @@ namespace Toggl.Core.Tests.Interactors
             {
                 ProjectsSummaryApi
                     .GetByWorkspace(Arg.Any<long>(), Arg.Any<DateTimeOffset>(), Arg.Any<DateTimeOffset>())
-                    .Returns(Observable.Return(apiProjectsSummary));
+                    .ReturnsTaskOf(apiProjectsSummary);
             }
 
             [Property]
@@ -301,7 +302,7 @@ namespace Toggl.Core.Tests.Interactors
 
                 ProjectsApi
                     .Search(Arg.Any<long>(), Arg.Any<long[]>())
-                    .Returns(Observable.Return(projects));
+                    .ReturnsTaskOf(projects);
             }
 
             private bool ensureExpectedIdsAreReturned(long[] actual, long[] expected)

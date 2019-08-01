@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Toggl.Core.Sync;
 using Toggl.Core.Sync.States;
 using Toggl.Core.Sync.States.Pull;
+using Toggl.Core.Tests.TestExtensions;
 using Toggl.Networking;
 using Toggl.Shared.Models;
 using Toggl.Storage;
@@ -73,16 +74,16 @@ namespace Toggl.Core.Tests.Sync.States.Pull
                 var delay = TimeSpan.FromSeconds(1);
                 rateLimiter.WaitForFreeSlot().Returns(Observable.Return(Unit.Default).Delay(delay, scheduler));
 
-                api.Workspaces.GetAll().Returns(Observable.Return<List<IWorkspace>>(null));
-                api.WorkspaceFeatures.GetAll().Returns(Observable.Return<List<IWorkspaceFeatureCollection>>(null));
-                api.User.Get().Returns(Observable.Return<IUser>(null));
-                api.Clients.GetAll().Returns(Observable.Return<List<IClient>>(null));
-                api.Projects.GetAll().Returns(Observable.Return<List<IProject>>(null));
+                api.Workspaces.GetAll().ReturnsTaskOf(null);
+                api.WorkspaceFeatures.GetAll().ReturnsTaskOf(null);
+                api.User.Get().ReturnsTaskOf(null);
+                api.Clients.GetAll().ReturnsTaskOf(null);
+                api.Projects.GetAll().ReturnsTaskOf(null);
                 api.TimeEntries.GetAll(Arg.Any<DateTimeOffset>(), Arg.Any<DateTimeOffset>())
-                    .Returns(Observable.Return<List<ITimeEntry>>(null));
-                api.Tasks.GetAll().Returns(Observable.Return<List<ITask>>(null));
-                api.Tags.GetAll().Returns(Observable.Return<List<ITag>>(null));
-                api.Preferences.Get().Returns(Observable.Return<IPreferences>(null));
+                    .ReturnsTaskOf(null);
+                api.Tasks.GetAll().ReturnsTaskOf(null);
+                api.Tags.GetAll().ReturnsTaskOf(null);
+                api.Preferences.Get().ReturnsTaskOf(null);
 
                 state.Start().Subscribe();
 
@@ -192,16 +193,15 @@ namespace Toggl.Core.Tests.Sync.States.Pull
             [Fact, LogIfTooSlow]
             public void ReturnsReplayingApiCallObservables()
             {
-                api.Workspaces.GetAll().Returns(Observable.Return<List<IWorkspace>>(null));
-                api.WorkspaceFeatures.GetAll().Returns(Observable.Return<List<IWorkspaceFeatureCollection>>(null));
-                api.User.Get().Returns(Observable.Return<IUser>(null));
-                api.Clients.GetAll().Returns(Observable.Return<List<IClient>>(null));
-                api.Projects.GetAll().Returns(Observable.Return<List<IProject>>(null));
-                api.TimeEntries.GetAll(Arg.Any<DateTimeOffset>(), Arg.Any<DateTimeOffset>())
-                    .Returns(Observable.Return<List<ITimeEntry>>(null));
-                api.Tasks.GetAll().Returns(Observable.Return<List<ITask>>(null));
-                api.Tags.GetAll().Returns(Observable.Return<List<ITag>>(null));
-                api.Preferences.Get().Returns(Observable.Return<IPreferences>(null));
+                api.Workspaces.GetAll().ReturnsTaskOf(null);
+                api.WorkspaceFeatures.GetAll().ReturnsTaskOf(null);
+                api.User.Get().ReturnsTaskOf(null);
+                api.Clients.GetAll().ReturnsTaskOf(null);
+                api.Projects.GetAll().ReturnsTaskOf(null);
+                api.TimeEntries.GetAll(Arg.Any<DateTimeOffset>(), Arg.Any<DateTimeOffset>()).ReturnsTaskOf(null);
+                api.Tasks.GetAll().ReturnsTaskOf(null);
+                api.Tags.GetAll().ReturnsTaskOf(null);
+                api.Preferences.Get().ReturnsTaskOf(null);
 
                 var transition = (Transition<IFetchObservables>)state.Start().SingleAsync().Wait();
 

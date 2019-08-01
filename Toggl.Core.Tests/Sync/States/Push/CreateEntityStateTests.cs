@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.Reactive.Testing;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using System;
 using System.Collections.Generic;
 using System.Reactive;
@@ -11,6 +12,7 @@ using Toggl.Core.Extensions;
 using Toggl.Core.Sync;
 using Toggl.Core.Sync.States.Push;
 using Toggl.Core.Tests.Sync.States.Push.BaseStates;
+using Toggl.Core.Tests.TestExtensions;
 using Toggl.Networking.ApiClients;
 using Toggl.Shared;
 using Toggl.Storage;
@@ -49,8 +51,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var state = (CreateEntityState<ITestModel, IDatabaseTestModel, IThreadSafeTestModel>)CreateState();
             var entity = new TestModel(-1, SyncStatus.SyncFailed);
             var withPositiveId = new TestModel(13, SyncStatus.InSync);
-            api.Create(Arg.Any<ITestModel>())
-                .Returns(Observable.Return(withPositiveId));
+            api.Create(Arg.Any<ITestModel>()).ReturnsTaskOf(withPositiveId);
             dataSource.OverwriteIfOriginalDidNotChange(
                 Arg.Any<IThreadSafeTestModel>(),
                 Arg.Any<IThreadSafeTestModel>())
@@ -58,7 +59,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
                 {
                     new UpdateResult<IThreadSafeTestModel>(entity.Id, entityWithId((IThreadSafeTestModel)x[1], entity.Id))
                 }));
-            dataSource.ChangeId(entity.Id, withPositiveId.Id).Returns(Observable.Return(withPositiveId));
+            dataSource.ChangeId(entity.Id, withPositiveId.Id).ReturnsObservableOf(withPositiveId);
 
             var transition = state.Start(entity).SingleAsync().Wait();
             var persistedEntity = ((Transition<IThreadSafeTestModel>)transition).Parameter;
@@ -100,7 +101,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var entity = new TestModel(-1, SyncStatus.SyncFailed);
             var withPositiveId = new TestModel(Math.Abs(entity.Id), SyncStatus.InSync);
             api.Create(entity)
-                .Returns(Observable.Return(withPositiveId));
+                .ReturnsTaskOf(withPositiveId);
 
             state.Start(entity).SingleAsync().Wait();
 
@@ -118,7 +119,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var entity = new TestModel(-1, SyncStatus.SyncFailed);
             var withPositiveId = new TestModel(Math.Abs(entity.Id), SyncStatus.InSync);
             api.Create(entity)
-                .Returns(Observable.Return(withPositiveId));
+                .ReturnsTaskOf(withPositiveId);
 
             state.Start(entity).SingleAsync().Wait();
 
@@ -133,8 +134,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var state = (CreateEntityState<ITestModel, IDatabaseTestModel, IThreadSafeTestModel>)CreateState();
             var at = new DateTimeOffset(2017, 9, 1, 12, 34, 56, TimeSpan.Zero);
             var entity = new TestModel { Id = 1, At = at, SyncStatus = SyncStatus.SyncNeeded };
-            api.Create(Arg.Any<ITestModel>())
-                .Returns(Observable.Return(entity));
+            api.Create(Arg.Any<ITestModel>()).ReturnsTaskOf(entity);
             dataSource
                 .OverwriteIfOriginalDidNotChange(Arg.Any<IThreadSafeTestModel>(), Arg.Any<IThreadSafeTestModel>())
                 .Returns(Observable.Return(new[] { new IgnoreResult<IThreadSafeTestModel>(entity.Id) }));
@@ -155,7 +155,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var entity = new TestModel { Id = -1, At = at, SyncStatus = SyncStatus.SyncNeeded };
             var updatedEntity = new TestModel { Id = 13, At = at, SyncStatus = SyncStatus.SyncNeeded };
             api.Create(Arg.Any<ITestModel>())
-                .Returns(Observable.Return(updatedEntity));
+                .ReturnsTaskOf(updatedEntity);
             dataSource
                 .OverwriteIfOriginalDidNotChange(Arg.Any<IThreadSafeTestModel>(), Arg.Any<IThreadSafeTestModel>())
                 .Returns(Observable.Return(new[] { new IgnoreResult<IThreadSafeTestModel>(entity.Id) }));
@@ -174,7 +174,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var entity = new TestModel(-1, SyncStatus.SyncFailed);
             var withPositiveId = new TestModel(Math.Abs(entity.Id), SyncStatus.InSync);
             api.Create(Arg.Any<ITestModel>())
-               .Returns(Observable.Return(withPositiveId));
+               .ReturnsTaskOf(withPositiveId);
             dataSource.OverwriteIfOriginalDidNotChange(Arg.Any<IThreadSafeTestModel>(), Arg.Any<IThreadSafeTestModel>())
                       .Returns(x => Observable.Return(new[] { new UpdateResult<IThreadSafeTestModel>(entity.Id, (IThreadSafeTestModel)x[1]) }));
 
@@ -193,7 +193,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var entity = new TestModel(-1, SyncStatus.SyncFailed);
             var withPositiveId = new TestModel(Math.Abs(entity.Id), SyncStatus.InSync);
             api.Create(Arg.Any<ITestModel>())
-               .Returns(Observable.Return(withPositiveId));
+               .ReturnsTaskOf(withPositiveId);
             dataSource.OverwriteIfOriginalDidNotChange(Arg.Any<IThreadSafeTestModel>(), Arg.Any<IThreadSafeTestModel>())
                       .Returns(x => Observable.Return(new[] { new UpdateResult<IThreadSafeTestModel>(entity.Id, (IThreadSafeTestModel)x[1]) }));
 
@@ -238,8 +238,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
 
         protected override void PrepareApiCallFunctionToThrow(Exception e)
         {
-            api.Create(Arg.Any<ITestModel>())
-                .Returns(_ => Observable.Throw<ITestModel>(e));
+            api.Create(Arg.Any<ITestModel>()).Throws(e);
         }
 
         protected override void PrepareDatabaseOperationToThrow(Exception e)

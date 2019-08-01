@@ -12,6 +12,7 @@ using Toggl.Core.Sync;
 using Toggl.Core.Sync.States.Push;
 using Toggl.Core.Tests.Helpers;
 using Toggl.Core.Tests.Sync.States.Push.BaseStates;
+using Toggl.Core.Tests.TestExtensions;
 using Toggl.Networking.ApiClients;
 using Toggl.Networking.Exceptions;
 using Toggl.Shared;
@@ -56,8 +57,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
         {
             var state = (UpdateEntityState<ITestModel, IThreadSafeTestModel>)CreateState();
             var entity = new TestModel(1, SyncStatus.InSync);
-            api.Update(Arg.Any<ITestModel>())
-                .Returns(_ => Observable.Throw<ITestModel>(exception));
+            api.Update(Arg.Any<ITestModel>()).ReturnsThrowingTaskOf(exception);
 
             var transition = state.Start(entity).SingleAsync().Wait();
             var parameter = ((Transition<ServerErrorException>)transition).Parameter;
@@ -72,8 +72,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
         {
             var state = (UpdateEntityState<ITestModel, IThreadSafeTestModel>)CreateState();
             var entity = new TestModel(1, SyncStatus.InSync);
-            api.Update(Arg.Any<ITestModel>())
-                .Returns(_ => Observable.Throw<ITestModel>(exception));
+            api.Update(Arg.Any<ITestModel>()).ReturnsThrowingTaskOf(exception);
 
             var transition = state.Start(entity).SingleAsync().Wait();
             var parameter = ((Transition<(Exception Reason, IThreadSafeTestModel)>)transition).Parameter;
@@ -87,8 +86,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
         {
             var state = (UpdateEntityState<ITestModel, IThreadSafeTestModel>)CreateState();
             var entity = new TestModel(1, SyncStatus.InSync);
-            api.Update(Arg.Any<ITestModel>())
-                .Returns(_ => Observable.Throw<ITestModel>(new TestException()));
+            api.Update(Arg.Any<ITestModel>()).ReturnsThrowingTaskOf(new TestException());
 
             var transition = state.Start(entity).SingleAsync().Wait();
             var parameter = ((Transition<Exception>)transition).Parameter;
@@ -118,8 +116,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
         {
             var state = (UpdateEntityState<ITestModel, IThreadSafeTestModel>)CreateState();
             var entity = new TestModel(1, SyncStatus.InSync);
-            api.Update(entity)
-                .Returns(Observable.Return(Substitute.For<ITestModel>()));
+            api.Update(entity).ReturnsTaskOf(Substitute.For<ITestModel>());
             dataSource
                 .OverwriteIfOriginalDidNotChange(Arg.Any<IThreadSafeTestModel>(), Arg.Any<IThreadSafeTestModel>())
                 .Returns(Observable.Return(new[] { new UpdateResult<IThreadSafeTestModel>(entity.Id, entity) }));
@@ -152,8 +149,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var state = (UpdateEntityState<ITestModel, IThreadSafeTestModel>)CreateState();
             var at = new DateTimeOffset(2017, 9, 1, 12, 34, 56, TimeSpan.Zero);
             var entity = new TestModel { Id = 1, At = at, SyncStatus = SyncStatus.SyncNeeded };
-            api.Update(Arg.Any<ITestModel>())
-                .Returns(Observable.Return(entity));
+            api.Update(Arg.Any<ITestModel>()).ReturnsTaskOf(entity);
             dataSource
                 .OverwriteIfOriginalDidNotChange(Arg.Any<IThreadSafeTestModel>(), Arg.Any<IThreadSafeTestModel>())
                 .Returns(Observable.Return(new[] { new IgnoreResult<IThreadSafeTestModel>(entity.Id) }));
@@ -174,8 +170,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var serverEntity = new TestModel { Id = 2, At = at, SyncStatus = SyncStatus.SyncNeeded };
             var localEntity = new TestModel { Id = 3, At = at, SyncStatus = SyncStatus.SyncNeeded };
             var updatedEntity = new TestModel { Id = 4, At = at, SyncStatus = SyncStatus.SyncNeeded };
-            api.Update(entity)
-                .Returns(Observable.Return(serverEntity));
+            api.Update(entity).ReturnsTaskOf(serverEntity);
             dataSource
                 .GetById(entity.Id)
                 .Returns(Observable.Return(localEntity));
@@ -202,8 +197,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var serverEntity = new TestModel { Id = 2, At = at, SyncStatus = SyncStatus.SyncNeeded };
             var localEntity = new TestModel { Id = 3, At = at, SyncStatus = SyncStatus.SyncNeeded };
             var updatedEntity = new TestModel { Id = 4, At = at, SyncStatus = SyncStatus.SyncNeeded };
-            api.Update(entity)
-                .Returns(Observable.Return(serverEntity));
+            api.Update(entity).ReturnsTaskOf(serverEntity);
             dataSource
                 .GetById(entity.Id)
                 .Returns(Observable.Return(localEntity));
@@ -227,8 +221,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var serverEntity = new TestModel { Id = 2, At = at, SyncStatus = SyncStatus.SyncNeeded };
             var localEntity = new TestModel { Id = 3, At = at, SyncStatus = SyncStatus.SyncNeeded };
             var updatedEntity = new TestModel { Id = 4, At = at, SyncStatus = SyncStatus.SyncNeeded };
-            api.Update(entity)
-                .Returns(Observable.Return(serverEntity));
+            api.Update(entity).ReturnsTaskOf(serverEntity);
             dataSource
                 .GetById(entity.Id)
                 .Returns(Observable.Return(localEntity));
@@ -249,8 +242,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var at = new DateTimeOffset(2017, 9, 1, 12, 34, 56, TimeSpan.Zero);
             var entity = new TestModel { Id = 1, At = at, SyncStatus = SyncStatus.SyncNeeded };
             var serverEntity = new TestModel { Id = 2, At = at, SyncStatus = SyncStatus.SyncNeeded };
-            api.Update(entity)
-               .Returns(Observable.Return(serverEntity));
+            api.Update(entity).ReturnsTaskOf(serverEntity);
             PrepareApiCallFunctionToThrow(exception);
 
             state.Start(entity).Wait();
@@ -281,8 +273,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
 
         protected override void PrepareApiCallFunctionToThrow(Exception e)
         {
-            api.Update(Arg.Any<ITestModel>())
-                .Returns(_ => Observable.Throw<ITestModel>(e));
+            api.Update(Arg.Any<ITestModel>()).ReturnsThrowingTaskOf(e);
         }
 
         protected override void PrepareDatabaseOperationToThrow(Exception e)

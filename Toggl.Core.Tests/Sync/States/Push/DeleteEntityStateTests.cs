@@ -1,15 +1,18 @@
 ﻿using FluentAssertions;
 using Microsoft.Reactive.Testing;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using System;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Toggl.Core.Analytics;
 using Toggl.Core.DataSources.Interfaces;
 using Toggl.Core.Extensions;
 using Toggl.Core.Sync;
 using Toggl.Core.Sync.States.Push;
 using Toggl.Core.Tests.Sync.States.Push.BaseStates;
+using Toggl.Core.Tests.TestExtensions;
 using Toggl.Networking.ApiClients.Interfaces;
 using Toggl.Shared;
 using Toggl.Storage;
@@ -42,9 +45,8 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var state = (DeleteEntityState<ITestModel, IDatabaseTestModel, IThreadSafeTestModel>)CreateState();
             var dirtyEntity = new TestModel(-1, SyncStatus.SyncNeeded);
             api.Delete(Arg.Any<ITestModel>())
-                .Returns(Observable.Return(Unit.Default));
-            dataSource.Delete(Arg.Any<long>())
-                .Returns(Observable.Return(Unit.Default));
+                .Returns(Task.CompletedTask);
+            dataSource.Delete(Arg.Any<long>()).ReturnsObservableOf(Unit.Default);
 
             var transition = state.Start(dirtyEntity).SingleAsync().Wait();
 
@@ -57,7 +59,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var state = CreateState();
             var dirtyEntity = new TestModel(-1, SyncStatus.SyncNeeded);
             api.Delete(dirtyEntity)
-                .Returns(Observable.Return(Unit.Default));
+                .Returns(Task.CompletedTask);
 
             state.Start(dirtyEntity).SingleAsync().Wait();
 
@@ -86,8 +88,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
         {
             var state = CreateState();
             var dirtyEntity = new TestModel(-1, SyncStatus.SyncNeeded);
-            api.Delete(Arg.Any<ITestModel>())
-                .Returns(_ => Observable.Throw<Unit>(new TestException()));
+            api.Delete(Arg.Any<ITestModel>()).Throws(new TestException());
 
             state.Start(dirtyEntity).SingleAsync().Wait();
 
@@ -104,7 +105,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
                 .Returns(_ =>
                 {
                     calledDelete = true;
-                    return Observable.Return(Unit.Default);
+                    return Task.CompletedTask;
                 });
 
             state.Start(dirtyEntity).SingleAsync().Wait();
@@ -118,7 +119,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var state = CreateState();
             var entity = new TestModel(-1, SyncStatus.SyncFailed);
             api.Delete(entity)
-                .Returns(Observable.Return(Unit.Default));
+                .Returns(Task.CompletedTask);
 
             state.Start(entity).Wait();
 
@@ -133,7 +134,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var state = CreateState();
             var entity = new TestModel(-1, SyncStatus.SyncFailed);
             api.Delete(entity)
-                .Returns(Observable.Return(Unit.Default));
+                .Returns(Task.CompletedTask);
 
             state.Start(entity).Wait();
 
@@ -147,7 +148,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
             var state = CreateState();
             var entity = new TestModel(-1, SyncStatus.SyncFailed);
             api.Delete(entity)
-                .Returns(Observable.Return(Unit.Default));
+                .Returns(Task.CompletedTask);
             PrepareApiCallFunctionToThrow(exception);
 
             state.Start(entity).Wait();
@@ -178,8 +179,7 @@ namespace Toggl.Core.Tests.Sync.States.Push
 
         protected override void PrepareApiCallFunctionToThrow(Exception e)
         {
-            api.Delete(Arg.Any<ITestModel>())
-                .Returns(_ => Observable.Throw<Unit>(e));
+            api.Delete(Arg.Any<ITestModel>()).Throws(e);
         }
 
         protected override void PrepareDatabaseOperationToThrow(Exception e)

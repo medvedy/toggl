@@ -1,7 +1,13 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Collections;
+using NSubstitute;
+using NSubstitute.Core;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace Toggl.Core.Tests.TestExtensions
 {
@@ -17,5 +23,17 @@ namespace Toggl.Core.Tests.TestExtensions
         {
             return collectionAssertions.BeEquivalentTo(expectation, options => options.WithStrictOrdering(), because, becauseArgs);
         }
+
+        public static ConfiguredCall ReturnsTaskOf<T>(this Task<T> value, T returnThis, params T[] returnThese)
+            => value.Returns(Task.FromResult(returnThis), returnThese.Select(Task.FromResult).ToArray());
+
+        public static ConfiguredCall ReturnsThrowingTaskOf<T>(this Task<T> value, Exception exception)
+            => value.Returns(Task.FromException<T>(exception));
+
+        public static ConfiguredCall ReturnsObservableOf<T>(this IObservable<T> value, T returnThis, params T[] returnThese)
+            => value.Returns(Observable.Return(returnThis), returnThese.Select(Observable.Return).ToArray());
+
+        public static ConfiguredCall ReturnsObservableOf<T>(this IObservable<T> value, Exception exception)
+            => value.Returns(Observable.Throw<T>(exception));
     }
 }
