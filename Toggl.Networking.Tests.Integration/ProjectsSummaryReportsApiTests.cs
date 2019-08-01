@@ -157,13 +157,13 @@ namespace Toggl.Networking.Tests.Integration
                     ProjectId = projectId
                 });
 
-            protected override IObservable<IProjectsSummary> CallEndpointWith(ITogglApi togglApi)
+            protected override async Task<IProjectsSummary> CallEndpointWith(ITogglApi togglApi)
             {
                 var start = new DateTimeOffset(2017, 01, 10, 11, 22, 33, TimeSpan.Zero);
                 var end = start.AddMonths(5);
-                return ValidApi.User.Get()
-                    .SelectMany(user =>
-                        togglApi.ProjectsSummary.GetByWorkspace(user.DefaultWorkspaceId.Value, start, end));
+                var user = await ValidApi.User.Get();
+                return await togglApi.ProjectsSummary
+                    .GetByWorkspace(user.DefaultWorkspaceId.Value, start, end);
             }
         }
     }

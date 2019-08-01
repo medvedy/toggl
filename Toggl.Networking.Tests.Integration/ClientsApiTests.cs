@@ -18,7 +18,7 @@ namespace Toggl.Networking.Tests.Integration
 
         public sealed class TheGetAllMethod : AuthenticatedGetAllEndpointBaseTests<IClient>
         {
-            protected override IObservable<List<IClient>> CallEndpointWith(ITogglApi togglApi)
+            protected override Task<List<IClient>> CallEndpointWith(ITogglApi togglApi)
                 => togglApi.Clients.GetAll();
 
             [Fact, LogTestInfo]
@@ -41,7 +41,7 @@ namespace Toggl.Networking.Tests.Integration
 
         public sealed class TheGetAllSinceMethod : AuthenticatedGetSinceEndpointBaseTests<IClient>
         {
-            protected override IObservable<List<IClient>> CallEndpointWith(ITogglApi togglApi, DateTimeOffset threshold)
+            protected override Task<List<IClient>> CallEndpointWith(ITogglApi togglApi, DateTimeOffset threshold)
                 => togglApi.Clients.GetAllSince(threshold);
 
             protected override DateTimeOffset AtDateOf(IClient model) => model.At;
@@ -49,7 +49,7 @@ namespace Toggl.Networking.Tests.Integration
             protected override IClient MakeUniqueModel(ITogglApi api, IUser user)
                 => new Client { Name = Guid.NewGuid().ToString(), WorkspaceId = user.DefaultWorkspaceId.Value };
 
-            protected override IObservable<IClient> PostModelToApi(ITogglApi api, IClient model)
+            protected override Task<IClient> PostModelToApi(ITogglApi api, IClient model)
                 => api.Clients.Create(model);
 
             protected override Expression<Func<IClient, bool>> ModelWithSameAttributesAs(IClient model)
@@ -58,15 +58,14 @@ namespace Toggl.Networking.Tests.Integration
 
         public sealed class TheCreateMethod : AuthenticatedPostEndpointBaseTests<IClient>
         {
-            protected override IObservable<IClient> CallEndpointWith(ITogglApi togglApi)
-                => Observable.Defer(async () =>
-                {
-                    var user = await togglApi.User.Get();
-                    var client = new Client { Name = Guid.NewGuid().ToString(), WorkspaceId = user.DefaultWorkspaceId.Value };
-                    return CallEndpointWith(togglApi, client);
-                });
+            protected override async Task<IClient> CallEndpointWith(ITogglApi togglApi)
+            { 
+                var user = await togglApi.User.Get();
+                var client = new Client { Name = Guid.NewGuid().ToString(), WorkspaceId = user.DefaultWorkspaceId.Value };
+                return await CallEndpointWith(togglApi, client);
+            }
 
-            private IObservable<IClient> CallEndpointWith(ITogglApi togglApi, IClient client)
+            private Task<IClient> CallEndpointWith(ITogglApi togglApi, IClient client)
                 => togglApi.Clients.Create(client);
 
             [Fact, LogTestInfo]

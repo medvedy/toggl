@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace Toggl.Networking.Tests.Integration.BaseTests
 {
     public abstract class AuthenticatedDeleteEndpointBaseTests<T> : AuthenticatedEndpointBaseTests<T>
     {
-        protected sealed override IObservable<T> CallEndpointWith(ITogglApi togglApi)
-            => Observable.Defer(async () =>
-            {
-                var entity = await Initialize(ValidApi);
-                await Delete(togglApi, entity);
-                return Observable.Return<T>(default(T));
-            });
+        protected sealed override async Task<T> CallEndpointWith(ITogglApi togglApi)
+        {
+            var entity = await Initialize(ValidApi);
+            await Delete(togglApi, entity);
+            return default;
+        }
 
-        protected abstract IObservable<T> Initialize(ITogglApi api);
-        protected abstract IObservable<Unit> Delete(ITogglApi api, T entity);
+        protected abstract Task<T> Initialize(ITogglApi api);
+        protected abstract Task Delete(ITogglApi api, T entity);
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Toggl.Networking.Exceptions;
 using Toggl.Networking.Models;
 using Toggl.Networking.Tests.Integration.BaseTests;
@@ -18,7 +19,7 @@ namespace Toggl.Networking.Tests.Integration
     {
         public sealed class TheGetMethod : AuthenticatedEndpointBaseTests<List<IWorkspace>>
         {
-            protected override IObservable<List<IWorkspace>> CallEndpointWith(ITogglApi togglApi)
+            protected override Task<List<IWorkspace>> CallEndpointWith(ITogglApi togglApi)
                 => togglApi.Workspaces.GetAll();
 
             [Fact, LogTestInfo]
@@ -60,17 +61,16 @@ namespace Toggl.Networking.Tests.Integration
 
         public sealed class TheGetByIdMethod : AuthenticatedGetEndpointBaseTests<IWorkspace>
         {
-            protected override IObservable<IWorkspace> CallEndpointWith(ITogglApi togglApi)
-                => Observable.Defer(async () =>
-                {
-                    var user = await togglApi.User.Get();
-                    return CallEndpointWith(togglApi, user.DefaultWorkspaceId.Value);
-                });
+            protected override async Task<IWorkspace> CallEndpointWith(ITogglApi togglApi)
+            {
+                var user = await togglApi.User.Get();
+                return await CallEndpointWith(togglApi, user.DefaultWorkspaceId.Value);
+            }
 
             private Func<Task> CallingEndpointWith(ITogglApi togglApi, long id)
                 => async () => await CallEndpointWith(togglApi, id);
 
-            private IObservable<IWorkspace> CallEndpointWith(ITogglApi togglApi, long id)
+            private Task<IWorkspace> CallEndpointWith(ITogglApi togglApi, long id)
                 => togglApi.Workspaces.GetById(id);
 
             [Fact, LogTestInfo]
@@ -106,7 +106,7 @@ namespace Toggl.Networking.Tests.Integration
 
         public sealed class TheCreateMethod : AuthenticatedPostEndpointBaseTests<IWorkspace>
         {
-            protected override IObservable<IWorkspace> CallEndpointWith(ITogglApi togglApi)
+            protected override Task<IWorkspace> CallEndpointWith(ITogglApi togglApi)
                 => togglApi.Workspaces.Create(new Workspace { Name = Guid.NewGuid().ToString() });
 
             [Fact, LogTestInfo]
@@ -127,9 +127,8 @@ namespace Toggl.Networking.Tests.Integration
                 var name = Guid.NewGuid().ToString();
 
                 var workspace = await api.Workspaces.Create(new Workspace { Name = name });
-                var features = await api.WorkspaceFeatures.GetAll()
-                    .SelectMany(all => all.Where(workspaceFeatures => workspaceFeatures.WorkspaceId == workspace.Id))
-                    .SingleAsync();
+                var features = (await api.WorkspaceFeatures.GetAll())
+                    .Single(workspaceFeatures => workspaceFeatures.WorkspaceId == workspace.Id);
 
                 features.Features.Should().Contain(feature =>
                     feature.FeatureId == WorkspaceFeatureId.Pro && feature.Enabled == false);

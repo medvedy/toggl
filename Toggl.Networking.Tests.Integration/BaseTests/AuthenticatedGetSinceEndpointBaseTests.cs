@@ -14,16 +14,16 @@ namespace Toggl.Networking.Tests.Integration.BaseTests
     public abstract class AuthenticatedGetSinceEndpointBaseTests<T>
         : AuthenticatedEndpointBaseTests<List<T>>
     {
-        protected override IObservable<List<T>> CallEndpointWith(ITogglApi togglApi)
+        protected override Task<List<T>> CallEndpointWith(ITogglApi togglApi)
             => CallEndpointWith(togglApi, DateTimeOffset.Now);
 
-        protected abstract IObservable<List<T>> CallEndpointWith(ITogglApi togglApi, DateTimeOffset threshold);
+        protected abstract Task<List<T>> CallEndpointWith(ITogglApi togglApi, DateTimeOffset threshold);
 
         protected abstract DateTimeOffset AtDateOf(T model);
 
         protected abstract T MakeUniqueModel(ITogglApi api, IUser user);
 
-        protected abstract IObservable<T> PostModelToApi(ITogglApi api, T model);
+        protected abstract Task<T> PostModelToApi(ITogglApi api, T model);
 
         protected abstract Expression<Func<T, bool>> ModelWithSameAttributesAs(T model);
 

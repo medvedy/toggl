@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Toggl.Networking.Exceptions;
 using Toggl.Networking.Models;
 using Toggl.Networking.Tests.Integration.BaseTests;
@@ -30,7 +31,7 @@ namespace Toggl.Networking.Tests.Integration
 
         public sealed class TheGetMethod : AuthenticatedEndpointBaseTests<IPreferences>
         {
-            protected override IObservable<IPreferences> CallEndpointWith(ITogglApi togglApi)
+            protected override Task<IPreferences> CallEndpointWith(ITogglApi togglApi)
                 => togglApi.Preferences.Get();
 
             [Fact, LogTestInfo]
@@ -66,16 +67,16 @@ namespace Toggl.Networking.Tests.Integration
 
         public sealed class TheUpdateMethod : AuthenticatedPutEndpointBaseTests<IPreferences>
         {
-            protected override IObservable<IPreferences> PrepareForCallingUpdateEndpoint(ITogglApi api)
+            protected override Task<IPreferences> PrepareForCallingUpdateEndpoint(ITogglApi api)
                 => api.Preferences.Get();
 
-            protected override IObservable<IPreferences> CallUpdateEndpoint(ITogglApi api, IPreferences entityToUpdate)
+            protected override async Task<IPreferences> CallUpdateEndpoint(ITogglApi api, IPreferences entityToUpdate)
             {
                 var entityWithUpdates = new Preferences(entityToUpdate);
                 entityWithUpdates.CollapseTimeEntries = !entityWithUpdates.CollapseTimeEntries;
 
-                return api.Preferences.Update(entityWithUpdates)
-                    .SelectMany(_ => api.Preferences.Get());
+                await api.Preferences.Update(entityWithUpdates);
+                return await api.Preferences.Get();
             }
 
             [Theory, LogTestInfo]

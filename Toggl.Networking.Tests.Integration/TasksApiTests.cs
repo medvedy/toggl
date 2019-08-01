@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Toggl.Networking.Exceptions;
 using Toggl.Networking.Helpers;
 using Toggl.Networking.Models;
@@ -10,6 +11,7 @@ using Toggl.Networking.Tests.Integration.BaseTests;
 using Toggl.Networking.Tests.Integration.Helper;
 using Toggl.Shared.Models;
 using Xunit;
+using TogglTask = Toggl.Networking.Models.Task;
 
 namespace Toggl.Networking.Tests.Integration
 {
@@ -19,7 +21,7 @@ namespace Toggl.Networking.Tests.Integration
         {
             private readonly SubscriptionPlanActivator plans = new SubscriptionPlanActivator();
 
-            protected override IObservable<List<ITask>> CallEndpointWith(ITogglApi togglApi)
+            protected override Task<List<ITask>> CallEndpointWith(ITogglApi togglApi)
             {
                 plans.EnsureDefaultWorkspaceIsOnPlan(togglApi, PricingPlans.StarterMonthly).Wait();
                 return togglApi.Tasks.GetAll();
@@ -81,7 +83,7 @@ namespace Toggl.Networking.Tests.Integration
 
             private IProject project;
 
-            protected override IObservable<List<ITask>> CallEndpointWith(ITogglApi togglApi, DateTimeOffset threshold)
+            protected override Task<List<ITask>> CallEndpointWith(ITogglApi togglApi, DateTimeOffset threshold)
             {
                 plans.EnsureDefaultWorkspaceIsOnPlan(togglApi, PricingPlans.StarterMonthly).Wait();
                 return togglApi.Tasks.GetAllSince(threshold);
@@ -91,7 +93,7 @@ namespace Toggl.Networking.Tests.Integration
                 => model.At;
 
             protected override ITask MakeUniqueModel(ITogglApi api, IUser user)
-                => new Task
+                => new TogglTask
                 {
                     Active = true,
                     Name = Guid.NewGuid().ToString(),
@@ -100,7 +102,7 @@ namespace Toggl.Networking.Tests.Integration
                     At = DateTimeOffset.UtcNow
                 };
 
-            protected override IObservable<ITask> PostModelToApi(ITogglApi api, ITask model)
+            protected override Task<ITask> PostModelToApi(ITogglApi api, ITask model)
             {
                 plans.EnsureDefaultWorkspaceIsOnPlan(api, PricingPlans.StarterMonthly).Wait();
                 return api.Tasks.Create(model);
@@ -110,7 +112,7 @@ namespace Toggl.Networking.Tests.Integration
                 => t => isTheSameAs(model, t);
 
             private IProject getProject(ITogglApi api, long workspaceId)
-                => project ?? (project = createProject(api, workspaceId).Wait());
+                => project ?? (project = createProject(api, workspaceId).GetAwaiter().GetResult());
         }
 
         public sealed class TheCreateMethod : AuthenticatedPostEndpointBaseTests<ITask>
@@ -137,24 +139,25 @@ namespace Toggl.Networking.Tests.Integration
             {
                 var (togglApi, user) = await SetupTestUser();
                 await plans.EnsureDefaultWorkspaceIsOnPlan(user, plan);
-                var project = createProject(togglApi, user.DefaultWorkspaceId.Value).Wait();
+                var project = createProject(togglApi, user.DefaultWorkspaceId.Value)
+                    .GetAwaiter().GetResult();
 
                 Action creatingTask = () => createTask(togglApi, project, user.Id).Wait();
 
                 creatingTask.Should().NotThrow();
             }
 
-            protected override IObservable<ITask> CallEndpointWith(ITogglApi togglApi)
+            protected override async Task<ITask> CallEndpointWith(ITogglApi togglApi)
             {
-                var user = togglApi.User.Get().Wait();
-                plans.EnsureDefaultWorkspaceIsOnPlan(user, PricingPlans.StarterMonthly).Wait();
-                var project = createProject(togglApi, user.DefaultWorkspaceId.Value).Wait();
-                return createTask(togglApi, project, user.Id);
+                var user = await togglApi.User.Get();
+                await plans.EnsureDefaultWorkspaceIsOnPlan(user, PricingPlans.StarterMonthly);
+                var project = await createProject(togglApi, user.DefaultWorkspaceId.Value);
+                return await createTask(togglApi, project, user.Id);
             }
         }
 
         private static ITask randomTask(IProject project, long userId, bool isActive = true)
-            => new Task
+            => new TogglTask
             {
                 WorkspaceId = project.WorkspaceId,
                 ProjectId = project.Id,
@@ -173,10 +176,10 @@ namespace Toggl.Networking.Tests.Integration
                 At = DateTimeOffset.UtcNow
             };
 
-        private static IObservable<IProject> createProject(ITogglApi togglApi, long workspaceId)
+        private static Task<IProject> createProject(ITogglApi togglApi, long workspaceId)
             => togglApi.Projects.Create(randomProject(workspaceId));
 
-        private static IObservable<ITask> createTask(ITogglApi togglApi, IProject project, long userId)
+        private static Task<ITask> createTask(ITogglApi togglApi, IProject project, long userId)
             => togglApi.Tasks.Create(randomTask(project, userId));
 
         private static bool isTheSameAs(ITask a, ITask b)

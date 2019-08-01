@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Toggl.Networking.Models;
 using Toggl.Networking.Tests.Integration.BaseTests;
 using Toggl.Shared.Models;
@@ -15,7 +16,7 @@ namespace Toggl.Networking.Tests.Integration
     {
         public sealed class TheGetAllMethod : AuthenticatedGetAllEndpointBaseTests<ITag>
         {
-            protected override IObservable<List<ITag>> CallEndpointWith(ITogglApi togglApi)
+            protected override Task<List<ITag>> CallEndpointWith(ITogglApi togglApi)
                 => togglApi.Tags.GetAll();
 
             private readonly string[] tags1 =
@@ -69,7 +70,7 @@ namespace Toggl.Networking.Tests.Integration
 
         public sealed class TheGetAllSinceMethod : AuthenticatedGetSinceEndpointBaseTests<ITag>
         {
-            protected override IObservable<List<ITag>> CallEndpointWith(ITogglApi togglApi, DateTimeOffset threshold)
+            protected override Task<List<ITag>> CallEndpointWith(ITogglApi togglApi, DateTimeOffset threshold)
                 => togglApi.Tags.GetAllSince(threshold);
 
             protected override DateTimeOffset AtDateOf(ITag model)
@@ -78,7 +79,7 @@ namespace Toggl.Networking.Tests.Integration
             protected override ITag MakeUniqueModel(ITogglApi api, IUser user)
                 => new Tag { Name = Guid.NewGuid().ToString(), WorkspaceId = user.DefaultWorkspaceId.Value };
 
-            protected override IObservable<ITag> PostModelToApi(ITogglApi api, ITag model)
+            protected override Task<ITag> PostModelToApi(ITogglApi api, ITag model)
                 => api.Tags.Create(model);
 
             protected override Expression<Func<ITag, bool>> ModelWithSameAttributesAs(ITag model)
@@ -87,15 +88,14 @@ namespace Toggl.Networking.Tests.Integration
 
         public sealed class TheCreateMethod : AuthenticatedPostEndpointBaseTests<ITag>
         {
-            protected override IObservable<ITag> CallEndpointWith(ITogglApi togglApi)
-                => Observable.Defer(async () =>
-                {
-                    var user = await togglApi.User.Get();
-                    var tag = createNewTag(user.DefaultWorkspaceId.Value);
-                    return CallEndpointWith(togglApi, tag);
-                });
+            protected override async Task<ITag> CallEndpointWith(ITogglApi togglApi)
+            {
+                var user = await togglApi.User.Get();
+                var tag = createNewTag(user.DefaultWorkspaceId.Value);
+                return await CallEndpointWith(togglApi, tag);
+            }
 
-            private IObservable<ITag> CallEndpointWith(ITogglApi togglApi, ITag tag)
+            private Task<ITag> CallEndpointWith(ITogglApi togglApi, ITag tag)
                 => togglApi.Tags.Create(tag);
 
             [Fact, LogTestInfo]

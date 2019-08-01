@@ -15,7 +15,7 @@ namespace Toggl.Networking.Tests.Integration.BaseTests
     {
         protected ITogglApi ValidApi { get; private set; }
 
-        protected abstract IObservable<T> CallEndpointWith(ITogglApi togglApi);
+        protected abstract Task<T> CallEndpointWith(ITogglApi togglApi);
 
         protected Func<Task> CallingEndpointWith(ITogglApi togglApi)
             => async () => await CallEndpointWith(togglApi);

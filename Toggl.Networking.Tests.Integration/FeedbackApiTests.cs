@@ -33,13 +33,18 @@ Also check if the meta data included below is readable and formatted well.";
                     ["device"] = "the cloud ☁️",
                 };
 
-            protected override IObservable<Unit> CallEndpointWith(ITogglApi togglApi)
-                => togglApi.User.Get()
-                    .SelectMany(user =>
-                        togglApi.Feedback.Send(
-                            email: user.Email,
-                            message: defaultMessage,
-                            data: defaultMetaData));
+            protected override async Task<Unit> CallEndpointWith(ITogglApi togglApi)
+            {
+                var user = await togglApi.User.Get();
+
+                await togglApi.Feedback.Send(
+                    email: user.Email,
+                    message: defaultMessage,
+                    data: defaultMetaData
+                );
+
+                return Unit.Default;
+            }
 
             [Fact]
             public async Task DoesAcceptFeedbackFromADifferentUserFromTheLoggedIn()

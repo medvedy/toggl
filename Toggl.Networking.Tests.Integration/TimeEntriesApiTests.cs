@@ -42,13 +42,13 @@ namespace Toggl.Networking.Tests.Integration
                     && entry.UserId == user.Id);
             }
 
-            protected override IObservable<List<ITimeEntry>> CallEndpointWith(ITogglApi togglApi)
+            protected override Task<List<ITimeEntry>> CallEndpointWith(ITogglApi togglApi)
                 => togglApi.TimeEntries.GetAll();
         }
 
         public sealed class TheGetAllSinceMethod : AuthenticatedGetSinceEndpointBaseTests<ITimeEntry>
         {
-            protected override IObservable<List<ITimeEntry>> CallEndpointWith(ITogglApi togglApi, DateTimeOffset threshold)
+            protected override Task<List<ITimeEntry>> CallEndpointWith(ITogglApi togglApi, DateTimeOffset threshold)
                 => togglApi.TimeEntries.GetAllSince(threshold);
 
             protected override DateTimeOffset AtDateOf(ITimeEntry model)
@@ -57,7 +57,7 @@ namespace Toggl.Networking.Tests.Integration
             protected override ITimeEntry MakeUniqueModel(ITogglApi api, IUser user)
                 => createTimeEntry(user);
 
-            protected override IObservable<ITimeEntry> PostModelToApi(ITogglApi api, ITimeEntry model)
+            protected override Task<ITimeEntry> PostModelToApi(ITogglApi api, ITimeEntry model)
                 => api.TimeEntries.Create(model);
 
             protected override Expression<Func<ITimeEntry, bool>> ModelWithSameAttributesAs(ITimeEntry model)
@@ -69,7 +69,7 @@ namespace Toggl.Networking.Tests.Integration
             private static readonly DateTimeOffset start = DateTimeOffset.Now.Subtract(TimeSpan.FromDays(75));
             private static readonly DateTimeOffset end = start.AddDays(60);
 
-            protected override IObservable<List<ITimeEntry>> CallEndpointWith(ITogglApi togglApi)
+            protected override Task<List<ITimeEntry>> CallEndpointWith(ITogglApi togglApi)
                 => togglApi.TimeEntries.GetAll(start, end);
 
             [Fact]
@@ -154,7 +154,7 @@ namespace Toggl.Networking.Tests.Integration
                     CreatedWith = "IntegrationTests/0.0"
                 };
 
-                var persistedTimeEntry = CallEndpointWith(togglApi, timeEntry).Wait();
+                var persistedTimeEntry = await CallEndpointWith(togglApi, timeEntry);
 
                 persistedTimeEntry.Id.Should().BePositive();
             }
@@ -215,10 +215,10 @@ namespace Toggl.Networking.Tests.Integration
                 };
 
                 var postedTimeEntry = await togglApi.TimeEntries.Create(timeEntry);
-                var fetchedTimeEntry = await togglApi.TimeEntries.GetAll()
-                    .SelectMany(timeEntries => timeEntries)
-                    .Where(te => te.Id == postedTimeEntry.Id)
-                    .SingleAsync();
+
+                var timeEntries = await togglApi.TimeEntries.GetAll();
+                var fetchedTimeEntry = timeEntries
+                    .Single(te => te.Id == postedTimeEntry.Id);
 
                 fetchedTimeEntry.Duration.Should().BeNull();
             }
@@ -236,7 +236,8 @@ namespace Toggl.Networking.Tests.Integration
                 await Task.Delay(2000);
                 var postedSecondTimeEntry = await togglApi.TimeEntries.Create(secondTimeEntry);
                 var stoppedFirstTimeEntry =
-                    await togglApi.TimeEntries.GetAll().SelectMany(te => te).Where(te => te.Id == postedFirstTimeEntry.Id).FirstAsync();
+                    (await togglApi.TimeEntries.GetAll())
+                    .First(te => te.Id == postedFirstTimeEntry.Id);
 
                 postedFirstTimeEntry.Duration.Should().BeNull();
                 postedSecondTimeEntry.Duration.Should().BeNull();
@@ -246,15 +247,14 @@ namespace Toggl.Networking.Tests.Integration
                 stoppedFirstTimeEntry.Start.AddSeconds(stoppedFirstTimeEntry.Duration.Value).Should().Be(stoppedFirstTimeEntry.At);
             }
 
-            protected override IObservable<ITimeEntry> CallEndpointWith(ITogglApi togglApi)
-                => Observable.Defer(async () =>
-                {
-                    var user = await togglApi.User.Get();
-                    var timeEntry = createTimeEntry(user);
-                    return CallEndpointWith(togglApi, timeEntry);
-                });
+            protected override async Task<ITimeEntry> CallEndpointWith(ITogglApi togglApi)
+            {
+                var user = await togglApi.User.Get();
+                var timeEntry = createTimeEntry(user);
+                return await CallEndpointWith(togglApi, timeEntry);
+            }
 
-            private IObservable<ITimeEntry> CallEndpointWith(ITogglApi togglApi, TimeEntry client)
+            private Task<ITimeEntry> CallEndpointWith(ITogglApi togglApi, TimeEntry client)
                 => togglApi.TimeEntries.Create(client);
         }
 
@@ -333,15 +333,14 @@ namespace Toggl.Networking.Tests.Integration
                 put.Should().Throw<BadRequestException>();
             }
 
-            protected override IObservable<ITimeEntry> PrepareForCallingUpdateEndpoint(ITogglApi togglApi)
-                => Observable.Defer(async () =>
-                {
-                    var user = await togglApi.User.Get();
-                    var timeEntry = createTimeEntry(user);
-                    return togglApi.TimeEntries.Create(timeEntry);
-                });
+            protected override async Task<ITimeEntry> PrepareForCallingUpdateEndpoint(ITogglApi togglApi)
+            {
+                var user = await togglApi.User.Get();
+                var timeEntry = createTimeEntry(user);
+                return await togglApi.TimeEntries.Create(timeEntry);
+            }
 
-            protected override IObservable<ITimeEntry> CallUpdateEndpoint(ITogglApi togglApi, ITimeEntry timeEntry)
+            protected override Task<ITimeEntry> CallUpdateEndpoint(ITogglApi togglApi, ITimeEntry timeEntry)
             {
                 var timeEntryWithUpdates = new TimeEntry
                 {
@@ -462,15 +461,14 @@ namespace Toggl.Networking.Tests.Integration
                 secondDelete.Should().Throw<ForbiddenException>();
             }
 
-            protected override IObservable<ITimeEntry> Initialize(ITogglApi togglApi)
-                => Observable.Defer(async () =>
-                {
-                    var user = await togglApi.User.Get();
-                    var timeEntry = createTimeEntry(user);
-                    return togglApi.TimeEntries.Create(timeEntry);
-                });
+            protected override async Task<ITimeEntry> Initialize(ITogglApi togglApi)
+            {
+                var user = await togglApi.User.Get();
+                var timeEntry = createTimeEntry(user);
+                return await togglApi.TimeEntries.Create(timeEntry);
+            }
 
-            protected override IObservable<Unit> Delete(ITogglApi togglApi, ITimeEntry timeEntry)
+            protected override Task Delete(ITogglApi togglApi, ITimeEntry timeEntry)
                 => togglApi.TimeEntries.Delete(timeEntry);
         }
 

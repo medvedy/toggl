@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using Toggl.Networking.Models;
 using Toggl.Networking.Tests.Integration.BaseTests;
 using Toggl.Shared;
@@ -16,7 +17,7 @@ namespace Toggl.Networking.Tests.Integration
     {
         public sealed class TheGetAllMethod : AuthenticatedEndpointBaseTests<List<IWorkspaceFeatureCollection>>
         {
-            protected override IObservable<List<IWorkspaceFeatureCollection>> CallEndpointWith(ITogglApi togglApi)
+            protected override Task<List<IWorkspaceFeatureCollection>> CallEndpointWith(ITogglApi togglApi)
                 => togglApi.WorkspaceFeatures.GetAll();
 
             [Fact, LogTestInfo]
