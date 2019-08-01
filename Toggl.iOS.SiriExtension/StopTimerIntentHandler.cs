@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using Toggl.iOS.ExtensionKit;
 using Toggl.iOS.ExtensionKit.Analytics;
 using Toggl.iOS.ExtensionKit.Extensions;
@@ -37,6 +38,7 @@ namespace SiriExtension
             }
 
             togglAPI.TimeEntries.GetAll()
+                .ToObservable()
                 .Select(getRunningTimeEntry)
                 .Subscribe(
                     runningTE =>
@@ -122,7 +124,7 @@ namespace SiriExtension
             var duration = (long)(DateTime.Now - timeEntry.Start).TotalSeconds;
             return togglAPI.TimeEntries.Update(
                 TimeEntry.from(timeEntry).with(duration)
-            );
+            ).ToObservable();
         }
 
         private StopTimerIntentResponse responseFromException(Exception exception)

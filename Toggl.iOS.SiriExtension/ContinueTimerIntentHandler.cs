@@ -3,6 +3,7 @@ using SiriExtension.Models;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using Toggl.iOS.ExtensionKit;
 using Toggl.iOS.ExtensionKit.Analytics;
 using Toggl.iOS.ExtensionKit.Extensions;
@@ -32,6 +33,7 @@ namespace SiriExtension
             }
 
             togglAPI.TimeEntries.GetAll()
+                .ToObservable()
                 .FirstAsync()
                 .Select(timeEntries => timeEntries.First())
                 .Subscribe(
@@ -52,6 +54,7 @@ namespace SiriExtension
         {
 
             togglAPI.TimeEntries.Create(continueTimeEntry(lastEntry))
+                .ToObservable()
                 .Subscribe(
                     te =>
                     {
