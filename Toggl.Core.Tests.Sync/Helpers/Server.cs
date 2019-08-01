@@ -71,38 +71,38 @@ namespace Toggl.Core.Tests.Sync.Helpers
 
             if (workspaces.Any())
             {
-                await workspaces.Select(workspace
-                        => Api.Workspaces.Create(workspace)
-                            .Do(serverWorkspace =>
-                            {
-                                lock (updateIds)
-                                {
-                                    user = workspace.Id == user.DefaultWorkspaceId
-                                        ? user.With(defaultWorkspaceId: serverWorkspace.Id)
-                                        : user;
-                                    clients = clients.Select(client => client.WorkspaceId == workspace.Id
-                                        ? client.With(workspaceId: serverWorkspace.Id)
-                                        : client);
-                                    projects = projects.Select(project => project.WorkspaceId == workspace.Id
-                                        ? project.With(workspaceId: serverWorkspace.Id)
-                                        : project);
-                                    tags = tags.Select(tag => tag.WorkspaceId == workspace.Id
-                                        ? tag.With(workspaceId: serverWorkspace.Id)
-                                        : tag);
-                                    tasks = tasks.Select(task => task.WorkspaceId == workspace.Id
-                                        ? task.With(workspaceId: serverWorkspace.Id)
-                                        : task);
-                                    timeEntries = timeEntries.Select(timeEntry => timeEntry.WorkspaceId == workspace.Id
-                                        ? timeEntry.With(workspaceId: serverWorkspace.Id)
-                                        : timeEntry);
-                                    pricingPlans = pricingPlans.ToDictionary(
-                                        keyValuePair => keyValuePair.Key == workspace.Id
-                                            ? serverWorkspace.Id
-                                            : keyValuePair.Key,
-                                        keyValuePair => keyValuePair.Value);
-                                }
-                            }))
-                    .Merge();
+                await Task.WhenAll(
+                    workspaces.Select(async workspace =>
+                    {
+                        var serverWorkspace = await Api.Workspaces.Create(workspace);
+
+                        lock (updateIds)
+                        {
+                            user = workspace.Id == user.DefaultWorkspaceId
+                                ? user.With(defaultWorkspaceId: serverWorkspace.Id)
+                                : user;
+                            clients = clients.Select(client => client.WorkspaceId == workspace.Id
+                                ? client.With(workspaceId: serverWorkspace.Id)
+                                : client);
+                            projects = projects.Select(project => project.WorkspaceId == workspace.Id
+                                ? project.With(workspaceId: serverWorkspace.Id)
+                                : project);
+                            tags = tags.Select(tag => tag.WorkspaceId == workspace.Id
+                                ? tag.With(workspaceId: serverWorkspace.Id)
+                                : tag);
+                            tasks = tasks.Select(task => task.WorkspaceId == workspace.Id
+                                ? task.With(workspaceId: serverWorkspace.Id)
+                                : task);
+                            timeEntries = timeEntries.Select(timeEntry => timeEntry.WorkspaceId == workspace.Id
+                                ? timeEntry.With(workspaceId: serverWorkspace.Id)
+                                : timeEntry);
+                            pricingPlans = pricingPlans.ToDictionary(
+                                keyValuePair => keyValuePair.Key == workspace.Id
+                                    ? serverWorkspace.Id
+                                    : keyValuePair.Key,
+                                keyValuePair => keyValuePair.Value);
+                        }
+                    }).ToArray());
             }
 
             // the user does not want the default workspace on the server
@@ -131,90 +131,80 @@ namespace Toggl.Core.Tests.Sync.Helpers
                     .Apply(Task.WhenAll);
             }
 
-            await Api.User.Update(user)
-                .Do(serverUser =>
-                {
-                    lock (updateIds)
-                    {
-                        tasks = tasks.Select(task => task.UserId == user.Id
-                            ? task.With(userId: serverUser.Id)
-                            : task);
-                    }
-                });
+            var serverUser = await Api.User.Update(user);
+            lock (updateIds)
+            {
+                tasks = tasks.Select(task => task.UserId == user.Id
+                    ? task.With(userId: serverUser.Id)
+                    : task);
+            }
 
             await Api.Preferences.Update(preferences);
 
             if (tags.Any())
             {
-                await tags.Select(tag
-                        => Api.Tags.Create(tag)
-                            .Do(serverTag =>
-                            {
-                                lock (updateIds)
-                                {
-                                    timeEntries = timeEntries.Select(timeEntry => timeEntry.TagIds.Contains(tag.Id)
-                                        ? timeEntry.With(tagIds:
-                                            New<IEnumerable<long>>.Value(
-                                                timeEntry.TagIds.Select(id => id == tag.Id ? serverTag.Id : id)))
-                                        : timeEntry);
-                                }
-                            }))
-                    .Merge();
+                await Task.WhenAll(tags.Select(async tag =>
+                {
+                    var serverTag = await Api.Tags.Create(tag);
+
+                    lock (updateIds)
+                    {
+                        timeEntries = timeEntries.Select(timeEntry => timeEntry.TagIds.Contains(tag.Id)
+                            ? timeEntry.With(tagIds:
+                                New<IEnumerable<long>>.Value(
+                                    timeEntry.TagIds.Select(id => id == tag.Id ? serverTag.Id : id)))
+                            : timeEntry);
+                    }
+                }));
             }
 
             if (clients.Any())
             {
-                await clients.Select(client
-                        => Api.Clients.Create(client)
-                            .Do(serverClient =>
-                            {
-                                lock (updateIds)
-                                {
-                                    projects = projects.Select(project => project.ClientId == client.Id
-                                        ? project.With(clientId: serverClient.Id)
-                                        : project);
-                                }
-                            }))
-                    .Merge();
+                await Task.WhenAll(clients.Select(async client =>
+                {
+                    var serverClient = await Api.Clients.Create(client);
+                    lock (updateIds)
+                    {
+                        projects = projects.Select(project => project.ClientId == client.Id
+                            ? project.With(clientId: serverClient.Id)
+                            : project);
+                    }
+                }));
             }
 
 
             if (projects.Any())
             {
-                await projects.Select(project
-                        => Api.Projects.Create(project)
-                            .Do(serverProject =>
-                            {
-                                lock (updateIds)
-                                {
-                                    tasks = tasks.Select(task => task.ProjectId == project.Id
-                                        ? task.With(projectId: serverProject.Id)
-                                        : task);
-                                    timeEntries = timeEntries.Select(timeEntry => timeEntry.ProjectId == project.Id
-                                        ? timeEntry.With(projectId: serverProject.Id)
-                                        : timeEntry);
-                                }
-                            }))
-                    .Merge();
+                await Task.WhenAll(projects.Select(async project =>
+                {
+                    var serverProject = await Api.Projects.Create(project);
+                    lock (updateIds)
+                    {
+                        tasks = tasks.Select(task => task.ProjectId == project.Id
+                            ? task.With(projectId: serverProject.Id)
+                            : task);
+                        timeEntries = timeEntries.Select(timeEntry => timeEntry.ProjectId == project.Id
+                            ? timeEntry.With(projectId: serverProject.Id)
+                            : timeEntry);
+                    }
+                }));
             }
 
             if (tasks.Any())
             {
-                await tasks.Select(task
-                        => Api.Tasks.Create(task)
-                            .Do(serverTask =>
-                            {
-                                lock (updateIds)
-                                {
-                                    timeEntries = timeEntries.Select(timeEntry => timeEntry.TaskId == task.Id
-                                        ? timeEntry.With(taskId: serverTask.Id)
-                                        : timeEntry);
-                                }
-                            }))
-                    .Merge();
+                await Task.WhenAll(tasks.Select(async task =>
+                {
+                    var serverTask = await Api.Tasks.Create(task);
+                    lock (updateIds)
+                    {
+                        timeEntries = timeEntries.Select(timeEntry => timeEntry.TaskId == task.Id
+                            ? timeEntry.With(taskId: serverTask.Id)
+                            : timeEntry);
+                    }
+                }));
             }
 
-            await timeEntries.Select(Api.TimeEntries.Create).Merge().ToList();
+            await Task.WhenAll(timeEntries.Select(Api.TimeEntries.Create));
         }
 
         public static class Factory
@@ -238,7 +228,8 @@ namespace Toggl.Core.Tests.Sync.Helpers
 
                 do
                 {
-                    if (user != null) await Task.Delay(TimeSpan.FromSeconds(1));
+                    if (user != null)
+                        await Task.Delay(TimeSpan.FromSeconds(1));
                     user = await Networking.Tests.Integration.User.Create();
                 }
                 while (user.DefaultWorkspaceId.HasValue == false && ++numberOfTries < 3);
