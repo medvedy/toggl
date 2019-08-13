@@ -56,6 +56,8 @@ namespace Toggl.Storage.Settings
 
         private const string didShowSiriClipboardInstructionKey = "didShowSiriClipboardInstructionKey";
 
+        private const string swipeActionsDisabledKey = "swipeActionsDisabled";
+
         private readonly Version version;
         private readonly IKeyValueStorage keyValueStorage;
 
@@ -75,6 +77,7 @@ namespace Toggl.Storage.Settings
         private readonly ISubject<List<string>> enabledCalendarsSubject;
         private readonly ISubject<bool> calendarNotificationsEnabledSubject;
         private readonly ISubject<TimeSpan> timeSpanBeforeCalendarNotificationsSubject;
+        private readonly ISubject<bool> swipeActionsEnabledSubject;
 
         private readonly TimeSpan defaultTimeSpanBeforeCalendarNotificationsSubject = TimeSpan.FromMinutes(10);
 
@@ -101,6 +104,7 @@ namespace Toggl.Storage.Settings
             (navigatedAwayFromMainViewAfterTappingStopButtonSubject, NavigatedAwayFromMainViewAfterTappingStopButton) = prepareSubjectAndObservable(navigatedAwayFromMainViewAfterTappingStopButtonKey, keyValueStorage.GetBool);
             (hasTimeEntryBeenContinuedSubject, HasTimeEntryBeenContinued) = prepareSubjectAndObservable(hasTimeEntryBeenContinuedKey, keyValueStorage.GetBool);
             (timeSpanBeforeCalendarNotificationsSubject, TimeSpanBeforeCalendarNotifications) = prepareSubjectAndObservable(keyValueStorage.GetTimeSpan(timeSpanBeforeCalendarNotificationsKey) ?? defaultTimeSpanBeforeCalendarNotificationsSubject);
+            (swipeActionsEnabledSubject, SwipeActionsEnabled) = prepareSubjectAndObservable(swipeActionsDisabledKey, key => !keyValueStorage.GetBool(key));
         }
 
         #region IAccessRestrictionStorage
@@ -344,6 +348,7 @@ namespace Toggl.Storage.Settings
         public IObservable<bool> IsManualModeEnabledObservable { get; }
         public IObservable<bool> AreRunningTimerNotificationsEnabledObservable { get; }
         public IObservable<bool> AreStoppedTimerNotificationsEnabledObservable { get; }
+        public IObservable<bool> SwipeActionsEnabled { get; }
 
         public IObservable<List<string>> EnabledCalendars { get; }
 
@@ -359,6 +364,9 @@ namespace Toggl.Storage.Settings
 
         public bool AreStoppedTimerNotificationsEnabled
             => keyValueStorage.GetBool(stoppedTimerNotificationsKey);
+
+        public bool AreSwipeActionsEnabled
+            => !keyValueStorage.GetBool(swipeActionsDisabledKey);
 
         public void EnableManualMode()
         {
@@ -436,6 +444,12 @@ namespace Toggl.Storage.Settings
         {
             keyValueStorage.SetTimeSpan(timeSpanBeforeCalendarNotificationsKey, timeSpan);
             timeSpanBeforeCalendarNotificationsSubject.OnNext(timeSpan);
+        }
+
+        public void SetSwipeActionsEnabled(bool enabled)
+        {
+            keyValueStorage.SetBool(swipeActionsDisabledKey, !enabled);
+            swipeActionsEnabledSubject.OnNext(enabled);
         }
 
         #endregion

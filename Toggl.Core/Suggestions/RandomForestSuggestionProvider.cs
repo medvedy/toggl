@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using Accord.MachineLearning.DecisionTrees;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Shared;
 using Toggl.Storage.Models;
 using Toggl.Storage;
@@ -16,7 +15,6 @@ namespace Toggl.Core.Suggestions
     {
         private readonly ITogglDataSource dataSource;
         private readonly ITimeService timeService;
-        private readonly IStopwatchProvider stopwatchProvider;
 
         private readonly int maxNumberOfTimeEntriesForTraining = 1000;
         private readonly int minNumberOfTimeEntriesForTraining = 100;
@@ -24,15 +22,12 @@ namespace Toggl.Core.Suggestions
         private readonly int forestJoin = 100;
 
         public RandomForestSuggestionProvider(
-            IStopwatchProvider stopwatchProvider,
             ITogglDataSource dataSource,
             ITimeService timeService)
         {
-            Ensure.Argument.IsNotNull(stopwatchProvider, nameof(stopwatchProvider));
             Ensure.Argument.IsNotNull(dataSource, nameof(dataSource));
             Ensure.Argument.IsNotNull(timeService, nameof(timeService));
 
-            this.stopwatchProvider = stopwatchProvider;
             this.dataSource = dataSource;
             this.timeService = timeService;
         }
@@ -71,28 +66,19 @@ namespace Toggl.Core.Suggestions
 
         private IEnumerable<IDatabaseTimeEntry> predictUsing2Steps(List<IDatabaseTimeEntry> timeEntries)
         {
-            var projectPredictionStopWatch = stopwatchProvider.Create(MeasuredOperation.RandomForest2StepsProjectPrediction);
-            projectPredictionStopWatch.Start();
             var predictedProject = predictProjectID(timeEntries); //Step 1 Predict Projects
-            projectPredictionStopWatch.Stop();
-
+        
             var timeEntriesFromProject = timeEntries.Where(te => te.ProjectId == predictedProject).ToList();
 
-            var timeEntryPredictionStopWatch = stopwatchProvider.Create(MeasuredOperation.RandomForest2StepsTimeEntryPrediction);
-            timeEntryPredictionStopWatch.Start();
             var predictedTimeEntry = predictTimeEntryID(timeEntriesFromProject); //Step 2 Predict the TimeEntry
-            timeEntryPredictionStopWatch.Stop();
-
+         
             return new[] { timeEntries.FirstOrDefault(te => te.Id == predictedTimeEntry) };
         }
 
         private IEnumerable<IDatabaseTimeEntry> predictUsing1Step(List<IDatabaseTimeEntry> timeEntries)
         {
-            var timeEntryPredictionStopWatch = stopwatchProvider.Create(MeasuredOperation.RandomForest1StepTimeEntryPrediction);
-            timeEntryPredictionStopWatch.Start();
             var predictedTimeEntry = predictTimeEntryID(timeEntries);
-            timeEntryPredictionStopWatch.Stop();
-
+          
             return new[] { timeEntries.FirstOrDefault(te => te.Id == predictedTimeEntry) };
         }
 

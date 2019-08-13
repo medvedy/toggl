@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Toggl.Core.Analytics;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Interactors;
 using Toggl.Core.Login;
 using Toggl.Core.Services;
@@ -64,7 +63,6 @@ namespace Toggl.Core.Tests.UI
                 MockRemoteConfigService = Substitute.For<IRemoteConfigService>(),
                 MockSchedulerProvider = Substitute.For<ISchedulerProvider>(),
                 MockShortcutCreator = Substitute.For<IApplicationShortcutCreator>(),
-                MockStopwatchProvider = Substitute.For<IStopwatchProvider>(),
                 MockUserPreferences = Substitute.For<IUserPreferences>(),
                 MockInteractorFactory = Substitute.For<IInteractorFactory>(),
                 MockTimeService = Substitute.For<ITimeService>(),

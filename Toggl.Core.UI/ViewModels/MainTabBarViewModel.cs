@@ -4,11 +4,9 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Toggl.Core.Analytics;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Interactors;
 using Toggl.Core.Login;
 using Toggl.Core.Services;
-using Toggl.Core.Suggestions;
 using Toggl.Core.Sync;
 using Toggl.Core.UI.Navigation;
 using Toggl.Core.UI.Services;
@@ -24,7 +22,6 @@ namespace Toggl.Core.UI.ViewModels
     public sealed class MainTabBarViewModel : ViewModel
     {
         private readonly IRemoteConfigService remoteConfigService;
-        private readonly IStopwatchProvider stopwatchProvider;
         private readonly IPlatformInfo platformInfo;
 
         private readonly MainViewModel mainViewModel;
@@ -52,7 +49,6 @@ namespace Toggl.Core.UI.ViewModels
             IRemoteConfigService remoteConfigService,
             IAccessibilityService accessibilityService,
             IAccessRestrictionStorage accessRestrictionStorage,
-            IStopwatchProvider stopwatchProvider,
             IRxActionFactory rxActionFactory,
             IUserAccessManager userAccessManager,
             IPrivateSharedStorageService privateSharedStorageService,
@@ -74,14 +70,12 @@ namespace Toggl.Core.UI.ViewModels
             Ensure.Argument.IsNotNull(accessibilityService, nameof(accessibilityService));
             Ensure.Argument.IsNotNull(accessRestrictionStorage, nameof(accessRestrictionStorage));
             Ensure.Argument.IsNotNull(schedulerProvider, nameof(schedulerProvider));
-            Ensure.Argument.IsNotNull(stopwatchProvider, nameof(stopwatchProvider));
             Ensure.Argument.IsNotNull(rxActionFactory, nameof(rxActionFactory));
             Ensure.Argument.IsNotNull(userAccessManager, nameof(userAccessManager));
             Ensure.Argument.IsNotNull(privateSharedStorageService, nameof(privateSharedStorageService));
             Ensure.Argument.IsNotNull(platformInfo, nameof(platformInfo));
 
             this.remoteConfigService = remoteConfigService;
-            this.stopwatchProvider = stopwatchProvider;
             this.platformInfo = platformInfo;
 
             mainViewModel = new MainViewModel(
@@ -98,7 +92,6 @@ namespace Toggl.Core.UI.ViewModels
                 accessibilityService,
                 accessRestrictionStorage,
                 schedulerProvider,
-                stopwatchProvider,
                 rxActionFactory,
                 permissionsChecker,
                 backgroundService,
@@ -111,7 +104,6 @@ namespace Toggl.Core.UI.ViewModels
                 interactorFactory,
                 analyticsService,
                 schedulerProvider,
-                stopwatchProvider,
                 rxActionFactory);
 
             calendarViewModel = new CalendarViewModel(
@@ -125,7 +117,6 @@ namespace Toggl.Core.UI.ViewModels
                 schedulerProvider,
                 permissionsChecker,
                 navigationService,
-                stopwatchProvider,
                 rxActionFactory);
 
             settingsViewModel = new SettingsViewModel(
@@ -134,12 +125,9 @@ namespace Toggl.Core.UI.ViewModels
                 platformInfo,
                 userPreferences,
                 analyticsService,
-                userAccessManager,
                 interactorFactory,
                 onboardingStorage,
                 navigationService,
-                privateSharedStorageService,
-                stopwatchProvider,
                 rxActionFactory,
                 permissionsChecker,
                 schedulerProvider);
@@ -154,16 +142,6 @@ namespace Toggl.Core.UI.ViewModels
             await Tabs
                 .Select(vm => vm.Initialize())
                 .Apply(Task.WhenAll);
-        }
-
-        public void StartReportsStopwatch()
-        {
-            if (!hasOpenedReports)
-            {
-                var reportsStopwatch = stopwatchProvider.CreateAndStore(MeasuredOperation.OpenReportsViewForTheFirstTime);
-                reportsStopwatch.Start();
-                hasOpenedReports = true;
-            }
         }
 
         private IEnumerable<ViewModel> getViewModels()

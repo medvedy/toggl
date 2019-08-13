@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.UI.Collections;
 using Toggl.Core.UI.Collections.Diffing;
 using Toggl.Core.UI.Reactive;
@@ -52,14 +51,8 @@ namespace Toggl.iOS.Extensions.Reactive
                     return;
                 }
 
-                var stopwatchProvider = IosDependencyContainer.Instance.StopwatchProvider;
-                var stopwatch = stopwatchProvider.Create(MeasuredOperation.Diffing);
-                stopwatch.Start();
-
                 var diff = new Diffing<TSection, THeader, TModel, TKey>(initialSections, finalSections);
                 var changeset = diff.ComputeDifferences();
-
-                stopwatch.Stop();
 
                 // The changesets have to be applied one after another. Not in one transaction.
                 // iOS is picky about the changes which can happen in a single transaction.

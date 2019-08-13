@@ -31,7 +31,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     RemoteConfigService,
                     AccessibilityService,
                     AccessRestrictionStorage,
-                    StopwatchProvider,
                     RxActionFactory,
                     UserAccessManager,
                     PrivateSharedStorageService,
@@ -59,7 +58,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     bool useRemoteConfigService,
                     bool useAccessibilityService,
                     bool useAccessRestrictionStorage,
-                    bool useStopwatchProvider,
                     bool useRxActionFactory,
                     bool useUserAccessManager,
                     bool usePrivateSharedStorageService,
@@ -80,7 +78,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var remoteConfigService = useRemoteConfigService ? RemoteConfigService : null;
                 var accessibilityService = useAccessibilityService ? AccessibilityService : null;
                 var accessRestrictionStorage = useAccessRestrictionStorage ? AccessRestrictionStorage : null;
-                var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;
                 var rxActionFactory = useRxActionFactory ? RxActionFactory : null;
                 var userAccessManager = useUserAccessManager ? UserAccessManager : null;
                 var privateSharedStorageService = usePrivateSharedStorageService ? PrivateSharedStorageService : null;
@@ -103,7 +100,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                         remoteConfigService,
                         accessibilityService,
                         accessRestrictionStorage,
-                        stopwatchProvider,
                         rxActionFactory,
                         userAccessManager,
                         privateSharedStorageService,

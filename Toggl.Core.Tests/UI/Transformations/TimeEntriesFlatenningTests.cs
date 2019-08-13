@@ -326,6 +326,7 @@ namespace Toggl.Core.Tests.UI.Transformations
                 representedTimeEntriesIds: group.Select(timeEntry => timeEntry.Id).ToArray(),
                 visualizationIntent: visualizationIntent,
                 isBillable: sample.Billable,
+                isActive: sample.Project?.Active ?? true,
                 description: sample.Description,
                 duration: DurationAndFormatToString.Convert(
                     TimeSpan.FromSeconds(group.Sum(timeEntry => timeEntry.Duration ?? 0)),

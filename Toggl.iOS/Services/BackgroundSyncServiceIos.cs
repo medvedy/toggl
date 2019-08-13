@@ -1,3 +1,4 @@
+using CoreFoundation;
 using Toggl.Core.Services;
 using UIKit;
 
@@ -17,10 +18,10 @@ namespace Toggl.iOS.Services
 
         private static void configureInterval(double interval)
         {
-            UIApplication.SharedApplication.InvokeOnMainThread(() =>
-            {
-                UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(interval);
-            });
+            DispatchQueue.MainQueue.DispatchAsync(() =>
+                UIApplication.SharedApplication
+                    .SetMinimumBackgroundFetchInterval(interval)
+            );
         }
     }
 }

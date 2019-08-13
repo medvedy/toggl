@@ -3,10 +3,8 @@ using Android.Content;
 using System;
 using Toggl.Core;
 using Toggl.Core.Analytics;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Services;
 using Toggl.Core.Shortcuts;
-using Toggl.Core.Suggestions;
 using Toggl.Core.UI;
 using Toggl.Core.UI.Navigation;
 using Toggl.Core.UI.Services;
@@ -98,13 +96,10 @@ namespace Toggl.Droid
             => new RemoteConfigServiceAndroid();
 
         protected override ISchedulerProvider CreateSchedulerProvider()
-            => new AndroidSchedulerProvider();
+            => new AndroidSchedulerProvider(AnalyticsService);
 
         protected override IApplicationShortcutCreator CreateShortcutCreator()
             => new ApplicationShortcutCreator(Application.Context);
-
-        protected override IStopwatchProvider CreateStopwatchProvider()
-            => new FirebaseStopwatchProviderAndroid();
 
         protected override INavigationService CreateNavigationService()
             => new NavigationService(

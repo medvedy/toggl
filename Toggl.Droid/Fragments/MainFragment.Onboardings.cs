@@ -37,7 +37,7 @@ namespace Toggl.Droid.Fragments
             mainRecyclerViewScrollChangesDisposable = mainRecyclerView
                 .Rx()
                 .OnScrolled()
-                .ObserveOn(SynchronizationContext.Current)
+                .ObserveOn(AndroidDependencyContainer.Instance.SchedulerProvider.MainScheduler)
                 .Subscribe(mainRecyclerViewScrollChanges.OnNext);
         }
 
@@ -50,8 +50,12 @@ namespace Toggl.Droid.Fragments
         public override void OnStop()
         {
             base.OnStop();
-            playButtonTooltipPopupWindow.Dismiss();
-            stopButtonTooltipPopupWindow.Dismiss();
+            playButtonTooltipPopupWindow?.Dismiss();
+            stopButtonTooltipPopupWindow?.Dismiss();
+            tapToEditPopup?.Dismiss();
+            playButtonTooltipPopupWindow = null;
+            stopButtonTooltipPopupWindow = null;
+            tapToEditPopup = null;
         }
 
         private void setupOnboardingSteps()
@@ -132,7 +136,7 @@ namespace Toggl.Droid.Fragments
             showTapToEditOnboardingStepObservable
                 .Where(shouldShowStep => shouldShowStep)
                 .Select(_ => findOldestTimeEntryView())
-                .ObserveOn(SynchronizationContext.Current)
+                .ObserveOn(AndroidDependencyContainer.Instance.SchedulerProvider.MainScheduler)
                 .Subscribe(updateTapToEditOnboardingStep)
                 .DisposedBy(DisposeBag);
         }

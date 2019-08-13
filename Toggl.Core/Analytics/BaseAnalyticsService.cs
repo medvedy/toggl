@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Accord.Statistics.Kernels;
 using Toggl.Core.Extensions;
 using Toggl.Core.Suggestions;
 using Toggl.Core.Sync;
@@ -8,270 +10,275 @@ using Toggl.Shared;
 namespace Toggl.Core.Analytics
 {
     [Preserve(AllMembers = true)]
-    public abstract class BaseAnalyticsService : AnalyticsEventAttributeInitializer, IAnalyticsService
+    public abstract class BaseAnalyticsService : IAnalyticsService
     {
+        public IAnalyticsEvent<AuthenticationMethod> Login { get; }
+
+        public IAnalyticsEvent<LoginErrorSource> LoginError { get; }
+
+        public IAnalyticsEvent<AuthenticationMethod> SignUp { get; }
+
+        public IAnalyticsEvent<SignUpErrorSource> SignUpError { get; }
+
+        public IAnalyticsEvent<LoginSignupAuthenticationMethod> UserIsMissingApiToken { get; }
+
+        public IAnalyticsEvent<string> OnboardingSkip { get; }
+
+        public IAnalyticsEvent<LogoutSource> Logout { get; }
+
+        public IAnalyticsEvent ResetPassword { get; }
+
+        public IAnalyticsEvent PasswordManagerButtonClicked { get; }
+
+        public IAnalyticsEvent PasswordManagerContainsValidEmail { get; }
+
+        public IAnalyticsEvent PasswordManagerContainsValidPassword { get; }
+
+        public IAnalyticsEvent<Type> CurrentPage { get; }
+
+        public IAnalyticsEvent<DeleteTimeEntryOrigin> DeleteTimeEntry { get; }
+
+        public IAnalyticsEvent<string> ApplicationShortcut { get; }
+
+        public IAnalyticsEvent EditEntrySelectProject { get; }
+
+        public IAnalyticsEvent EditEntrySelectTag { get; }
+
+        public IAnalyticsEvent<ProjectTagSuggestionSource> StartEntrySelectProject { get; }
+
+        public IAnalyticsEvent<ProjectTagSuggestionSource> StartEntrySelectTag { get; }
+
+        public IAnalyticsEvent RatingViewWasShown { get; }
+
+        public IAnalyticsEvent<bool> UserFinishedRatingViewFirstStep { get; }
+
+        public IAnalyticsEvent<RatingViewSecondStepOutcome> UserFinishedRatingViewSecondStep { get; }
+
+        public IAnalyticsEvent RatingViewFirstStepLike { get; }
+
+        public IAnalyticsEvent RatingViewFirstStepDislike { get; }
+
+        public IAnalyticsEvent RatingViewSecondStepRate { get; }
+
+        public IAnalyticsEvent RatingViewSecondStepDontRate { get; }
+
+        public IAnalyticsEvent RatingViewSecondStepSendFeedback { get; }
+
+        public IAnalyticsEvent RatingViewSecondStepDontSendFeedback { get; }
+
+        public IAnalyticsEvent<ReportsSource, int, int, double> ReportsSuccess { get; }
+
+        public IAnalyticsEvent<ReportsSource, int, double> ReportsFailure { get; }
+
+        public IAnalyticsEvent OfflineModeDetected { get; }
+
+        public IAnalyticsEvent<EditViewTapSource> EditViewTapped { get; }
+
+        public IAnalyticsEvent<EditViewCloseReason> EditViewClosed { get; }
+
+        public IAnalyticsEvent<int> WorkspacePlaceholdersCreated { get; }
+
+        public IAnalyticsEvent<int> ProjectPlaceholdersCreated { get; }
+
+        public IAnalyticsEvent<int> TaskPlaceholdersCreated { get; }
+
+        public IAnalyticsEvent<int> TagPlaceholdersCreated { get; }
+
+        public IAnalyticsEvent<string, string> HandledException { get; }
+
+        public IAnalyticsEvent TwoRunningTimeEntriesInconsistencyFixed { get; }
+
+        public IAnalyticsEvent<StartViewTapSource> StartViewTapped { get; }
+
+        public IAnalyticsEvent NoDefaultWorkspace { get; }
+
+        public IAnalyticsEvent<TimeEntryStartOrigin> TimeEntryStarted { get; }
+
+        public IAnalyticsEvent<TimeEntryStopOrigin> TimeEntryStopped { get; }
+
+        public IAnalyticsEvent<ContinueTimeEntryOrigin, int, int, int> TimeEntryContinued { get; }
+
+        public IAnalyticsEvent LostWorkspaceAccess { get; }
+
+        public IAnalyticsEvent GainWorkspaceAccess { get; }
+
+        public IAnalyticsEvent<string> WorkspaceSyncError { get; }
+
+        public IAnalyticsEvent<string> UserSyncError { get; }
+
+        public IAnalyticsEvent<string> WorkspaceFeaturesSyncError { get; }
+
+        public IAnalyticsEvent<string> PreferencesSyncError { get; }
+
+        public IAnalyticsEvent<string> TagsSyncError { get; }
+
+        public IAnalyticsEvent<string> ClientsSyncError { get; }
+
+        public IAnalyticsEvent<string> ProjectsSyncError { get; }
+
+        public IAnalyticsEvent<string> TasksSyncError { get; }
+
+        public IAnalyticsEvent<string> TimeEntrySyncError { get; }
+
+        public IAnalyticsEvent<PushSyncOperation, string> EntitySynced { get; }
+
+        public IAnalyticsEvent<string, string> EntitySyncStatus { get; }
+
+        public IAnalyticsEvent CalendarOnboardingStarted { get; }
+
+        public IAnalyticsEvent EditViewOpenedFromCalendar { get; }
+
+        public IAnalyticsEvent<CalendarChangeEvent> TimeEntryChangedFromCalendar { get; }
+
+        public IAnalyticsEvent<int> ProjectsInaccesibleAfterCleanUp { get; }
+
+        public IAnalyticsEvent<int> TagsInaccesibleAfterCleanUp { get; }
+
+        public IAnalyticsEvent<int> TasksInaccesibleAfterCleanUp { get; }
+
+        public IAnalyticsEvent<int> ClientsInaccesibleAfterCleanUp { get; }
+
+        public IAnalyticsEvent<int> TimeEntriesInaccesibleAfterCleanUp { get; }
+
+        public IAnalyticsEvent<int> WorkspacesInaccesibleAfterCleanUp { get; }
+
+        public IAnalyticsEvent BackgroundSyncStarted { get; }
+
+        public IAnalyticsEvent<string> BackgroundSyncFinished { get; }
+
+        public IAnalyticsEvent<string, string, string> BackgroundSyncFailed { get; }
+
+        public IAnalyticsEvent BackgroundSyncMustStopExcecution { get; }
+
+        public IAnalyticsEvent<string, string> UnknownLoginFailure { get; }
+
+        public IAnalyticsEvent<string, string> UnknownSignUpFailure { get; }
+
+        public IAnalyticsEvent<int> RateLimitingDelayDuringSyncing { get; }
+
+        public IAnalyticsEvent<string> SyncOperationStarted { get; }
+
+        public IAnalyticsEvent SyncCompleted { get; }
+
+        public IAnalyticsEvent LeakyBucketOverflow { get; }
+
+        public IAnalyticsEvent<string, string, string> SyncFailed { get; }
+
+        public IAnalyticsEvent<string> SyncStateTransition { get; }
+
+        public IAnalyticsEvent AppDidEnterForeground { get; }
+
+        public IAnalyticsEvent AppSentToBackground { get; }
+
+        public IAnalyticsEvent<bool> GroupTimeEntriesSettingsChanged { get; }
+
+        public IAnalyticsEvent<EditTimeEntryOrigin> EditViewOpened { get; }
+
+        public IAnalyticsEvent<Platform> ReceivedLowMemoryWarning { get; }
+
+        public IAnalyticsEvent<SuggestionProviderType> SuggestionStarted { get; }
+
+        public IAnalyticsEvent<ApplicationInstallLocation> ApplicationInstallLocation { get; }
+
+        public IAnalyticsEvent<string, string, string, string> DebugSchedulerError { get; }
+
+        public IAnalyticsEvent<string, string> DebugNavigationError { get; }
+
+        public IAnalyticsEvent<bool> AccessibilityEnabled { get; }
+
+        public IAnalyticsEvent<bool> WatchPaired { get; }
+
         protected BaseAnalyticsService()
         {
-            InitializeAttributedProperties(this);
+            Login = new AnalyticsEvent<AuthenticationMethod>(this, nameof(Login), "AuthenticationMethod");
+            LoginError = new AnalyticsEvent<LoginErrorSource>(this, nameof(LoginError), "Source");
+            SignUp = new AnalyticsEvent<AuthenticationMethod>(this, nameof(SignUp), "AuthenticationMethod");
+            SignUpError = new AnalyticsEvent<SignUpErrorSource>(this, nameof(SignUpError), "Source");
+            UserIsMissingApiToken = new AnalyticsEvent<LoginSignupAuthenticationMethod>(this, nameof(UserIsMissingApiToken), "AuthenticationMethod");
+            OnboardingSkip = new AnalyticsEvent<string>(this, nameof(OnboardingSkip), "PageWhenSkipWasClicked");
+            Logout = new AnalyticsEvent<LogoutSource>(this, nameof(Logout), "Source");
+            ResetPassword = new AnalyticsEvent(this, nameof(ResetPassword));
+            PasswordManagerButtonClicked = new AnalyticsEvent(this, nameof(PasswordManagerButtonClicked));
+            PasswordManagerContainsValidEmail = new AnalyticsEvent(this, nameof(PasswordManagerContainsValidEmail));
+            PasswordManagerContainsValidPassword = new AnalyticsEvent(this, nameof(PasswordManagerContainsValidPassword));
+            CurrentPage = new AnalyticsEvent<Type>(this, nameof(CurrentPage), "CurrentPage");
+            DeleteTimeEntry = new AnalyticsEvent<DeleteTimeEntryOrigin>(this, nameof(DeleteTimeEntry), "Source");
+            ApplicationShortcut = new AnalyticsEvent<string>(this, nameof(ApplicationShortcut), "ApplicationShortcutType");
+            EditEntrySelectProject = new AnalyticsEvent(this, nameof(EditEntrySelectProject));
+            EditEntrySelectTag = new AnalyticsEvent(this, nameof(EditEntrySelectTag));
+            StartEntrySelectProject = new AnalyticsEvent<ProjectTagSuggestionSource>(this, nameof(StartEntrySelectProject), "Source");
+            StartEntrySelectTag = new AnalyticsEvent<ProjectTagSuggestionSource>(this, nameof(StartEntrySelectTag), "Source");
+            RatingViewWasShown = new AnalyticsEvent(this, nameof(RatingViewWasShown));
+            UserFinishedRatingViewFirstStep = new AnalyticsEvent<bool>(this, nameof(UserFinishedRatingViewFirstStep), "isPositive");
+            UserFinishedRatingViewSecondStep = new AnalyticsEvent<RatingViewSecondStepOutcome>(this, nameof(UserFinishedRatingViewSecondStep), "outcome");
+            RatingViewFirstStepLike = new AnalyticsEvent(this, nameof(RatingViewFirstStepLike));
+            RatingViewFirstStepDislike = new AnalyticsEvent(this, nameof(RatingViewFirstStepDislike));
+            RatingViewSecondStepRate = new AnalyticsEvent(this, nameof(RatingViewSecondStepRate));
+            RatingViewSecondStepDontRate = new AnalyticsEvent(this, nameof(RatingViewSecondStepDontRate));
+            RatingViewSecondStepSendFeedback = new AnalyticsEvent(this, nameof(RatingViewSecondStepSendFeedback));
+            RatingViewSecondStepDontSendFeedback = new AnalyticsEvent(this, nameof(RatingViewSecondStepDontSendFeedback));
+            ReportsSuccess = new AnalyticsEvent<ReportsSource, int, int, double>(this, nameof(ReportsSuccess), "Source", "TotalDays", "ProjectsNotSynced", "LoadingTime");
+            ReportsFailure = new AnalyticsEvent<ReportsSource, int, double>(this, nameof(ReportsFailure), "Source", "TotalDays", "LoadingTime");
+            OfflineModeDetected = new AnalyticsEvent(this, nameof(OfflineModeDetected));
+            EditViewTapped = new AnalyticsEvent<EditViewTapSource>(this, nameof(EditViewTapped), "TapSource");
+            EditViewClosed = new AnalyticsEvent<EditViewCloseReason>(this, nameof(EditViewClosed), "Reason");
+            WorkspacePlaceholdersCreated = new AnalyticsEvent<int>(this, nameof(WorkspacePlaceholdersCreated), "NumberOfCreatedPlaceholders");
+            ProjectPlaceholdersCreated = new AnalyticsEvent<int>(this, nameof(ProjectPlaceholdersCreated), "NumberOfCreatedPlaceholders");
+            TaskPlaceholdersCreated = new AnalyticsEvent<int>(this, nameof(TaskPlaceholdersCreated), "NumberOfCreatedPlaceholders");
+            TagPlaceholdersCreated = new AnalyticsEvent<int>(this, nameof(TagPlaceholdersCreated), "NumberOfCreatedPlaceholders");
+            HandledException = new AnalyticsEvent<string, string>(this, nameof(HandledException), "ExceptionType", "ExceptionMessage");
+            TwoRunningTimeEntriesInconsistencyFixed = new AnalyticsEvent(this, nameof(TwoRunningTimeEntriesInconsistencyFixed));
+            StartViewTapped = new AnalyticsEvent<StartViewTapSource>(this, nameof(StartViewTapped), "TapSource");
+            NoDefaultWorkspace = new AnalyticsEvent(this, nameof(NoDefaultWorkspace));
+            TimeEntryStarted = new AnalyticsEvent<TimeEntryStartOrigin>(this, nameof(TimeEntryStarted), "Origin");
+            TimeEntryStopped = new AnalyticsEvent<TimeEntryStopOrigin>(this, nameof(TimeEntryStopped), "Origin");
+            TimeEntryContinued = new AnalyticsEvent<ContinueTimeEntryOrigin, int, int, int>(this, nameof(TimeEntryContinued), "Origin", "IndexInLog", "DayInLog", "DaysInThePast");
+            LostWorkspaceAccess = new AnalyticsEvent(this, nameof(LostWorkspaceAccess));
+            GainWorkspaceAccess = new AnalyticsEvent(this, nameof(GainWorkspaceAccess));
+            WorkspaceSyncError = new AnalyticsEvent<string>(this, nameof(WorkspaceSyncError), "Reason");
+            UserSyncError = new AnalyticsEvent<string>(this, nameof(UserSyncError), "Reason");
+            WorkspaceFeaturesSyncError = new AnalyticsEvent<string>(this, nameof(WorkspaceFeaturesSyncError), "Reason");
+            PreferencesSyncError = new AnalyticsEvent<string>(this, nameof(PreferencesSyncError), "Reason");
+            TagsSyncError = new AnalyticsEvent<string>(this, nameof(TagsSyncError), "Reason");
+            ClientsSyncError = new AnalyticsEvent<string>(this, nameof(ClientsSyncError), "Reason");
+            ProjectsSyncError = new AnalyticsEvent<string>(this, nameof(ProjectsSyncError), "Reason");
+            TasksSyncError = new AnalyticsEvent<string>(this, nameof(TasksSyncError), "Reason");
+            TimeEntrySyncError = new AnalyticsEvent<string>(this, nameof(TimeEntrySyncError), "Reason");
+            EntitySynced = new AnalyticsEvent<PushSyncOperation, string>(this, nameof(EntitySynced), "Method", "Entity");
+            EntitySyncStatus = new AnalyticsEvent<string, string>(this, nameof(EntitySyncStatus), "Entity", "Status");
+            CalendarOnboardingStarted = new AnalyticsEvent(this, nameof(CalendarOnboardingStarted));
+            EditViewOpenedFromCalendar = new AnalyticsEvent(this, nameof(EditViewOpenedFromCalendar));
+            TimeEntryChangedFromCalendar = new AnalyticsEvent<CalendarChangeEvent>(this, nameof(TimeEntryChangedFromCalendar), "ChangeEvent");
+            ProjectsInaccesibleAfterCleanUp = new AnalyticsEvent<int>(this, nameof(ProjectsInaccesibleAfterCleanUp), "NumberOfProjectsInaccesibleAfterCleanUp");
+            TagsInaccesibleAfterCleanUp = new AnalyticsEvent<int>(this, nameof(TagsInaccesibleAfterCleanUp), "NumberOfTagsInaccesibleAfterCleanUp");
+            TasksInaccesibleAfterCleanUp = new AnalyticsEvent<int>(this, nameof(TasksInaccesibleAfterCleanUp), "NumberOfTasksInaccesibleAfterCleanUp");
+            ClientsInaccesibleAfterCleanUp = new AnalyticsEvent<int>(this, nameof(ClientsInaccesibleAfterCleanUp), "NumberOfClientsInaccesibleAfterCleanUp");
+            TimeEntriesInaccesibleAfterCleanUp = new AnalyticsEvent<int>(this, nameof(TimeEntriesInaccesibleAfterCleanUp), "NumberOfTimeEntriesInaccesibleAfterCleanUp");
+            WorkspacesInaccesibleAfterCleanUp = new AnalyticsEvent<int>(this, nameof(WorkspacesInaccesibleAfterCleanUp), "NumberOfWorkspacesInaccesibleAfterCleanUp");
+            BackgroundSyncStarted = new AnalyticsEvent(this, nameof(BackgroundSyncStarted));
+            BackgroundSyncFinished = new AnalyticsEvent<string>(this, nameof(BackgroundSyncStarted), "BackgroundSyncFinishedWithOutcome");
+            BackgroundSyncFailed = new AnalyticsEvent<string, string, string>(this, nameof(BackgroundSyncStarted), "Type", "Message", "StackTrace");
+            BackgroundSyncMustStopExcecution = new AnalyticsEvent(this, nameof(BackgroundSyncMustStopExcecution));
+            UnknownLoginFailure = new AnalyticsEvent<string, string>(this, nameof(UnknownLoginFailure), "Type", "Message");
+            UnknownSignUpFailure = new AnalyticsEvent<string, string>(this, nameof(UnknownSignUpFailure), "Type", "Message");
+            RateLimitingDelayDuringSyncing = new AnalyticsEvent<int>(this, nameof(RateLimitingDelayDuringSyncing), "DelayDurationSeconds");
+            SyncOperationStarted = new AnalyticsEvent<string>(this, nameof(SyncOperationStarted), "State");
+            SyncCompleted = new AnalyticsEvent(this, nameof(SyncCompleted));
+            LeakyBucketOverflow = new AnalyticsEvent(this, nameof(LeakyBucketOverflow));
+            SyncFailed = new AnalyticsEvent<string, string, string>(this, nameof(SyncFailed), "Type", "Message", "StackTrace");
+            SyncStateTransition = new AnalyticsEvent<string>(this, nameof(SyncStateTransition), "StateName");
+            AppDidEnterForeground = new AnalyticsEvent(this, nameof(AppDidEnterForeground));
+            AppSentToBackground = new AnalyticsEvent(this, nameof(AppSentToBackground));
+            GroupTimeEntriesSettingsChanged = new AnalyticsEvent<bool>(this, nameof(GroupTimeEntriesSettingsChanged), "State");
+            EditViewOpened = new AnalyticsEvent<EditTimeEntryOrigin>(this, nameof(EditViewOpened), "Origin");
+            ReceivedLowMemoryWarning = new AnalyticsEvent<Platform>(this, nameof(ReceivedLowMemoryWarning), "Platform");
+            SuggestionStarted = new AnalyticsEvent<SuggestionProviderType>(this, nameof(SuggestionStarted), "SuggestionProvider");
+            ApplicationInstallLocation = new AnalyticsEvent<ApplicationInstallLocation>(this, nameof(ApplicationInstallLocation), "Location");
+            DebugSchedulerError = new AnalyticsEvent<string, string, string, string>(this, nameof(DebugSchedulerError), "Type", "Source", "ExceptionType", "StackTrace");
+            DebugNavigationError = new AnalyticsEvent<string, string>(this, nameof(DebugNavigationError), "Action", "Type");
+            AccessibilityEnabled = new AnalyticsEvent<bool>(this, nameof(AccessibilityEnabled), "Enabled");
+            WatchPaired = new AnalyticsEvent<bool>(this, nameof(WatchPaired), "Installed");
         }
-
-        [AnalyticsEvent("AuthenticationMethod")]
-        public IAnalyticsEvent<AuthenticationMethod> Login { get; protected set; }
-
-        [AnalyticsEvent("Source")]
-        public IAnalyticsEvent<LoginErrorSource> LoginError { get; protected set; }
-
-        [AnalyticsEvent("AuthenticationMethod")]
-        public IAnalyticsEvent<AuthenticationMethod> SignUp { get; protected set; }
-
-        [AnalyticsEvent("Source")]
-        public IAnalyticsEvent<SignUpErrorSource> SignUpError { get; protected set; }
-
-        [AnalyticsEvent("AuthenticationMethod")]
-        public IAnalyticsEvent<LoginSignupAuthenticationMethod> UserIsMissingApiToken { get; protected set; }
-
-        [AnalyticsEvent("PageWhenSkipWasClicked")]
-        public IAnalyticsEvent<string> OnboardingSkip { get; protected set; }
-
-        [AnalyticsEvent("Source")]
-        public IAnalyticsEvent<LogoutSource> Logout { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent ResetPassword { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent PasswordManagerButtonClicked { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent PasswordManagerContainsValidEmail { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent PasswordManagerContainsValidPassword { get; protected set; }
-
-        [AnalyticsEvent("CurrentPage")]
-        public IAnalyticsEvent<Type> CurrentPage { get; protected set; }
-
-        [AnalyticsEvent("Source")]
-        public IAnalyticsEvent<DeleteTimeEntryOrigin> DeleteTimeEntry { get; protected set; }
-
-        [AnalyticsEvent("ApplicationShortcutType")]
-        public IAnalyticsEvent<string> ApplicationShortcut { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent EditEntrySelectProject { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent EditEntrySelectTag { get; protected set; }
-
-        [AnalyticsEvent("Source")]
-        public IAnalyticsEvent<ProjectTagSuggestionSource> StartEntrySelectProject { get; protected set; }
-
-        [AnalyticsEvent("Source")]
-        public IAnalyticsEvent<ProjectTagSuggestionSource> StartEntrySelectTag { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent RatingViewWasShown { get; protected set; }
-
-        [AnalyticsEvent("isPositive")]
-        public IAnalyticsEvent<bool> UserFinishedRatingViewFirstStep { get; protected set; }
-
-        [AnalyticsEvent("outcome")]
-        public IAnalyticsEvent<RatingViewSecondStepOutcome> UserFinishedRatingViewSecondStep { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent RatingViewFirstStepLike { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent RatingViewFirstStepDislike { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent RatingViewSecondStepRate { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent RatingViewSecondStepDontRate { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent RatingViewSecondStepSendFeedback { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent RatingViewSecondStepDontSendFeedback { get; protected set; }
-
-        [AnalyticsEvent("Source", "TotalDays", "ProjectsNotSynced", "LoadingTime")]
-        public IAnalyticsEvent<ReportsSource, int, int, double> ReportsSuccess { get; protected set; }
-
-        [AnalyticsEvent("Source", "TotalDays", "LoadingTime")]
-        public IAnalyticsEvent<ReportsSource, int, double> ReportsFailure { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent OfflineModeDetected { get; protected set; }
-
-        [AnalyticsEvent("TapSource")]
-        public IAnalyticsEvent<EditViewTapSource> EditViewTapped { get; set; }
-
-        [AnalyticsEvent("Reason")]
-        public IAnalyticsEvent<EditViewCloseReason> EditViewClosed { get; protected set; }
-
-        [AnalyticsEvent("NumberOfCreatedPlaceholders")]
-        public IAnalyticsEvent<int> WorkspacePlaceholdersCreated { get; protected set; }
-
-        [AnalyticsEvent("NumberOfCreatedPlaceholders")]
-        public IAnalyticsEvent<int> ProjectPlaceholdersCreated { get; protected set; }
-
-        [AnalyticsEvent("NumberOfCreatedPlaceholders")]
-        public IAnalyticsEvent<int> TaskPlaceholdersCreated { get; protected set; }
-
-        [AnalyticsEvent("NumberOfCreatedPlaceholders")]
-        public IAnalyticsEvent<int> TagPlaceholdersCreated { get; protected set; }
-
-        [AnalyticsEvent("ExceptionType", "ExceptionMessage")]
-        public IAnalyticsEvent<string, string> HandledException { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent TwoRunningTimeEntriesInconsistencyFixed { get; protected set; }
-
-        [AnalyticsEvent("TapSource")]
-        public IAnalyticsEvent<StartViewTapSource> StartViewTapped { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent NoDefaultWorkspace { get; protected set; }
-
-        [AnalyticsEvent("Origin")]
-        public IAnalyticsEvent<TimeEntryStartOrigin> TimeEntryStarted { get; protected set; }
-
-        [AnalyticsEvent("Origin")]
-        public IAnalyticsEvent<TimeEntryStopOrigin> TimeEntryStopped { get; protected set; }
-
-        [AnalyticsEvent("Origin", "IndexInLog", "DayInLog", "DaysInThePast")]
-        public IAnalyticsEvent<ContinueTimeEntryOrigin, int, int, int> TimeEntryContinued { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent LostWorkspaceAccess { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent GainWorkspaceAccess { get; protected set; }
-
-        [AnalyticsEvent("Reason")]
-        public IAnalyticsEvent<string> WorkspaceSyncError { get; protected set; }
-
-        [AnalyticsEvent("Reason")]
-        public IAnalyticsEvent<string> UserSyncError { get; protected set; }
-
-        [AnalyticsEvent("Reason")]
-        public IAnalyticsEvent<string> WorkspaceFeaturesSyncError { get; protected set; }
-
-        [AnalyticsEvent("Reason")]
-        public IAnalyticsEvent<string> PreferencesSyncError { get; protected set; }
-
-        [AnalyticsEvent("Reason")]
-        public IAnalyticsEvent<string> TagsSyncError { get; protected set; }
-
-        [AnalyticsEvent("Reason")]
-        public IAnalyticsEvent<string> ClientsSyncError { get; protected set; }
-
-        [AnalyticsEvent("Reason")]
-        public IAnalyticsEvent<string> ProjectsSyncError { get; protected set; }
-
-        [AnalyticsEvent("Reason")]
-        public IAnalyticsEvent<string> TasksSyncError { get; protected set; }
-
-        [AnalyticsEvent("Reason")]
-        public IAnalyticsEvent<string> TimeEntrySyncError { get; protected set; }
-
-        [AnalyticsEvent("Method", "Entity")]
-        public IAnalyticsEvent<PushSyncOperation, string> EntitySynced { get; protected set; }
-
-        [AnalyticsEvent("Entity", "Status")]
-        public IAnalyticsEvent<string, string> EntitySyncStatus { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent CalendarOnboardingStarted { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent EditViewOpenedFromCalendar { get; protected set; }
-
-        [AnalyticsEvent("ChangeEvent")]
-        public IAnalyticsEvent<CalendarChangeEvent> TimeEntryChangedFromCalendar { get; protected set; }
-
-        [AnalyticsEvent("NumberOfProjectsInaccesibleAfterCleanUp")]
-        public IAnalyticsEvent<int> ProjectsInaccesibleAfterCleanUp { get; protected set; }
-
-        [AnalyticsEvent("NumberOfTagsInaccesibleAfterCleanUp")]
-        public IAnalyticsEvent<int> TagsInaccesibleAfterCleanUp { get; protected set; }
-
-        [AnalyticsEvent("NumberOfTasksInaccesibleAfterCleanUp")]
-        public IAnalyticsEvent<int> TasksInaccesibleAfterCleanUp { get; protected set; }
-
-        [AnalyticsEvent("NumberOfClientsInaccesibleAfterCleanUp")]
-        public IAnalyticsEvent<int> ClientsInaccesibleAfterCleanUp { get; protected set; }
-
-        [AnalyticsEvent("NumberOfTimeEntriesInaccesibleAfterCleanUp")]
-        public IAnalyticsEvent<int> TimeEntriesInaccesibleAfterCleanUp { get; protected set; }
-
-        [AnalyticsEvent("NumberOfWorkspacesInaccesibleAfterCleanUp")]
-        public IAnalyticsEvent<int> WorkspacesInaccesibleAfterCleanUp { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent BackgroundSyncStarted { get; protected set; }
-
-        [AnalyticsEvent("BackgroundSyncFinishedWithOutcome")]
-        public IAnalyticsEvent<string> BackgroundSyncFinished { get; protected set; }
-
-        [AnalyticsEvent("Type", "Message", "StackTrace")]
-        public IAnalyticsEvent<string, string, string> BackgroundSyncFailed { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent BackgroundSyncMustStopExcecution { get; protected set; }
-
-        [AnalyticsEvent("Type", "Message")]
-        public IAnalyticsEvent<string, string> UnknownLoginFailure { get; protected set; }
-
-        [AnalyticsEvent("Type", "Message")]
-        public IAnalyticsEvent<string, string> UnknownSignUpFailure { get; protected set; }
-
-        [AnalyticsEvent("DelayDurationSeconds")]
-        public IAnalyticsEvent<int> RateLimitingDelayDuringSyncing { get; protected set; }
-
-        [AnalyticsEvent("State")]
-        public IAnalyticsEvent<string> SyncOperationStarted { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent SyncCompleted { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent LeakyBucketOverflow { get; protected set; }
-
-        [AnalyticsEvent("Type", "Message", "StackTrace")]
-        public IAnalyticsEvent<string, string, string> SyncFailed { get; protected set; }
-
-        [AnalyticsEvent("StateName")]
-        public IAnalyticsEvent<string> SyncStateTransition { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent AppDidEnterForeground { get; protected set; }
-
-        [AnalyticsEvent]
-        public IAnalyticsEvent AppSentToBackground { get; protected set; }
-
-        [AnalyticsEvent("State")]
-        public IAnalyticsEvent<bool> GroupTimeEntriesSettingsChanged { get; protected set; }
-
-        [AnalyticsEvent("Origin")]
-        public IAnalyticsEvent<EditTimeEntryOrigin> EditViewOpened { get; protected set; }
-
-        [AnalyticsEvent("Platform")]
-        public IAnalyticsEvent<Platform> ReceivedLowMemoryWarning { get; protected set; }
-
-        [AnalyticsEvent("SuggestionProvider")]
-        public IAnalyticsEvent<SuggestionProviderType> SuggestionStarted { get; protected set; }
-
-        [AnalyticsEvent("Location")]
-        public IAnalyticsEvent<ApplicationInstallLocation> ApplicationInstallLocation { get; protected set; }
-
-        [AnalyticsEvent("Enabled")]
-        public IAnalyticsEvent<bool> AccessibilityEnabled { get; protected set; }
-
-        [AnalyticsEvent("Installed")]
-        public IAnalyticsEvent<bool> WatchPaired { get; protected set; }
 
         public void TrackAnonymized(Exception exception)
         {

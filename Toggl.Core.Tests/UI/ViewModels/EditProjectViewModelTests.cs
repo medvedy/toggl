@@ -67,7 +67,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     RxActionFactory,
                     InteractorFactory,
                     SchedulerProvider,
-                    StopwatchProvider,
                     NavigationService
                 );
         }
@@ -141,23 +140,20 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 bool useRxActionFactory,
                 bool useInteractorFactory,
                 bool useSchedulerProvider,
-                bool useNavigationService,
-                bool useStopwatchProvider)
+                bool useNavigationService)
             {
                 var dataSource = useDataSource ? DataSource : null;
                 var rxActionFactory = useRxActionFactory ? RxActionFactory : null;
                 var interactorFactory = useInteractorFactory ? InteractorFactory : null;
                 var navigationService = useNavigationService ? NavigationService : null;
                 var schedulerProvider = useSchedulerProvider ? SchedulerProvider : null;
-                var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;
-
+            
                 Action tryingToConstructWithEmptyParameters =
                     () => new EditProjectViewModel(
                         dataSource,
                         rxActionFactory,
                         interactorFactory,
                         schedulerProvider,
-                        stopwatchProvider,
                         navigationService
                     );
 

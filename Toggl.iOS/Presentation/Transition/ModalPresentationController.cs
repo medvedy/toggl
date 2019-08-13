@@ -142,7 +142,7 @@ namespace Toggl.iOS.Presentation.Transition
 
         public override void ContainerViewWillLayoutSubviews()
         {
-            dimmingView.Frame = ContainerView.Bounds;
+            dimmingView.Frame = ContainerView?.Bounds ?? CGRect.Empty;
             PresentedView.Frame = FrameOfPresentedViewInContainerView;
 
             PresentedViewController.View.Layer.CornerRadius = 8.0f;

@@ -6,7 +6,6 @@ using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.DTOs;
 using Toggl.Core.Helper;
 using Toggl.Core.Interactors;
@@ -29,11 +28,9 @@ namespace Toggl.Core.UI.ViewModels
 
         private readonly Random random = new Random();
         private readonly IInteractorFactory interactorFactory;
-        private readonly IStopwatchProvider stopwatchProvider;
         private readonly ITogglDataSource dataSource;
 
         private long initialWorkspaceId;
-        private IStopwatch navigationFromStartTimeEntryViewModelStopwatch;
         private readonly IObservable<IThreadSafeClient> currentClient;
         private readonly IObservable<IThreadSafeWorkspace> currentWorkspace;
 
@@ -56,7 +53,6 @@ namespace Toggl.Core.UI.ViewModels
             IRxActionFactory rxActionFactory,
             IInteractorFactory interactorFactory,
             ISchedulerProvider schedulerProvider,
-            IStopwatchProvider stopwatchProvider,
             INavigationService navigationService)
             : base(navigationService)
         {
@@ -64,11 +60,9 @@ namespace Toggl.Core.UI.ViewModels
             Ensure.Argument.IsNotNull(rxActionFactory, nameof(rxActionFactory));
             Ensure.Argument.IsNotNull(interactorFactory, nameof(interactorFactory));
             Ensure.Argument.IsNotNull(schedulerProvider, nameof(schedulerProvider));
-            Ensure.Argument.IsNotNull(stopwatchProvider, nameof(stopwatchProvider));
 
-            this.stopwatchProvider = stopwatchProvider;
-            this.interactorFactory = interactorFactory;
             this.dataSource = dataSource;
+            this.interactorFactory = interactorFactory;
 
             Name = new BehaviorRelay<string>("");
             IsPrivate = new BehaviorRelay<bool>(false, CommonFunctions.Invert);
@@ -162,17 +156,7 @@ namespace Toggl.Core.UI.ViewModels
         {
             Name.Accept(name);
 
-            navigationFromStartTimeEntryViewModelStopwatch = stopwatchProvider.Get(MeasuredOperation.OpenCreateProjectViewFromStartTimeEntryView);
-            stopwatchProvider.Remove(MeasuredOperation.OpenCreateProjectViewFromStartTimeEntryView);
-
             return base.Initialize(name);
-        }
-
-        public override void ViewAppeared()
-        {
-            base.ViewAppeared();
-            navigationFromStartTimeEntryViewModelStopwatch?.Stop();
-            navigationFromStartTimeEntryViewModelStopwatch = null;
         }
 
         private IObservable<IThreadSafeWorkspace> pickWorkspace()

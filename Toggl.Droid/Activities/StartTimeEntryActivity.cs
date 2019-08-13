@@ -5,6 +5,7 @@ using Android.Support.V7.Widget;
 using Android.Views;
 using Android.Widget;
 using System;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using Toggl.Core.Autocomplete;
@@ -29,11 +30,10 @@ namespace Toggl.Droid.Activities
 
         private PopupWindow onboardingPopupWindow;
         private IDisposable onboardingDisposable;
-        private EventHandler onLayoutFinished;
 
         protected override void OnCreate(Bundle bundle)
         {
-            SetTheme(Resource.Style.AppTheme_BlueStatusBar);
+            SetTheme(Resource.Style.AppTheme_Light);
             base.OnCreate(bundle);
             if (ViewModelWasNotCached())
             {
@@ -127,9 +127,6 @@ namespace Toggl.Droid.Activities
                 .Select(text => text.AsImmutableSpans(descriptionField.SelectionStart))
                 .Subscribe(ViewModel.SetTextSpans.Inputs)
                 .DisposedBy(DisposeBag);
-
-            onLayoutFinished = (s, e) => ViewModel.StopSuggestionsRenderingStopwatch();
-            recyclerView.ViewTreeObserver.GlobalLayout += onLayoutFinished;
         }
 
         protected override void OnResume()
@@ -137,7 +134,6 @@ namespace Toggl.Droid.Activities
             base.OnResume();
             descriptionField.RequestFocus();
             selectProjectToolbarButton.LayoutChange += onSelectProjectToolbarButtonLayoutChanged;
-            recyclerView.ViewTreeObserver.GlobalLayout += onLayoutFinished;
         }
 
         private void onSelectProjectToolbarButtonLayoutChanged(object sender, View.LayoutChangeEventArgs changeEventArgs)
@@ -145,17 +141,12 @@ namespace Toggl.Droid.Activities
             selectProjectToolbarButton.Post(setupStartTimeEntryOnboardingStep);
         }
 
-        protected override void OnPause()
-        {
-            base.OnPause();
-            recyclerView.ViewTreeObserver.GlobalLayout -= onLayoutFinished;
-        }
-
         protected override void OnStop()
         {
             base.OnStop();
             selectProjectToolbarButton.LayoutChange -= onSelectProjectToolbarButtonLayoutChanged;
             onboardingPopupWindow?.Dismiss();
+            onboardingPopupWindow = null;
         }
 
         public override void Finish()

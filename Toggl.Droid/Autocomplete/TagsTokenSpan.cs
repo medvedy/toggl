@@ -9,7 +9,7 @@ namespace Toggl.Droid.Autocomplete
         public string TagName { get; }
 
         public TagsTokenSpan(long tagId, string tagName)
-            : base(Color.White, Color.White, true)
+            : base(Color.Black, Color.Black, true)
         {
             TagId = tagId;
             TagName = tagName;

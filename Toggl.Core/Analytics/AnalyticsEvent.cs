@@ -54,11 +54,9 @@ namespace Toggl.Core.Analytics
     [Preserve(AllMembers = true)]
     internal sealed class AnalyticsEvent<T> : BaseAnalyticsEvent, IAnalyticsEvent<T>
     {
-        public AnalyticsEvent(IAnalyticsService analyticsService, string name, string[] parameterNames)
-            : base(analyticsService, name, parameterNames)
+        public AnalyticsEvent(IAnalyticsService analyticsService, string name, string parameter)
+            : base(analyticsService, name, new[] { parameter })
         {
-            if (parameterNames.Length != 1)
-                throw new ArgumentException($"The analytics event needs exactly 1 parameter name, but was given {parameterNames.Length}.");
         }
 
         public void Track(T param)
@@ -70,11 +68,9 @@ namespace Toggl.Core.Analytics
     [Preserve(AllMembers = true)]
     internal sealed class AnalyticsEvent<T1, T2> : BaseAnalyticsEvent, IAnalyticsEvent<T1, T2>
     {
-        public AnalyticsEvent(IAnalyticsService analyticsService, string name, string[] parameterNames)
-            : base(analyticsService, name, parameterNames)
+        public AnalyticsEvent(IAnalyticsService analyticsService, string name, string parameter1, string parameter2)
+            : base(analyticsService, name, new[] { parameter1, parameter2 })
         {
-            if (parameterNames.Length != 2)
-                throw new ArgumentException($"The analytics event needs exactly 2 parameter name, but was given {parameterNames.Length}.");
         }
 
         public void Track(T1 param1, T2 param2)
@@ -86,11 +82,9 @@ namespace Toggl.Core.Analytics
     [Preserve(AllMembers = true)]
     internal sealed class AnalyticsEvent<T1, T2, T3> : BaseAnalyticsEvent, IAnalyticsEvent<T1, T2, T3>
     {
-        public AnalyticsEvent(IAnalyticsService analyticsService, string name, string[] parameterNames)
-            : base(analyticsService, name, parameterNames)
+        public AnalyticsEvent(IAnalyticsService analyticsService, string name, string parameter1, string parameter2, string parameter3)
+            : base(analyticsService, name, new[] { parameter1, parameter2, parameter3 })
         {
-            if (parameterNames.Length != 3)
-                throw new ArgumentException($"The analytics event needs exactly 3 parameter name, but was given {parameterNames.Length}.");
         }
 
         public void Track(T1 param1, T2 param2, T3 param3)
@@ -102,11 +96,9 @@ namespace Toggl.Core.Analytics
     [Preserve(AllMembers = true)]
     internal sealed class AnalyticsEvent<T1, T2, T3, T4> : BaseAnalyticsEvent, IAnalyticsEvent<T1, T2, T3, T4>
     {
-        public AnalyticsEvent(IAnalyticsService analyticsService, string name, string[] parameterNames)
-            : base(analyticsService, name, parameterNames)
+        public AnalyticsEvent(IAnalyticsService analyticsService, string name, string parameter1, string parameter2, string parameter3, string parameter4)
+            : base(analyticsService, name, new[] { parameter1, parameter2, parameter3, parameter4 })
         {
-            if (parameterNames.Length != 4)
-                throw new ArgumentException($"The analytics event needs exactly 4 parameter name, but was given {parameterNames.Length}.");
         }
 
         public void Track(T1 param1, T2 param2, T3 param3, T4 param4)

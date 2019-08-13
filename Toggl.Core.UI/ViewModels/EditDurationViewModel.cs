@@ -314,12 +314,12 @@ namespace Toggl.Core.UI.ViewModels
 
         private string toFormattedString(DateTimeOffset dateTimeOffset, TimeFormat timeFormat)
         {
-            return DateTimeToFormattedString.Convert(dateTimeOffset, timeFormat.Format, analyticsService);
+            return DateTimeToFormattedString.Convert(dateTimeOffset, timeFormat.Format);
         }
 
         private string toFormattedString(DateTimeOffset dateTimeOffset, DateFormat dateFormat)
         {
-            return DateTimeToFormattedString.Convert(dateTimeOffset, dateFormat.Short, analyticsService);
+            return DateTimeToFormattedString.Convert(dateTimeOffset, dateFormat.Short);
         }
 
         private string toFormattedString(TimeSpan timeSpan, DurationFormat format)

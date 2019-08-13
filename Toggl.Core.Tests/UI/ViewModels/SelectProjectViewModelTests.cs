@@ -28,7 +28,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
             protected SelectProjectParameter DefaultParameter { get; } = new SelectProjectParameter(null, null, 1);
 
             protected override SelectProjectViewModel CreateViewModel()
-            => new SelectProjectViewModel(DataSource, RxActionFactory, InteractorFactory, NavigationService, SchedulerProvider, StopwatchProvider);
+            => new SelectProjectViewModel(DataSource, RxActionFactory, InteractorFactory, NavigationService, SchedulerProvider);
         }
 
         public sealed class TheConstructor : SelectProjectViewModelTest
@@ -40,18 +40,16 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 bool useRxActionFactory,
                 bool useInteractorFactory,
                 bool useNavigationService,
-                bool useSchedulerProvider,
-                bool useStopwatchProvider)
+                bool useSchedulerProvider)
             {
                 var dataSource = useDataSource ? DataSource : null;
                 var rxActionFactory = useRxActionFactory ? RxActionFactory : null;
                 var interactorFactory = useInteractorFactory ? InteractorFactory : null;
                 var navigationService = useNavigationService ? NavigationService : null;
                 var schedulerProvider = useSchedulerProvider ? SchedulerProvider : null;
-                var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;
-
+              
                 Action tryingToConstructWithEmptyParameters =
-                    () => new SelectProjectViewModel(dataSource, rxActionFactory, interactorFactory, navigationService, schedulerProvider, stopwatchProvider);
+                    () => new SelectProjectViewModel(dataSource, rxActionFactory, interactorFactory, navigationService, schedulerProvider);
 
                 tryingToConstructWithEmptyParameters
                     .Should().Throw<ArgumentNullException>();

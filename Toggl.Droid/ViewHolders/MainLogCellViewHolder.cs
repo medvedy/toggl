@@ -37,6 +37,7 @@ namespace Toggl.Droid.ViewHolders
         private TextView addDescriptionLabel;
         private TextView timeEntriesLogCellProjectLabel;
         private TextView timeEntriesLogCellDuration;
+        private ImageView timeEntriesLogCellProjectArchivedIcon;
         private View groupItemBackground;
         private View timeEntriesLogCellContinueImage;
         private View errorImageView;
@@ -74,6 +75,7 @@ namespace Toggl.Droid.ViewHolders
             addDescriptionLabel = ItemView.FindViewById<TextView>(AddDescriptionLabel);
             timeEntriesLogCellProjectLabel = ItemView.FindViewById<TextView>(TimeEntriesLogCellProjectLabel);
             timeEntriesLogCellDuration = ItemView.FindViewById<TextView>(TimeEntriesLogCellDuration);
+            timeEntriesLogCellProjectArchivedIcon = ItemView.FindViewById<ImageView>(TimeEntriesLogCellProjectArchivedIcon);
             timeEntriesLogCellContinueImage = ItemView.FindViewById(TimeEntriesLogCellContinueImage);
             errorImageView = ItemView.FindViewById(ErrorImageView);
             errorNeedsSync = ItemView.FindViewById(ErrorNeedsSync);
@@ -145,6 +147,9 @@ namespace Toggl.Droid.ViewHolders
 
             timeEntriesLogCellProjectLabel.TextFormatted = Item.ProjectTaskClientText;
             timeEntriesLogCellProjectLabel.Visibility = Item.ProjectTaskClientVisibility;
+
+            timeEntriesLogCellProjectArchivedIcon.Visibility = Item.ProjectArchivedIconVisibility;
+            timeEntriesLogCellProjectArchivedIcon.SetColorFilter(Item.ProjectArchivedIconTintColor);
 
             timeEntriesLogCellDuration.Text = Item.ViewModel.Duration;
 

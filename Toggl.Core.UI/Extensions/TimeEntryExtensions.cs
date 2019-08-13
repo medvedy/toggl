@@ -24,6 +24,7 @@ namespace Toggl.Core.UI.Extensions
                 new[] { timeEntry.Id },
                 visualizationIntent,
                 timeEntry.Billable,
+                timeEntry.Project?.Active ?? true,
                 timeEntry.Description,
                 timeEntry.Duration.HasValue
                     ? DurationAndFormatToString.Convert(

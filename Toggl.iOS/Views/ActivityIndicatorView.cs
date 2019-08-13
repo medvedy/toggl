@@ -36,7 +36,6 @@ namespace Toggl.iOS.Views
 
         public override void AwakeFromNib()
         {
-            base.AwakeFromNib();
             init(null);
         }
 

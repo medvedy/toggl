@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive.Disposables;
+using CoreFoundation;
 using Toggl.Core.UI.ViewModels;
 using Toggl.Core.UI.Views;
 using Toggl.iOS.Extensions;
@@ -86,7 +87,7 @@ namespace Toggl.iOS.ViewControllers
 
         public void Close()
         {
-            UIApplication.SharedApplication.InvokeOnMainThread(this.Dismiss);
+            DispatchQueue.MainQueue.DispatchAsync(this.Dismiss);
         }
 
         protected override void Dispose(bool disposing)

@@ -13,7 +13,6 @@ using System;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Toggl.Core.Analytics;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Models.Interfaces;
 using Toggl.Core.Sync;
 using Toggl.Core.UI.Extensions;
@@ -25,7 +24,6 @@ using Toggl.Droid.Extensions;
 using Toggl.Droid.Extensions.Reactive;
 using Toggl.Droid.Helper;
 using Toggl.Droid.Presentation;
-using Toggl.Droid.Services;
 using Toggl.Droid.ViewHelpers;
 using Toggl.Shared.Extensions;
 using static Android.Content.Context;
@@ -40,7 +38,6 @@ namespace Toggl.Droid.Fragments
         private NotificationManager notificationManager;
         private MainRecyclerAdapter mainRecyclerAdapter;
         private LinearLayoutManager layoutManager;
-        private FirebaseStopwatchProviderAndroid localStopwatchProvider = new FirebaseStopwatchProviderAndroid();
         private bool shouldShowRatingViewOnResume;
         private ISubject<bool> visibilityChangedSubject = new BehaviorSubject<bool>(false);
         private IObservable<bool> visibilityChanged => visibilityChangedSubject.AsObservable();
@@ -50,15 +47,11 @@ namespace Toggl.Droid.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            var onCreateStopwatch = localStopwatchProvider.Create(MeasuredOperation.MainActivityOnCreate);
-            onCreateStopwatch.Start();
-
             var view = inflater.Inflate(Resource.Layout.MainFragment, container, false);
 
             InitializeViews(view);
             setupToolbar();
 
-            onCreateStopwatch.Stop();
             return view;
         }
 
@@ -78,7 +71,7 @@ namespace Toggl.Droid.Fragments
 
             ViewModel.ElapsedTime
                 .Subscribe(timeEntryCardTimerLabel.Rx().TextObserver())
-                .DisposedBy(DisposeBag);    
+                .DisposedBy(DisposeBag);
 
             ViewModel.CurrentRunningTimeEntry
                 .Select(te => te?.Description ?? "")
@@ -140,7 +133,6 @@ namespace Toggl.Droid.Fragments
             {
                 SuggestionsViewModel = ViewModel.SuggestionsViewModel,
                 RatingViewModel = ViewModel.RatingViewModel,
-                StopwatchProvider = localStopwatchProvider
             };
             mainRecyclerAdapter.SetupRatingViewVisibility(shouldShowRatingViewOnResume);
 
@@ -367,6 +359,7 @@ namespace Toggl.Droid.Fragments
         {
             var activity = Activity as AppCompatActivity;
             toolbar.Title = "";
+            mainRecyclerView.AttachMaterialScrollBehaviour(appBarLayout);
             activity.SetSupportActionBar(toolbar);
         }
     }

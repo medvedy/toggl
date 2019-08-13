@@ -48,7 +48,7 @@ namespace Toggl.Droid.Activities
 
         protected override void OnCreate(Bundle bundle)
         {
-            SetTheme(Resource.Style.AppTheme_BlueStatusBar);
+            SetTheme(Resource.Style.AppTheme_Light);
             base.OnCreate(bundle);
             if (ViewModelWasNotCached())
             {
@@ -315,6 +315,7 @@ namespace Toggl.Droid.Activities
                 {
                     datePickerDialog.DatePicker.MinDate = minDateTime.ToUnixTimeMilliseconds();
                     datePickerDialog.DatePicker.MaxDate = maxDateTime.ToUnixTimeMilliseconds();
+                    datePickerDialog.SetTitle("");
                 }
 
                 updateDateBounds();

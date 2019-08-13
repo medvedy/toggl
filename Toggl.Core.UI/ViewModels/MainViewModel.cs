@@ -8,13 +8,11 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Toggl.Core.Analytics;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Experiments;
 using Toggl.Core.Extensions;
 using Toggl.Core.Interactors;
 using Toggl.Core.Models.Interfaces;
 using Toggl.Core.Services;
-using Toggl.Core.Suggestions;
 using Toggl.Core.Sync;
 using Toggl.Core.UI.Collections;
 using Toggl.Core.UI.Extensions;
@@ -29,6 +27,7 @@ using Toggl.Shared.Extensions;
 using Toggl.Storage;
 using Toggl.Storage.Settings;
 using Toggl.Core.UI.Services;
+using Toggl.Shared.Models;
 
 namespace Toggl.Core.UI.ViewModels
 {
@@ -51,9 +50,7 @@ namespace Toggl.Core.UI.ViewModels
         private readonly ISyncManager syncManager;
         private readonly IUserPreferences userPreferences;
         private readonly IAnalyticsService analyticsService;
-        private readonly IOnboardingStorage onboardingStorage;
         private readonly IInteractorFactory interactorFactory;
-        private readonly IStopwatchProvider stopwatchProvider;
         private readonly INavigationService navigationService;
         private readonly IAccessibilityService accessibilityService;
         private readonly IAccessRestrictionStorage accessRestrictionStorage;
@@ -81,11 +78,13 @@ namespace Toggl.Core.UI.ViewModels
         public IObservable<IThreadSafeTimeEntry> CurrentRunningTimeEntry { get; private set; }
         public IObservable<bool> ShouldShowRatingView { get; private set; }
 
+        public IObservable<bool> SwipeActionsEnabled { get; }
+
         public IObservable<IEnumerable<MainLogSection>> TimeEntries { get; }
 
         public RatingViewModel RatingViewModel { get; }
         public SuggestionsViewModel SuggestionsViewModel { get; }
-        public IOnboardingStorage OnboardingStorage => onboardingStorage;
+        public IOnboardingStorage OnboardingStorage { get; }
 
         public UIAction Refresh { get; private set; }
         public UIAction OpenReports { get; private set; }
@@ -114,7 +113,6 @@ namespace Toggl.Core.UI.ViewModels
             IAccessibilityService accessibilityService,
             IAccessRestrictionStorage accessRestrictionStorage,
             ISchedulerProvider schedulerProvider,
-            IStopwatchProvider stopwatchProvider,
             IRxActionFactory rxActionFactory,
             IPermissionsChecker permissionsChecker,
             IBackgroundService backgroundService,
@@ -130,7 +128,6 @@ namespace Toggl.Core.UI.ViewModels
             Ensure.Argument.IsNotNull(interactorFactory, nameof(interactorFactory));
             Ensure.Argument.IsNotNull(onboardingStorage, nameof(onboardingStorage));
             Ensure.Argument.IsNotNull(schedulerProvider, nameof(schedulerProvider));
-            Ensure.Argument.IsNotNull(stopwatchProvider, nameof(stopwatchProvider));
             Ensure.Argument.IsNotNull(remoteConfigService, nameof(remoteConfigService));
             Ensure.Argument.IsNotNull(accessibilityService, nameof(accessibilityService));
             Ensure.Argument.IsNotNull(accessRestrictionStorage, nameof(accessRestrictionStorage));
@@ -141,21 +138,20 @@ namespace Toggl.Core.UI.ViewModels
 
             this.dataSource = dataSource;
             this.syncManager = syncManager;
+            this.platformInfo = platformInfo;
             this.userPreferences = userPreferences;
+            this.rxActionFactory = rxActionFactory;
             this.analyticsService = analyticsService;
             this.interactorFactory = interactorFactory;
-            this.onboardingStorage = onboardingStorage;
             this.schedulerProvider = schedulerProvider;
             this.accessibilityService = accessibilityService;
             this.accessRestrictionStorage = accessRestrictionStorage;
-            this.stopwatchProvider = stopwatchProvider;
-            this.rxActionFactory = rxActionFactory;
-            this.platformInfo = platformInfo;
 
             TimeService = timeService;
+            OnboardingStorage = onboardingStorage;
 
-            SuggestionsViewModel = new SuggestionsViewModel(interactorFactory, onboardingStorage, schedulerProvider, rxActionFactory, analyticsService, timeService, permissionsChecker, navigationService, backgroundService, userPreferences, syncManager);
-            RatingViewModel = new RatingViewModel(timeService, ratingService, analyticsService, onboardingStorage, navigationService, schedulerProvider, rxActionFactory);
+            SuggestionsViewModel = new SuggestionsViewModel(interactorFactory, OnboardingStorage, schedulerProvider, rxActionFactory, analyticsService, timeService, permissionsChecker, navigationService, backgroundService, userPreferences, syncManager);
+            RatingViewModel = new RatingViewModel(timeService, ratingService, analyticsService, OnboardingStorage, navigationService, schedulerProvider, rxActionFactory);
             TimeEntriesViewModel = new TimeEntriesViewModel(dataSource, interactorFactory, analyticsService, schedulerProvider, rxActionFactory, timeService);
 
             TimeEntries = TimeEntriesViewModel.TimeEntries
@@ -165,7 +161,9 @@ namespace Toggl.Core.UI.ViewModels
             LogEmpty = TimeEntriesViewModel.Empty.AsDriver(schedulerProvider);
             TimeEntriesCount = TimeEntriesViewModel.Count.AsDriver(schedulerProvider);
 
-            ratingViewExperiment = new RatingViewExperiment(timeService, dataSource, onboardingStorage, remoteConfigService);
+            ratingViewExperiment = new RatingViewExperiment(timeService, dataSource, OnboardingStorage, remoteConfigService);
+
+            SwipeActionsEnabled = userPreferences.SwipeActionsEnabled.AsDriver(schedulerProvider);
         }
 
         public override async Task Initialize()
@@ -182,7 +180,7 @@ namespace Toggl.Core.UI.ViewModels
             SyncProgressState = syncManager.ProgressObservable
                 .AsDriver(schedulerProvider);
 
-            var isWelcome = onboardingStorage.IsNewUser;
+            var isWelcome = OnboardingStorage.IsNewUser;
 
             var noTimeEntries = Observable
                 .CombineLatest(TimeEntriesViewModel.Empty, SuggestionsViewModel.IsEmpty,
@@ -262,7 +260,7 @@ namespace Toggl.Core.UI.ViewModels
                 .Do(trackRatingViewPresentation)
                 .AsDriver(schedulerProvider);
 
-            onboardingStorage.StopButtonWasTappedBefore
+            OnboardingStorage.StopButtonWasTappedBefore
                              .Subscribe(hasBeen => hasStopButtonEverBeenUsed = hasBeen)
                              .DisposedBy(disposeBag);
 
@@ -281,23 +279,27 @@ namespace Toggl.Core.UI.ViewModels
 
         private bool canPresentRating(bool shouldBeVisible)
         {
-            if (!shouldBeVisible) return false;
+            if (!shouldBeVisible)
+                return false;
 
-            var wasShownMoreThanOnce = onboardingStorage.NumberOfTimesRatingViewWasShown() > 1;
-            if (wasShownMoreThanOnce) return false;
+            var wasShownMoreThanOnce = OnboardingStorage.NumberOfTimesRatingViewWasShown() > 1;
+            if (wasShownMoreThanOnce)
+                return false;
 
-            var lastOutcome = onboardingStorage.RatingViewOutcome();
+            var lastOutcome = OnboardingStorage.RatingViewOutcome();
             if (lastOutcome != null)
             {
                 var thereIsInteractionFormLastTime = lastOutcome != RatingViewOutcome.NoInteraction;
-                if (thereIsInteractionFormLastTime) return false;
+                if (thereIsInteractionFormLastTime)
+                    return false;
             }
 
-            var lastOutcomeTime = onboardingStorage.RatingViewOutcomeTime();
+            var lastOutcomeTime = OnboardingStorage.RatingViewOutcomeTime();
             if (lastOutcomeTime != null)
             {
                 var oneDayHasNotPassedSinceLastTime = lastOutcomeTime + TimeSpan.FromHours(24) > TimeService.CurrentDateTime;
-                if (oneDayHasNotPassedSinceLastTime && !wasShownMoreThanOnce) return false;
+                if (oneDayHasNotPassedSinceLastTime && !wasShownMoreThanOnce)
+                    return false;
             }
 
             return true;
@@ -309,8 +311,8 @@ namespace Toggl.Core.UI.ViewModels
                 return;
 
             analyticsService.RatingViewWasShown.Track();
-            onboardingStorage.SetDidShowRatingView();
-            onboardingStorage.SetRatingViewOutcome(RatingViewOutcome.NoInteraction, TimeService.CurrentDateTime);
+            OnboardingStorage.SetDidShowRatingView();
+            OnboardingStorage.SetRatingViewOutcome(RatingViewOutcome.NoInteraction, TimeService.CurrentDateTime);
 
             TimeService.RunAfterDelay(TimeSpan.FromMinutes(ratingViewTimeout), () =>
             {
@@ -384,18 +386,10 @@ namespace Toggl.Core.UI.ViewModels
         }
 
         private Task openSettings()
-        {
-            var settingsStopwatch = stopwatchProvider.CreateAndStore(MeasuredOperation.OpenSettingsView);
-            settingsStopwatch.Start();
-            return navigate<SettingsViewModel>();
-        }
+            => navigate<SettingsViewModel>();
 
         private Task openReports()
-        {
-            var openReportsStopwatch = stopwatchProvider.CreateAndStore(MeasuredOperation.OpenReportsFromGiskard);
-            openReportsStopwatch.Start();
-            return navigate<ReportsViewModel>();
-        }
+            => navigate<ReportsViewModel>();
 
         private Task openSyncFailures()
             => navigate<SyncFailuresViewModel>();
@@ -405,15 +399,14 @@ namespace Toggl.Core.UI.ViewModels
             var initializeInManualMode = useDefaultMode == userPreferences.IsManualModeEnabled;
 
             OnboardingStorage.StartButtonWasTapped();
-            var startTimeEntryStopwatch = stopwatchProvider.CreateAndStore(MeasuredOperation.OpenStartView);
-            startTimeEntryStopwatch.Start();
 
             if (hasStopButtonEverBeenUsed)
-                onboardingStorage.SetNavigatedAwayFromMainViewAfterStopButton();
+                OnboardingStorage.SetNavigatedAwayFromMainViewAfterStopButton();
 
+            var requestCameFromLongPress = !useDefaultMode;
             var parameter = initializeInManualMode
-                ? StartTimeEntryParameters.ForManualMode(TimeService.CurrentDateTime)
-                : StartTimeEntryParameters.ForTimerMode(TimeService.CurrentDateTime);
+                ? StartTimeEntryParameters.ForManualMode(TimeService.CurrentDateTime, requestCameFromLongPress)
+                : StartTimeEntryParameters.ForTimerMode(TimeService.CurrentDateTime, requestCameFromLongPress);
 
             return navigate<StartTimeEntryViewModel, StartTimeEntryParameters>(parameter);
         }
@@ -430,7 +423,7 @@ namespace Toggl.Core.UI.ViewModels
                         continueInfo.IndexInLog,
                         continueInfo.DayInLog,
                         continueInfo.DaysInThePast).Execute())
-                .Do(_ => onboardingStorage.SetTimeEntryContinued());
+                .Do(_ => OnboardingStorage.SetTimeEntryContinued());
         }
 
         private async Task timeEntrySelected((long[], EditTimeEntryOrigin) timeEntrySelection)
@@ -440,15 +433,12 @@ namespace Toggl.Core.UI.ViewModels
 
             var (timeEntryIds, origin) = timeEntrySelection;
 
-            onboardingStorage.TimeEntryWasTapped();
+            OnboardingStorage.TimeEntryWasTapped();
 
             lock (isEditViewOpenLock)
             {
                 isEditViewOpen = true;
             }
-
-            var editTimeEntryStopwatch = stopwatchProvider.CreateAndStore(MeasuredOperation.EditTimeEntryFromMainLog);
-            editTimeEntryStopwatch.Start();
 
             analyticsService.EditViewOpened.Track(origin);
             await navigate<EditTimeEntryViewModel, long[]>(timeEntryIds);
@@ -480,7 +470,7 @@ namespace Toggl.Core.UI.ViewModels
             where TModel : ViewModelWithInput<TParameters>
         {
             if (hasStopButtonEverBeenUsed)
-                onboardingStorage.SetNavigatedAwayFromMainViewAfterStopButton();
+                OnboardingStorage.SetNavigatedAwayFromMainViewAfterStopButton();
 
             return Navigate<TModel, TParameters>(value);
         }
@@ -489,7 +479,7 @@ namespace Toggl.Core.UI.ViewModels
             where TModel : ViewModel
         {
             if (hasStopButtonEverBeenUsed)
-                onboardingStorage.SetNavigatedAwayFromMainViewAfterStopButton();
+                OnboardingStorage.SetNavigatedAwayFromMainViewAfterStopButton();
 
             return Navigate<TModel>();
         }

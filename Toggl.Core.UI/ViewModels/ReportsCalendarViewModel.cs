@@ -35,6 +35,7 @@ namespace Toggl.Core.UI.ViewModels
         };
         private readonly ITimeService timeService;
         private readonly ITogglDataSource dataSource;
+        private readonly ISchedulerProvider schedulerProvider;
         private readonly ISubject<Unit> reloadSubject = new Subject<Unit>();
         private readonly ISubject<ReportsDateRangeParameter> selectedDateRangeSubject = new Subject<ReportsDateRangeParameter>();
         private readonly ISubject<ReportsDateRangeParameter> highlightedDateRangeSubject = new BehaviorSubject<ReportsDateRangeParameter>(default(ReportsDateRangeParameter));
@@ -81,16 +82,19 @@ namespace Toggl.Core.UI.ViewModels
             ITimeService timeService,
             ITogglDataSource dataSource,
             IRxActionFactory rxActionFactory,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            ISchedulerProvider schedulerProvider)
             : base(navigationService)
         {
             Ensure.Argument.IsNotNull(dataSource, nameof(dataSource));
             Ensure.Argument.IsNotNull(timeService, nameof(timeService));
             Ensure.Argument.IsNotNull(rxActionFactory, nameof(rxActionFactory));
             Ensure.Argument.IsNotNull(navigationService, nameof(navigationService));
+            Ensure.Argument.IsNotNull(schedulerProvider, nameof(schedulerProvider));
 
             this.dataSource = dataSource;
             this.timeService = timeService;
+            this.schedulerProvider = schedulerProvider;
 
             SelectDay = rxActionFactory.FromAsync<ReportsCalendarDayViewModel>(calendarDayTapped);
             SelectShortcut = rxActionFactory.FromAction<ReportsCalendarBaseQuickSelectShortcut>(quickSelect);
@@ -125,7 +129,9 @@ namespace Toggl.Core.UI.ViewModels
                 .Select(user => user.BeginningOfWeek)
                 .DistinctUntilChanged();
 
-            DayHeadersObservable = beginningOfWeekObservable.Select(mapDayHeaders);
+            DayHeadersObservable = beginningOfWeekObservable
+                .Select(mapDayHeaders)
+                .AsDriver(new List<string>().AsReadOnly(), schedulerProvider);
 
             ReloadObservable = reloadSubject.AsObservable();
 
@@ -138,20 +144,25 @@ namespace Toggl.Core.UI.ViewModels
                     for (int i = 0; i < MonthsToShow; i++, monthIterator = monthIterator.Next())
                         months.Add(new ReportsCalendarPageViewModel(monthIterator, beginningOfWeek, today));
                     return months;
-                });
+                })
+                .AsDriver(new List<ReportsCalendarPageViewModel>(), schedulerProvider);
 
             RowsInCurrentMonthObservable = MonthsObservable.CombineLatest(
                 CurrentPageObservable.DistinctUntilChanged(),
                 (months, page) => months[page].RowCount)
-                .Select(CommonFunctions.Identity);
+                .Select(CommonFunctions.Identity)
+                .AsDriver(0, schedulerProvider);
 
             CurrentMonthObservable = monthSubject
                 .AsObservable()
                 .StartWith(MonthsToShow - 1)
                 .Select(convertPageIndexToCalendarMonth)
-                .Share();
+                .Share()
+                .AsDriver(default, schedulerProvider);
 
-            QuickSelectShortcutsObservable = beginningOfWeekObservable.Select(createQuickSelectShortcuts);
+            QuickSelectShortcutsObservable = beginningOfWeekObservable
+                .Select(createQuickSelectShortcuts)
+                .AsDriver(new List<ReportsCalendarBaseQuickSelectShortcut>(), schedulerProvider);
 
             beginningOfWeek = (await dataSource.User.Current.FirstAsync()).BeginningOfWeek;
 

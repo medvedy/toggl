@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -62,7 +62,7 @@
                     </constraints>
                 </view>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Add/filter projects" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="q0w-Zp-Y5Q">
-                    <rect key="frame" x="36" y="66.5" width="120" height="17"/>
+                    <rect key="frame" x="36" y="66.5" width="268" height="17"/>
                     <color key="tintColor" red="0.29803921568627451" green="0.85098039215686272" blue="0.39215686274509803" alpha="1" colorSpace="calibratedRGB"/>
                     <accessibility key="accessibilityConfiguration" label="ProjectNameTextField"/>
                     <nil key="textColor"/>
@@ -89,6 +89,7 @@ Use them to categorize your time.</string>
             <constraints>
                 <constraint firstItem="LAW-Wn-H2j" firstAttribute="centerY" secondItem="52a-eA-uvh" secondAttribute="centerY" id="2XV-zy-GTi"/>
                 <constraint firstItem="xT2-WU-RXH" firstAttribute="top" secondItem="Ebm-06-qhS" secondAttribute="top" id="4xc-iQ-mjU"/>
+                <constraint firstAttribute="trailing" secondItem="q0w-Zp-Y5Q" secondAttribute="trailing" constant="16" id="9qU-5W-GF3"/>
                 <constraint firstItem="Ebm-06-qhS" firstAttribute="leading" secondItem="2" secondAttribute="leading" id="BKL-rz-bmY"/>
                 <constraint firstAttribute="trailing" secondItem="Ebm-06-qhS" secondAttribute="trailing" id="IuS-jM-4YT"/>
                 <constraint firstItem="52a-eA-uvh" firstAttribute="top" secondItem="2" secondAttribute="top" id="IzG-Xm-T17"/>

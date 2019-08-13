@@ -23,7 +23,6 @@ namespace Toggl.iOS.ViewSources
         private const int noEntityCellHeight = 108;
         private BehaviorRelay<ProjectSuggestion> toggleTasks = new BehaviorRelay<ProjectSuggestion>(null);
 
-        public Action TableRenderCallback { get; set; }
         public IObservable<ProjectSuggestion> ToggleTasks { get; }
 
         public StartTimeEntryTableViewSource(UITableView tableView)
@@ -142,14 +141,6 @@ namespace Toggl.iOS.ViewSources
                 return noEntityCellHeight;
 
             return defaultRowHeight;
-        }
-
-        public override void WillDisplay(UITableView tableView, UITableViewCell cell, NSIndexPath indexPath)
-        {
-            if (tableView.IndexPathsForVisibleRows.Last().Row == indexPath.Row)
-            {
-                TableRenderCallback();
-            }
         }
     }
 }

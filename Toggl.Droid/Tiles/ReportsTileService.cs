@@ -2,6 +2,7 @@
 using Android.Content;
 using Android.Net;
 using Android.Service.QuickSettings;
+using Toggl.Core;
 
 namespace Toggl.Droid.Tiles
 {
@@ -16,7 +17,10 @@ namespace Toggl.Droid.Tiles
         {
             base.OnClick();
 
-            var intent = new Intent(Intent.ActionView).SetData(Uri.Parse("toggl://reports"));
+            var intent = new Intent(Intent.ActionView)
+                .AddFlags(ActivityFlags.NewTask)
+                .SetData(Uri.Parse(ApplicationUrls.Reports.Default));
+
             StartActivityAndCollapse(intent);
         }
     }

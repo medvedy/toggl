@@ -55,6 +55,7 @@ namespace Toggl.Droid.Views
             textPaint.Color = Color.White;
             textPaint.TextAlign = Paint.Align.Left;
             textPaint.TextSize = 10.SpToPixels(context);
+            textPaint.AntiAlias = true;
             textPaint.SetTypeface(Typeface.Create("sans-serif", TypefaceStyle.Bold));
         }
 
@@ -78,6 +79,7 @@ namespace Toggl.Droid.Views
             {
                 var segmentPaint = new Paint();
                 segmentPaint.Color = Color.ParseColor(segment.Color);
+                segmentPaint.AntiAlias = true;
 
                 var percent = (float)segment.TrackedTime.TotalSeconds / totalSeconds;
                 var sweepDegrees = fullCircle * percent;

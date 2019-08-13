@@ -55,12 +55,9 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     PlatformInfo,
                     UserPreferences,
                     AnalyticsService,
-                    UserAccessManager,
                     InteractorFactory,
                     OnboardingStorage,
                     NavigationService,
-                    PrivateSharedStorageService,
-                    StopwatchProvider,
                     RxActionFactory,
                     PermissionsChecker,
                     SchedulerProvider);
@@ -78,15 +75,12 @@ namespace Toggl.Core.Tests.UI.ViewModels
             public void ThrowsIfAnyOfTheArgumentsIsNull(
                 bool useDataSource,
                 bool useSyncManager,
-                bool useUserAccessManager,
                 bool useUserPreferences,
                 bool useAnalyticsService,
                 bool useInteractorFactory,
                 bool useplatformInfo,
                 bool useOnboardingStorage,
                 bool useNavigationService,
-                bool usePrivateSharedStorageService,
-                bool useStopwatchProvider,
                 bool useRxActionFactory,
                 bool usePermissionsChecker,
                 bool useSchedulerProvider)
@@ -96,12 +90,9 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var platformInfo = useplatformInfo ? PlatformInfo : null;
                 var userPreferences = useUserPreferences ? UserPreferences : null;
                 var analyticsService = useAnalyticsService ? AnalyticsService : null;
-                var userAccessManager = useUserAccessManager ? UserAccessManager : null;
                 var onboardingStorage = useOnboardingStorage ? OnboardingStorage : null;
                 var navigationService = useNavigationService ? NavigationService : null;
                 var interactorFactory = useInteractorFactory ? InteractorFactory : null;
-                var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;
-                var privateSharedStorageService = usePrivateSharedStorageService ? PrivateSharedStorageService : null;
                 var rxActionFactory = useRxActionFactory ? RxActionFactory : null;
                 var permissionsService = usePermissionsChecker ? PermissionsChecker : null;
                 var schedulerProvider = useSchedulerProvider ? SchedulerProvider : null;
@@ -113,12 +104,9 @@ namespace Toggl.Core.Tests.UI.ViewModels
                         platformInfo,
                         userPreferences,
                         analyticsService,
-                        userAccessManager,
                         interactorFactory,
                         onboardingStorage,
                         navigationService,
-                        privateSharedStorageService,
-                        stopwatchProvider,
                         rxActionFactory,
                         permissionsService,
                         schedulerProvider);
@@ -417,6 +405,36 @@ namespace Toggl.Core.Tests.UI.ViewModels
             }
         }
 
+        public sealed class TheSwipeActionsToggle : SettingsViewModelTest
+        {
+            public TheSwipeActionsToggle()
+            {
+                PreferencesSubject.OnNext(new MockPreferences());
+            }
+
+            [Fact, LogIfTooSlow]
+            public void TurnsOffSwipeActionsWhenTheyAreOn()
+            {
+                UserPreferences.AreSwipeActionsEnabled.Returns(true);
+
+                ViewModel.ToggleSwipeActions.Execute();
+                TestScheduler.Start();
+
+                UserPreferences.Received().SetSwipeActionsEnabled(false);
+            }
+
+            [Fact, LogIfTooSlow]
+            public void TurnsOnSwipeActionsWhenTheyAreOff()
+            {
+                UserPreferences.AreSwipeActionsEnabled.Returns(false);
+
+                ViewModel.ToggleSwipeActions.Execute();
+                TestScheduler.Start();
+
+                UserPreferences.Received().SetSwipeActionsEnabled(true);
+            }
+        }
+
         public sealed class TheToggleManualModeMethod : SettingsViewModelTest
         {
             public TheToggleManualModeMethod()
@@ -429,7 +447,8 @@ namespace Toggl.Core.Tests.UI.ViewModels
             {
                 UserPreferences.IsManualModeEnabled.Returns(true);
 
-                ViewModel.ToggleManualMode();
+                ViewModel.ToggleManualMode.Execute();
+                TestScheduler.Start();
 
                 UserPreferences.Received().EnableTimerMode();
             }
@@ -439,7 +458,8 @@ namespace Toggl.Core.Tests.UI.ViewModels
             {
                 UserPreferences.IsManualModeEnabled.Returns(false);
 
-                ViewModel.ToggleManualMode();
+                ViewModel.ToggleManualMode.Execute();
+                TestScheduler.Start();
 
                 UserPreferences.Received().EnableManualMode();
             }

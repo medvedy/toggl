@@ -9,7 +9,6 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Toggl.Core.Analytics;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.DTOs;
 using Toggl.Core.Extensions;
 using Toggl.Core.Interactors;
@@ -35,14 +34,10 @@ namespace Toggl.Core.UI.ViewModels
         private readonly ITogglDataSource dataSource;
         private readonly IInteractorFactory interactorFactory;
         private readonly IAnalyticsService analyticsService;
-        private readonly IStopwatchProvider stopwatchProvider;
         private readonly ISyncManager syncManager;
         private readonly ISchedulerProvider schedulerProvider;
         private readonly IRxActionFactory actionFactory;
         public IOnboardingStorage OnboardingStorage { get; private set; }
-
-        private IStopwatch stopwatchFromCalendar;
-        private IStopwatch stopwatchFromMainLog;
 
         private long workspaceId;
         private long? projectId;
@@ -114,7 +109,6 @@ namespace Toggl.Core.UI.ViewModels
             INavigationService navigationService,
             IOnboardingStorage onboardingStorage,
             IAnalyticsService analyticsService,
-            IStopwatchProvider stopwatchProvider,
             IRxActionFactory actionFactory,
             ISchedulerProvider schedulerProvider)
             : base(navigationService)
@@ -125,7 +119,6 @@ namespace Toggl.Core.UI.ViewModels
             Ensure.Argument.IsNotNull(interactorFactory, nameof(interactorFactory));
             Ensure.Argument.IsNotNull(onboardingStorage, nameof(onboardingStorage));
             Ensure.Argument.IsNotNull(analyticsService, nameof(analyticsService));
-            Ensure.Argument.IsNotNull(stopwatchProvider, nameof(stopwatchProvider));
             Ensure.Argument.IsNotNull(schedulerProvider, nameof(schedulerProvider));
             Ensure.Argument.IsNotNull(actionFactory, nameof(actionFactory));
 
@@ -134,7 +127,6 @@ namespace Toggl.Core.UI.ViewModels
             this.timeService = timeService;
             this.interactorFactory = interactorFactory;
             this.analyticsService = analyticsService;
-            this.stopwatchProvider = stopwatchProvider;
             this.schedulerProvider = schedulerProvider;
             this.actionFactory = actionFactory;
             OnboardingStorage = onboardingStorage;
@@ -239,11 +231,6 @@ namespace Toggl.Core.UI.ViewModels
 
             TimeEntryIds = timeEntryIds;
 
-            stopwatchFromCalendar = stopwatchProvider.Get(MeasuredOperation.EditTimeEntryFromCalendar);
-            stopwatchProvider.Remove(MeasuredOperation.EditTimeEntryFromCalendar);
-            stopwatchFromMainLog = stopwatchProvider.Get(MeasuredOperation.EditTimeEntryFromMainLog);
-            stopwatchProvider.Remove(MeasuredOperation.EditTimeEntryFromMainLog);
-
             var timeEntries = await interactorFactory.GetMultipleTimeEntriesById(TimeEntryIds).Execute();
             var timeEntry = timeEntries.First();
             originalTimeEntry = timeEntry;
@@ -298,17 +285,6 @@ namespace Toggl.Core.UI.ViewModels
                 : timeEntry.LastSyncErrorMessage);
         }
 
-        public override void ViewAppeared()
-        {
-            base.ViewAppeared();
-
-            stopwatchFromCalendar?.Stop();
-            stopwatchFromCalendar = null;
-
-            stopwatchFromMainLog?.Stop();
-            stopwatchFromMainLog = null;
-        }
-
         public override void ViewDestroyed()
         {
             base.ViewDestroyed();
@@ -334,11 +310,6 @@ namespace Toggl.Core.UI.ViewModels
             analyticsService.EditViewTapped.Track(EditViewTapSource.Project);
 
             OnboardingStorage.SelectsProject();
-
-            var selectProjectStopwatch = stopwatchProvider.CreateAndStore(
-                MeasuredOperation.OpenSelectProjectFromEditView, true);
-
-            selectProjectStopwatch.Start();
 
             var chosenProject = await Navigate<SelectProjectViewModel, SelectProjectParameter, SelectProjectParameter>(
                                     new SelectProjectParameter(projectId, taskId, workspaceId));
@@ -394,7 +365,6 @@ namespace Toggl.Core.UI.ViewModels
         {
             analyticsService.EditEntrySelectTag.Track();
             analyticsService.EditViewTapped.Track(EditViewTapSource.Tags);
-            stopwatchProvider.CreateAndStore(MeasuredOperation.OpenSelectTagsView).Start();
 
             var currentTags = tagIds.OrderBy(CommonFunctions.Identity).ToArray();
 

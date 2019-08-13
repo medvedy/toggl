@@ -2,7 +2,6 @@
 using System;
 using Toggl.Core.Analytics;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Interactors;
 using Toggl.Core.Login;
 using Toggl.Core.Services;
@@ -31,7 +30,6 @@ namespace Toggl.Core.Tests
         protected UserAgent UserAgent { get; } = new UserAgent("Tests", "0.0");
         protected ICalendarService CalendarService { get; } = Substitute.For<ICalendarService>();
         protected ISyncManager SyncManager { get; } = Substitute.For<ISyncManager>();
-        protected IStopwatchProvider StopwatchProvider { get; } = Substitute.For<IStopwatchProvider>();
         protected ITogglDatabase Database { get; } = Substitute.For<ITogglDatabase>();
         protected IPrivateSharedStorageService PrivateSharedStorageService { get; } =
             Substitute.For<IPrivateSharedStorageService>();
@@ -53,7 +51,6 @@ namespace Toggl.Core.Tests
                 new Lazy<ICalendarService>(() => CalendarService),
                 new Lazy<IUserPreferences>(() => UserPreferences),
                 new Lazy<IAnalyticsService>(() => AnalyticsService),
-                new Lazy<IStopwatchProvider>(() => StopwatchProvider),
                 new Lazy<INotificationService>(() => NotificationService),
                 new Lazy<ILastTimeUsageStorage>(() => LastTimeUsageStorage),
                 new Lazy<IApplicationShortcutCreator>(() => ApplicationShortcutCreator),

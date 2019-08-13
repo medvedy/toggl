@@ -8,16 +8,13 @@ using FsCheck;
 using FsCheck.Xunit;
 using NSubstitute;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Models.Interfaces;
 using Toggl.Core.Suggestions;
 using Toggl.Core.Tests.Generators;
 using Toggl.Core.Tests.Mocks;
-using Toggl.Shared.Models;
 using Toggl.Storage;
 using Toggl.Storage.Models;
 using Xunit;
-using TimeEntry = Toggl.Core.Models.TimeEntry;
 
 namespace Toggl.Core.Tests.Suggestions
 {
@@ -31,13 +28,11 @@ namespace Toggl.Core.Tests.Suggestions
             protected ITimeService TimeService { get; } = Substitute.For<ITimeService>();
             protected ITogglDataSource DataSource { get; } = Substitute.For<ITogglDataSource>();
 
-            protected IStopwatchProvider StopwatchProvider { get; } = Substitute.For<IStopwatchProvider>();
-
             protected DateTimeOffset Now { get; } = new DateTimeOffset(2017, 03, 24, 12, 34, 56, TimeSpan.Zero);
 
             protected MostUsedTimeEntrySuggestionProviderTest()
             {
-                Provider = new MostUsedTimeEntrySuggestionProvider(StopwatchProvider, TimeService, DataSource, NumberOfSuggestions);
+                Provider = new MostUsedTimeEntrySuggestionProvider(TimeService, DataSource, NumberOfSuggestions);
 
                 TimeService.CurrentDateTime.Returns(_ => Now);
             }
@@ -47,14 +42,13 @@ namespace Toggl.Core.Tests.Suggestions
         {
             [Theory, LogIfTooSlow]
             [ConstructorData]
-            public void ThrowsIfAnyOfTheArgumentsIsNull(bool useDataSource, bool useTimeService, bool useStopwatchProvider)
+            public void ThrowsIfAnyOfTheArgumentsIsNull(bool useDataSource, bool useTimeService)
             {
                 var dataSource = useDataSource ? DataSource : null;
                 var timeService = useTimeService ? TimeService : null;
-                var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;
 
                 Action tryingToConstructWithEmptyParameters =
-                    () => new MostUsedTimeEntrySuggestionProvider(stopwatchProvider, timeService, dataSource, NumberOfSuggestions);
+                    () => new MostUsedTimeEntrySuggestionProvider(timeService, dataSource, NumberOfSuggestions);
 
                 tryingToConstructWithEmptyParameters
                     .Should().Throw<ArgumentNullException>();
@@ -99,7 +93,7 @@ namespace Toggl.Core.Tests.Suggestions
             public void ReturnsUpToNSuggestionsWhereNIsTheNumberUsedWhenConstructingTheProvider(
                 NonNegativeInt numberOfSuggestions)
             {
-                var provider = new MostUsedTimeEntrySuggestionProvider(StopwatchProvider, TimeService, DataSource, numberOfSuggestions.Get);
+                var provider = new MostUsedTimeEntrySuggestionProvider(TimeService, DataSource, numberOfSuggestions.Get);
 
                 var timeEntries = getRepeatingTimeEntries(2, 2, 2, 3, 3, 4, 5, 5, 6, 6, 7, 7, 7, 8, 8, 9);
 

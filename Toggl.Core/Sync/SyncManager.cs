@@ -2,7 +2,6 @@
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Toggl.Core.Analytics;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Exceptions;
 using Toggl.Core.Services;
 using Toggl.Networking.Exceptions;
@@ -21,12 +20,9 @@ namespace Toggl.Core.Sync
         private readonly IAnalyticsService analyticsService;
         private readonly ILastTimeUsageStorage lastTimeUsageStorage;
         private readonly ITimeService timeService;
-        private readonly IStopwatchProvider stopwatchProvider;
         private readonly IAutomaticSyncingService automaticSyncingService;
 
         private bool isFrozen;
-
-        private IStopwatch syncTimeStopwatch;
 
         private readonly ISubject<SyncProgress> progress;
         private readonly ISubject<Exception> errors;
@@ -45,7 +41,6 @@ namespace Toggl.Core.Sync
             IAnalyticsService analyticsService,
             ILastTimeUsageStorage lastTimeUsageStorage,
             ITimeService timeService,
-            IStopwatchProvider stopwatchProvider,
             IAutomaticSyncingService automaticSyncingService)
         {
             Ensure.Argument.IsNotNull(queue, nameof(queue));
@@ -53,15 +48,13 @@ namespace Toggl.Core.Sync
             Ensure.Argument.IsNotNull(analyticsService, nameof(analyticsService));
             Ensure.Argument.IsNotNull(lastTimeUsageStorage, nameof(lastTimeUsageStorage));
             Ensure.Argument.IsNotNull(timeService, nameof(timeService));
-            Ensure.Argument.IsNotNull(stopwatchProvider, nameof(stopwatchProvider));
             Ensure.Argument.IsNotNull(automaticSyncingService, nameof(automaticSyncingService));
 
             this.queue = queue;
+            this.timeService = timeService;
             this.orchestrator = orchestrator;
             this.analyticsService = analyticsService;
             this.lastTimeUsageStorage = lastTimeUsageStorage;
-            this.timeService = timeService;
-            this.stopwatchProvider = stopwatchProvider;
             this.automaticSyncingService = automaticSyncingService;
 
             progress = new BehaviorSubject<SyncProgress>(SyncProgress.Unknown);
@@ -143,8 +136,6 @@ namespace Toggl.Core.Sync
             lock (stateLock)
             {
                 analyticsService.SyncCompleted.Track();
-                syncTimeStopwatch?.Stop();
-                syncTimeStopwatch = null;
 
                 IsRunningSync = false;
 
@@ -155,6 +146,7 @@ namespace Toggl.Core.Sync
                     {
                         progress.OnNext(SyncProgress.Synced);
                     }
+
                     return;
                 }
 
@@ -213,13 +205,9 @@ namespace Toggl.Core.Sync
 
         private void startSyncIfNeeded()
         {
-            if (IsRunningSync) return;
+            if (IsRunningSync)
+                return;
 
-            if (syncTimeStopwatch == null)
-            {
-                syncTimeStopwatch = stopwatchProvider.Create(MeasuredOperation.Sync);
-                syncTimeStopwatch.Start();
-            }
             var state = isFrozen ? Sleep : queue.Dequeue();
             analyticsService.SyncOperationStarted.Track(state.ToString());
 

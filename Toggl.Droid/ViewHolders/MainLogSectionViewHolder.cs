@@ -11,8 +11,6 @@ namespace Toggl.Droid.ViewHolders
         private TextView mainLogHeaderTitle;
         private TextView mainLogHeaderDuration;
 
-        public DateTimeOffset Now { private get; set; }
-
         public MainLogSectionViewHolder(View itemView) : base(itemView)
         {
         }

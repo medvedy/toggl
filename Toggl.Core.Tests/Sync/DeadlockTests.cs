@@ -14,7 +14,6 @@ using Toggl.Shared.Extensions;
 using Toggl.Storage.Settings;
 using Xunit;
 using static Toggl.Core.Sync.SyncState;
-using IStopwatchProvider = Toggl.Core.Diagnostics.IStopwatchProvider;
 
 namespace Toggl.Core.Tests.Sync
 {
@@ -41,7 +40,6 @@ namespace Toggl.Core.Tests.Sync
                 var analyticsService = Substitute.For<IAnalyticsService>();
                 var lastTimeUsageStorage = Substitute.For<ILastTimeUsageStorage>();
                 var timeService = Substitute.For<ITimeService>();
-                var stopwatchProvider = Substitute.For<IStopwatchProvider>();
                 var automaticSyncingService = Substitute.For<IAutomaticSyncingService>();
                 Queue = new SyncStateQueue();
                 Transitions = new TransitionHandlerProvider(analyticsService);
@@ -49,7 +47,7 @@ namespace Toggl.Core.Tests.Sync
                 StateMachine = new StateMachine(Transitions, Scheduler);
                 EntryPoints = new StateMachineEntryPoints();
                 Orchestrator = new StateMachineOrchestrator(StateMachine, EntryPoints);
-                SyncManager = new SyncManager(Queue, Orchestrator, analyticsService, lastTimeUsageStorage, timeService, stopwatchProvider, automaticSyncingService);
+                SyncManager = new SyncManager(Queue, Orchestrator, analyticsService, lastTimeUsageStorage, timeService, automaticSyncingService);
             }
 
             protected StateResult PreparePullTransitions(int n)

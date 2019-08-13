@@ -12,7 +12,8 @@ namespace Toggl.Droid.ViewHelpers
     {
         public LogItemViewModel ViewModel { get; }
         public ISpannable ProjectTaskClientText { get; }
-
+        public ViewStates ProjectArchivedIconVisibility { get; }
+        public Color ProjectArchivedIconTintColor { get; }
         public ViewStates ProjectTaskClientVisibility { get; }
         public ViewStates HasTagsIconVisibility { get; }
         public ViewStates BillableIconVisibility { get; }
@@ -31,6 +32,8 @@ namespace Toggl.Droid.ViewHelpers
             if (viewModel.HasProject)
             {
                 spannableString.Append(viewModel.ProjectName, new ForegroundColorSpan(Color.ParseColor(viewModel.ProjectColor)), SpanTypes.ExclusiveInclusive);
+                ProjectArchivedIconTintColor = Color.ParseColor(viewModel.ProjectColor);
+                ProjectArchivedIconVisibility = (!viewModel.IsActive).ToVisibility();
 
                 if (!string.IsNullOrEmpty(viewModel.TaskName))
                 {
@@ -49,8 +52,8 @@ namespace Toggl.Droid.ViewHelpers
             {
                 ProjectTaskClientText = new SpannableString(string.Empty);
                 ProjectTaskClientVisibility = ViewStates.Gone;
+                ProjectArchivedIconVisibility = ViewStates.Gone;
             }
-
             DescriptionVisibility = viewModel.HasDescription.ToVisibility();
             AddDescriptionLabelVisibility = (!viewModel.HasDescription).ToVisibility();
             ContinueImageVisibility = viewModel.CanContinue.ToVisibility();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
@@ -31,6 +32,9 @@ namespace Toggl.Shared.Extensions
 
             public void OnNext(T value) { }
         }
+
+        public static IDisposable Subscribe<T1, T2>(this IObservable<(T1, T2)> observable, Action<T1, T2> action)
+            => observable.Subscribe(tuple => action(tuple.Item1, tuple.Item2));
 
         public static IDisposable SubscribeToErrorsAndCompletion<T>(this IObservable<T> observable, Action<Exception> onError, Action onCompleted)
         {

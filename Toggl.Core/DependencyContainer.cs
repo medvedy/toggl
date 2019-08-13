@@ -4,7 +4,6 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Toggl.Core.Analytics;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Interactors;
 using Toggl.Core.Login;
 using Toggl.Core.Services;
@@ -45,7 +44,6 @@ namespace Toggl.Core
         private readonly Lazy<IBackgroundService> backgroundService;
         private readonly Lazy<IOnboardingStorage> onboardingStorage;
         private readonly Lazy<ISchedulerProvider> schedulerProvider;
-        private readonly Lazy<IStopwatchProvider> stopwatchProvider;
         private readonly Lazy<INotificationService> notificationService;
         private readonly Lazy<IRemoteConfigService> remoteConfigService;
         private readonly Lazy<IAccessibilityService> accessibilityService;
@@ -78,7 +76,6 @@ namespace Toggl.Core
         public IAnalyticsService AnalyticsService => analyticsService.Value;
         public IBackgroundService BackgroundService => backgroundService.Value;
         public IOnboardingStorage OnboardingStorage => onboardingStorage.Value;
-        public IStopwatchProvider StopwatchProvider => stopwatchProvider.Value;
         public ISchedulerProvider SchedulerProvider => schedulerProvider.Value;
         public IRemoteConfigService RemoteConfigService => remoteConfigService.Value;
         public IAccessibilityService AccessibilityService => accessibilityService.Value;
@@ -113,7 +110,6 @@ namespace Toggl.Core
             interactorFactory = new Lazy<IInteractorFactory>(CreateInteractorFactory);
             onboardingStorage = new Lazy<IOnboardingStorage>(CreateOnboardingStorage);
             schedulerProvider = new Lazy<ISchedulerProvider>(CreateSchedulerProvider);
-            stopwatchProvider = new Lazy<IStopwatchProvider>(CreateStopwatchProvider);
             shortcutCreator = new Lazy<IApplicationShortcutCreator>(CreateShortcutCreator);
             notificationService = new Lazy<INotificationService>(CreateNotificationService);
             remoteConfigService = new Lazy<IRemoteConfigService>(CreateRemoteConfigService);
@@ -152,7 +148,6 @@ namespace Toggl.Core
         protected abstract IUserPreferences CreateUserPreferences();
         protected abstract IAnalyticsService CreateAnalyticsService();
         protected abstract IOnboardingStorage CreateOnboardingStorage();
-        protected abstract IStopwatchProvider CreateStopwatchProvider();
         protected abstract ISchedulerProvider CreateSchedulerProvider();
         protected abstract INotificationService CreateNotificationService();
         protected abstract IRemoteConfigService CreateRemoteConfigService();
@@ -195,7 +190,6 @@ namespace Toggl.Core
                 AnalyticsService,
                 LastTimeUsageStorage,
                 SchedulerProvider.DefaultScheduler,
-                StopwatchProvider,
                 AutomaticSyncingService
             );
             SyncErrorHandlingService.HandleErrorsOf(syncManager);
@@ -215,7 +209,6 @@ namespace Toggl.Core
             calendarService,
             userPreferences,
             analyticsService,
-            stopwatchProvider,
             notificationService,
             lastTimeUsageStorage,
             shortcutCreator,

@@ -50,7 +50,8 @@
             local:layout_constraintRight_toRightOf="parent"
             android:layout_height="0dp"
             android:layout_width="wrap_content" />
-        <View android:id="@+id/MainLogGroupBackground"
+        <View 
+            android:id="@+id/MainLogGroupBackground"
             android:background="@color/lightGray"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -66,15 +67,13 @@
             android:layout_marginLeft="16dp"
             local:layout_constraintLeft_toLeftOf="parent"
             local:layout_constraintTop_toTopOf="parent"
-            local:layout_constraintBottom_toBottomOf="parent"
-            />
+            local:layout_constraintBottom_toBottomOf="parent" />
         <View
             android:id="@+id/TimeEntriesLogCellToggleExpansionButton"
             android:layout_width="60dp"
             android:layout_marginRight="-10dp"
             android:layout_height="match_parent"
-            local:layout_constraintLeft_toLeftOf="parent"
-            />
+            local:layout_constraintLeft_toLeftOf="parent" />
         <TextView
             android:id="@+id/TimeEntriesLogCellDescription"
             tools:visibility="visible"
@@ -111,6 +110,17 @@
             android:layout_width="0dp"
             android:layout_marginStart="16dp"
             android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/TimeEntriesLogCellProjectArchivedIcon"
+            android:src="@drawable/ic_archived"
+            local:layout_constraintBottom_toBottomOf="parent"
+            local:layout_constraintTop_toBottomOf="@id/AddDescriptionLabel"
+            local:layout_constraintLeft_toRightOf="@id/TimeEntriesLogCellGroupCount"
+            android:layout_marginStart="16dp"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="8dp" />
         <TextView
             android:id="@+id/TimeEntriesLogCellProjectLabel"
             tools:text="Design"
@@ -121,13 +131,13 @@
             android:textSize="15sp"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
-            local:layout_constraintBottom_toBottomOf="parent"
-            local:layout_constraintTop_toBottomOf="@id/AddDescriptionLabel"
-            local:layout_constraintLeft_toRightOf="@id/TimeEntriesLogCellGroupCount"
+            local:layout_constraintTop_toTopOf="@id/TimeEntriesLogCellProjectArchivedIcon"
+            local:layout_constraintBottom_toBottomOf="@id/TimeEntriesLogCellProjectArchivedIcon"
+            local:layout_constraintLeft_toRightOf="@id/TimeEntriesLogCellProjectArchivedIcon"
             local:layout_constraintRight_toRightOf="@+id/TimeEntriesLogCellDurationGradient"
+            local:layout_goneMarginStart="16dp"
+            android:layout_marginStart="4dp"
             android:layout_width="0dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="16dp"
             android:layout_height="wrap_content" />
         <View
             android:id="@+id/TimeEntriesLogCellDurationPaddingArea"

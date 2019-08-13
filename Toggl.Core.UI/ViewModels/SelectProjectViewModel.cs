@@ -6,7 +6,6 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Toggl.Core.Autocomplete.Suggestions;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Extensions;
 using Toggl.Core.Interactors;
 using Toggl.Core.Services;
@@ -27,12 +26,10 @@ namespace Toggl.Core.UI.ViewModels
         private readonly ITogglDataSource dataSource;
         private readonly IInteractorFactory interactorFactory;
         private readonly ISchedulerProvider schedulerProvider;
-        private readonly IStopwatchProvider stopwatchProvider;
 
         private long? taskId;
         private long? projectId;
         private long workspaceId;
-        private IStopwatch navigationFromEditTimeEntryViewModelStopwatch;
 
         private bool creationEnabled = true;
         private bool projectCreationSuggestionsAreEnabled;
@@ -58,20 +55,17 @@ namespace Toggl.Core.UI.ViewModels
             IRxActionFactory rxActionFactory,
             IInteractorFactory interactorFactory,
             INavigationService navigationService,
-            ISchedulerProvider schedulerProvider,
-            IStopwatchProvider stopwatchProvider)
+            ISchedulerProvider schedulerProvider)
             : base(navigationService)
         {
             Ensure.Argument.IsNotNull(dataSource, nameof(dataSource));
             Ensure.Argument.IsNotNull(rxActionFactory, nameof(rxActionFactory));
             Ensure.Argument.IsNotNull(interactorFactory, nameof(interactorFactory));
             Ensure.Argument.IsNotNull(schedulerProvider, nameof(schedulerProvider));
-            Ensure.Argument.IsNotNull(stopwatchProvider, nameof(stopwatchProvider));
 
             this.dataSource = dataSource;
             this.interactorFactory = interactorFactory;
             this.schedulerProvider = schedulerProvider;
-            this.stopwatchProvider = stopwatchProvider;
 
             ToggleTaskSuggestions = rxActionFactory.FromAction<ProjectSuggestion>(toggleTaskSuggestions);
             SelectProject = rxActionFactory.FromAsync<AutocompleteSuggestion>(selectProject);
@@ -104,9 +98,6 @@ namespace Toggl.Core.UI.ViewModels
             taskId = parameter.TaskId;
             projectId = parameter.ProjectId;
             workspaceId = parameter.WorkspaceId;
-
-            navigationFromEditTimeEntryViewModelStopwatch = stopwatchProvider.Get(MeasuredOperation.OpenSelectProjectFromEditView);
-            stopwatchProvider.Remove(MeasuredOperation.OpenSelectProjectFromEditView);
 
             var workspaces = await interactorFactory.GetAllWorkspaces().Execute();
 
@@ -146,12 +137,6 @@ namespace Toggl.Core.UI.ViewModels
             });
         }
 
-        public override void ViewAppeared()
-        {
-            base.ViewAppeared();
-            navigationFromEditTimeEntryViewModelStopwatch?.Stop();
-            navigationFromEditTimeEntryViewModelStopwatch = null;
-        }
         public override void CloseWithDefaultResult()
         {
             Close(new SelectProjectParameter(projectId, taskId, workspaceId));

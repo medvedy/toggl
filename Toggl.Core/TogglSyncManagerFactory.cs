@@ -20,7 +20,6 @@ using Toggl.Shared.Models;
 using Toggl.Storage;
 using Toggl.Storage.Models;
 using Toggl.Storage.Settings;
-using IStopwatchProvider = Toggl.Core.Diagnostics.IStopwatchProvider;
 
 namespace Toggl.Core
 {
@@ -34,7 +33,6 @@ namespace Toggl.Core
             IAnalyticsService analyticsService,
             ILastTimeUsageStorage lastTimeUsageStorage,
             IScheduler scheduler,
-            IStopwatchProvider stopwatchProvider,
             IAutomaticSyncingService automaticSyncingService)
         {
             var queue = new SyncStateQueue();
@@ -44,7 +42,7 @@ namespace Toggl.Core
             var stateMachine = new StateMachine(transitions, scheduler);
             var orchestrator = new StateMachineOrchestrator(stateMachine, entryPoints);
 
-            return new SyncManager(queue, orchestrator, analyticsService, lastTimeUsageStorage, timeService, stopwatchProvider, automaticSyncingService);
+            return new SyncManager(queue, orchestrator, analyticsService, lastTimeUsageStorage, timeService, automaticSyncingService);
         }
 
         public static void ConfigureTransitions(

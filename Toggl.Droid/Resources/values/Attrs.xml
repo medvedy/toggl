@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="TextInputLayoutWithHelperText">
-        <attr name="helperText" format="string" />
-        <attr name="helperTextColor" format="color" />
-        <attr name="helperTextSize" format="dimension" />
-    </declare-styleable>
+
     <declare-styleable name="WheelDurationInput">
         <attr name="fadedTextColor" format="color" />
     </declare-styleable>

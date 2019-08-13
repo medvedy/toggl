@@ -90,7 +90,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     SchedulerProvider,
                     PermissionsChecker,
                     NavigationService,
-                    StopwatchProvider,
                     RxActionFactory
                 );
         }
@@ -110,7 +109,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 bool useSchedulerProvider,
                 bool useNavigationService,
                 bool usePermissionsChecker,
-                bool useStopwatchProvider,
                 bool useRxActionFactory)
             {
                 var dataSource = useDataSource ? DataSource : null;
@@ -123,8 +121,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var schedulerProvider = useSchedulerProvider ? SchedulerProvider : null;
                 var navigationService = useNavigationService ? NavigationService : null;
                 var permissionsService = usePermissionsChecker ? PermissionsChecker : null;
-                var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;
-                var rxActionFactory = useRxActionFactory ? RxActionFactory : null;
+                 var rxActionFactory = useRxActionFactory ? RxActionFactory : null;
 
                 Action tryingToConstructWithEmptyParameters =
                     () => new CalendarViewModel(
@@ -138,7 +135,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                         schedulerProvider,
                         permissionsService,
                         navigationService,
-                        stopwatchProvider,
                         rxActionFactory);
 
                 tryingToConstructWithEmptyParameters.Should().Throw<ArgumentNullException>();

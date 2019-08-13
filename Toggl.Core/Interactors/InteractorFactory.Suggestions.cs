@@ -11,6 +11,6 @@ namespace Toggl.Core.Interactors
             => new GetSuggestionsInteractor(count, this);
 
         public IInteractor<IObservable<IReadOnlyList<ISuggestionProvider>>> GetSuggestionProviders(int count)
-            => new GetSuggestionProvidersInteractor(count, stopwatchProvider, dataSource, timeService, calendarService, this);
+            => new GetSuggestionProvidersInteractor(count, dataSource, timeService, calendarService, this);
     }
 }

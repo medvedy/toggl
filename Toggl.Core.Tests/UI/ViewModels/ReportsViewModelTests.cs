@@ -50,7 +50,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     InteractorFactory,
                     AnalyticsService,
                     SchedulerProvider,
-                    StopwatchProvider,
                     RxActionFactory
                 );
             }
@@ -73,7 +72,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                                                         bool useAnalyticsService,
                                                         bool useInteractorFactory,
                                                         bool useSchedulerProvider,
-                                                        bool useStopwatchProvider,
                                                         bool useRxActionFactory)
             {
                 var timeService = useTimeService ? TimeService : null;
@@ -82,7 +80,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var interactorFactory = useInteractorFactory ? InteractorFactory : null;
                 var analyticsService = useAnalyticsService ? AnalyticsService : null;
                 var schedulerProvider = useSchedulerProvider ? SchedulerProvider : null;
-                var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;
                 var rxActionFactory = useRxActionFactory ? RxActionFactory : null;
 
                 Action tryingToConstructWithEmptyParameters =
@@ -92,7 +89,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                                                interactorFactory,
                                                analyticsService,
                                                schedulerProvider,
-                                               stopwatchProvider,
                                                rxActionFactory);
 
                 tryingToConstructWithEmptyParameters
@@ -756,7 +752,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     InteractorFactory,
                     AnalyticsService,
                     SchedulerProvider,
-                    StopwatchProvider,
                     RxActionFactory
                 );
 

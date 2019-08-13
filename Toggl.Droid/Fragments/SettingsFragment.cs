@@ -1,18 +1,14 @@
-using Android.Graphics;
 using Android.OS;
 using Android.Support.V7.App;
-using Android.Support.V7.Widget;
 using Android.Views;
 using Android.Widget;
 using System;
 using System.Reactive.Linq;
 using Toggl.Core.UI.Extensions;
 using Toggl.Core.UI.ViewModels;
-using Toggl.Droid.Adapters;
 using Toggl.Droid.Extensions;
 using Toggl.Droid.Extensions.Reactive;
 using Toggl.Droid.Presentation;
-using Toggl.Droid.ViewHolders;
 using Toggl.Shared.Extensions;
 using FoundationResources = Toggl.Shared.Resources;
 
@@ -120,8 +116,8 @@ namespace Toggl.Droid.Fragments
                 .BindAction(ViewModel.SubmitFeedback)
                 .DisposedBy(DisposeBag);
 
-            manualModeView.Rx().Tap()
-                .Subscribe(ViewModel.ToggleManualMode)
+            manualModeView.Rx()
+                .BindAction(ViewModel.ToggleManualMode)
                 .DisposedBy(DisposeBag);
 
             groupTimeEntriesView.Rx()
@@ -179,6 +175,7 @@ namespace Toggl.Droid.Fragments
         {
             var activity = Activity as AppCompatActivity;
             toolbar.Title = FoundationResources.Settings;
+            scrollView.AttachMaterialScrollBehaviour(appBarLayout);
             activity.SetSupportActionBar(toolbar);
         }
     }

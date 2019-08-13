@@ -60,7 +60,7 @@
     <CodesignKey>iPhone Distribution: Toggl OU (B227VTMZ94)</CodesignKey>
     <MtouchExtraArgs>--linkskip Toggl.iOS</MtouchExtraArgs>
     <MtouchFloat32>true</MtouchFloat32>
-    <MtouchLink>Full</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
     <CodesignProvision>Daneel AppStore</CodesignProvision>
@@ -229,9 +229,6 @@
     </Reference>
     <Reference Include="System.Collections.Immutable">
       <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="Firebase.PerformanceMonitoring">
-      <HintPath>..\packages\Xamarin.Firebase.iOS.PerformanceMonitoring.1.1.0.1\lib\Xamarin.iOS10\Firebase.PerformanceMonitoring.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Essentials">
       <HintPath>..\packages\Xamarin.Essentials.1.0.0\lib\xamarinios10\Xamarin.Essentials.dll</HintPath>
@@ -1397,13 +1394,18 @@
     <InterfaceDefinition Include="ViewControllers\Settings\Siri\SiriShortcutsCustomTimeEntryViewController.xib" />
     <InterfaceDefinition Include="ViewControllers\Settings\Siri\PasteFromClipboardViewController.xib" />
     <InterfaceDefinition Include="ViewControllers\Settings\Siri\SiriWorkflowsViewController.xib" />
+    <InterfaceDefinition Include="Cells\Settings\SettingCell.xib" />
+    <InterfaceDefinition Include="Cells\Settings\SettingsSectionHeader.xib" />
+    <InterfaceDefinition Include="Cells\Settings\SettingsSyncCell.xib" />
+    <InterfaceDefinition Include="Cells\Settings\SettingsAnnotationCell.xib" />
+    <InterfaceDefinition Include="Cells\Settings\SettingsButtonCell.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
     <None Include="packages.config" />
     <None Include="FodyWeavers.xml" />
-    <BundleResource Include="RemoteConfigDefaults.plist" />
+    <BundleResource Include="RemoteConfigDefaults.plist" />    
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analytics\SiriIntentErrorTrackingEvent.cs" />
@@ -1466,6 +1468,13 @@
     <Compile Include="ViewControllers\Reactive\ReactiveViewController.PermissionsHandler.cs">
       <DependentUpon>ReactiveViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="ViewControllers\Settings\Models\AnnotationRow.cs" />
+    <Compile Include="ViewControllers\Settings\Models\ButtonRow.cs" />
+    <Compile Include="ViewControllers\Settings\Models\CustomRow.cs" />
+    <Compile Include="ViewControllers\Settings\Models\InfoRow.cs" />
+    <Compile Include="ViewControllers\Settings\Models\ISettingRow.cs" />
+    <Compile Include="ViewControllers\Settings\Models\NavigationRow.cs" />
+    <Compile Include="ViewControllers\Settings\Models\ToggleRow.cs" />
     <Compile Include="ViewControllers\Settings\Siri\SiriShortcutsSelectReportPeriodViewController.cs" />
     <Compile Include="ViewControllers\Settings\Siri\SiriShortcutsSelectReportPeriodViewController.designer.cs">
       <DependentUpon>SiriShortcutsSelectReportPeriodViewController.cs</DependentUpon>
@@ -1478,6 +1487,7 @@
     <Compile Include="ViewControllers\SyncFailuresViewController.cs" />
     <Compile Include="ViewSources\Generic\CollectionView\ReloadCollectionViewSource.cs" />
     <Compile Include="ViewSources\Generic\TableView\BaseTableViewSource.cs" />
+    <Compile Include="ViewSources\SettingsTableViewSource.cs" />
     <Compile Include="ViewSources\SiriShortcutsTableViewSource.cs" />
     <Compile Include="ViewSources\TimeEntriesLogViewSource.cs" />
     <Compile Include="ViewControllers\MainViewController.cs" />
@@ -1769,7 +1779,6 @@
       <DependentUpon>TermsOfServiceViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="Extensions\RangeExtensions.cs" />
-    <Compile Include="Services\RemoteConfigServiceIos.cs" />
     <Compile Include="Extensions\ImageExtension.cs" />
     <Compile Include="Services\RatingServiceIos.cs" />
     <Compile Include="Cells\BaseTableViewCell.cs" />
@@ -1882,7 +1891,6 @@
     <Compile Include="Views\Reports\BarLegendLabel.cs" />
     <Compile Include="Views\Reports\EmptyBarView.cs" />
     <Compile Include="Extensions\Reactive\UIBarButtonItemExtensions.cs" />
-    <Compile Include="Services\FirebaseStopwatchProviderIos.cs" />
     <Compile Include="ViewControllers\SelectDefaultWorkspaceViewController.cs" />
     <Compile Include="ViewControllers\SelectDefaultWorkspaceViewController.designer.cs">
       <DependentUpon>SelectDefaultWorkspaceViewController.cs</DependentUpon>
@@ -1978,9 +1986,29 @@
     <Compile Include="ViewControllers\Reactive\IReactiveViewController.cs" />
     <Compile Include="ViewControllers\Reactive\ReactiveNavigationController.cs" />
     <Compile Include="DebugHelpers\ErrorTriggeringViewController.cs" />
-    <Compile Include="DebugHelpers\ErrorTriggeringViewControllerShortcuts.cs" />
     <Compile Include="Views\AccessibilityAwareView.cs" />
     <Compile Include="Services\AccessibilityServiceIos.cs" />
+    <Compile Include="Services\RemoteConfigServiceIos.cs" />
+    <Compile Include="Cells\Settings\SettingCell.cs" />
+    <Compile Include="Cells\Settings\SettingCell.designer.cs">
+      <DependentUpon>SettingCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Cells\Settings\SettingsSectionHeader.cs" />
+    <Compile Include="Cells\Settings\SettingsSectionHeader.designer.cs">
+      <DependentUpon>SettingsSectionHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Cells\Settings\SettingsSyncCell.cs" />
+    <Compile Include="Cells\Settings\SettingsSyncCell.designer.cs">
+      <DependentUpon>SettingsSyncCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Cells\Settings\SettingsAnnotationCell.cs" />
+    <Compile Include="Cells\Settings\SettingsAnnotationCell.designer.cs">
+      <DependentUpon>SettingsAnnotationCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Cells\Settings\SettingsButtonCell.cs" />
+    <Compile Include="Cells\Settings\SettingsButtonCell.designer.cs">
+      <DependentUpon>SettingsButtonCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Toggl.Core.UI\Toggl.Core.UI.csproj">
@@ -2074,7 +2102,6 @@
   <Import Project="..\packages\Xamarin.Firebase.iOS.Analytics.4.0.5.1\build\Xamarin.Firebase.iOS.Analytics.targets" Condition="Exists('..\packages\Xamarin.Firebase.iOS.Analytics.4.0.5.1\build\Xamarin.Firebase.iOS.Analytics.targets')" />
   <Import Project="..\packages\Xamarin.Google.iOS.Core.3.1.0.1\build\Xamarin.Google.iOS.Core.targets" Condition="Exists('..\packages\Xamarin.Google.iOS.Core.3.1.0.1\build\Xamarin.Google.iOS.Core.targets')" />
   <Import Project="..\packages\Xamarin.Google.iOS.SignIn.4.1.1.1\build\Xamarin.Google.iOS.SignIn.targets" Condition="Exists('..\packages\Xamarin.Google.iOS.SignIn.4.1.1.1\build\Xamarin.Google.iOS.SignIn.targets')" />
-  <Import Project="..\packages\Xamarin.Firebase.iOS.PerformanceMonitoring.1.1.0.1\build\Xamarin.Firebase.iOS.PerformanceMonitoring.targets" Condition="Exists('..\packages\Xamarin.Firebase.iOS.PerformanceMonitoring.1.1.0.1\build\Xamarin.Firebase.iOS.PerformanceMonitoring.targets')" />
   <Import Project="..\packages\Accord.3.8.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.0\build\Accord.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

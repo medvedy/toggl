@@ -9,7 +9,6 @@ using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
 using Toggl.Core.Analytics;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Exceptions;
 using Toggl.Core.Services;
 using Toggl.Core.Sync;
@@ -33,7 +32,6 @@ namespace Toggl.Core.Tests.Sync
             protected IAnalyticsService AnalyticsService { get; } = Substitute.For<IAnalyticsService>();
             protected ILastTimeUsageStorage LastTimeUsageStorage { get; } = Substitute.For<ILastTimeUsageStorage>();
             protected ITimeService TimeService { get; } = Substitute.For<ITimeService>();
-            protected IStopwatchProvider StopwatchProvider { get; } = Substitute.For<IStopwatchProvider>();
             protected ISyncManager SyncManager { get; }
 
             protected IAutomaticSyncingService AutomaticSyncingService { get; } =
@@ -43,7 +41,7 @@ namespace Toggl.Core.Tests.Sync
             {
                 Orchestrator.SyncCompleteObservable.Returns(OrchestratorSyncComplete.AsObservable());
                 Orchestrator.StateObservable.Returns(OrchestratorStates.AsObservable());
-                SyncManager = new SyncManager(Queue, Orchestrator, AnalyticsService, LastTimeUsageStorage, TimeService, StopwatchProvider, AutomaticSyncingService);
+                SyncManager = new SyncManager(Queue, Orchestrator, AnalyticsService, LastTimeUsageStorage, TimeService, AutomaticSyncingService);
             }
         }
 
@@ -57,7 +55,6 @@ namespace Toggl.Core.Tests.Sync
                 bool useAnalyticsService,
                 bool useLastTimeUsageStorage,
                 bool useTimeService,
-                bool useStopwatchProvider,
                 bool useAutomaticSyncingService)
             {
                 var queue = useQueue ? Queue : null;
@@ -65,11 +62,10 @@ namespace Toggl.Core.Tests.Sync
                 var analyticsService = useAnalyticsService ? AnalyticsService : null;
                 var lastTimeUsageStorage = useLastTimeUsageStorage ? LastTimeUsageStorage : null;
                 var timeService = useTimeService ? TimeService : null;
-                var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;
                 var automaticSyncingService = useAutomaticSyncingService ? AutomaticSyncingService : null;
 
                 // ReSharper disable once ObjectCreationAsStatement
-                Action constructor = () => new SyncManager(queue, orchestrator, analyticsService, lastTimeUsageStorage, timeService, stopwatchProvider, automaticSyncingService);
+                Action constructor = () => new SyncManager(queue, orchestrator, analyticsService, lastTimeUsageStorage, timeService, automaticSyncingService);
 
                 constructor.Should().Throw<ArgumentNullException>();
             }
@@ -79,7 +75,7 @@ namespace Toggl.Core.Tests.Sync
             {
                 AutomaticSyncingService.ClearReceivedCalls();
 
-                var syncManager = new SyncManager(Queue, Orchestrator, AnalyticsService, LastTimeUsageStorage, TimeService, StopwatchProvider, AutomaticSyncingService);
+                var syncManager = new SyncManager(Queue, Orchestrator, AnalyticsService, LastTimeUsageStorage, TimeService, AutomaticSyncingService);
 
                 AutomaticSyncingService.Received().Start(syncManager);
             }

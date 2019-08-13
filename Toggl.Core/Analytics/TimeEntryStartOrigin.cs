@@ -68,5 +68,15 @@
         /// Starting a time entry via an url
         /// </summary>
         Deeplink,
+
+        /// <summary>
+        /// Starting a time entry by long pressing the Play button in Manual mode
+        /// </summary>
+        TimerLongPress,
+
+        /// <summary>
+        /// Starting a time entry by long pressing the Play button in Timer mode
+        /// </summary>
+        ManualLongPress
     }
 }

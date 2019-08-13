@@ -49,6 +49,26 @@ namespace Toggl.Droid
                 typeof(Microsoft.AppCenter.Crashes.Crashes),
                 typeof(Microsoft.AppCenter.Analytics.Analytics));
 #endif
+
+#if DEBUG
+            // Add or remove `Detect*` chains to detect unwanted behaviour
+            // Change the `Penalty*` to change how the StrictMode works, allowing it to crash the app if necessary
+            // Try not to misinterpret the logs/penalties; You should only be looking for behaviour that shouldn't
+            // be happening
+            Android.OS.StrictMode.SetVmPolicy(
+                new Android.OS.StrictMode.VmPolicy.Builder()
+                    .DetectActivityLeaks()
+                    .DetectLeakedClosableObjects()
+                    .DetectLeakedRegistrationObjects()
+                    .DetectLeakedSqlLiteObjects()
+                    .PenaltyLog()
+                    .Build());
+            Android.OS.StrictMode.SetThreadPolicy(
+                new Android.OS.StrictMode.ThreadPolicy.Builder()
+                    .DetectCustomSlowCalls()
+                    .PenaltyLog()
+                    .Build());
+#endif
         }
     }
 }

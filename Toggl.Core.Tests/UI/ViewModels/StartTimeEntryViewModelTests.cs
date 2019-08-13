@@ -82,7 +82,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     NavigationService,
                     AnalyticsService,
                     SchedulerProvider,
-                    StopwatchProvider,
                     RxActionFactory
                 );
         }
@@ -100,7 +99,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 bool useNavigationService,
                 bool useAnalyticsService,
                 bool useSchedulerProvider,
-                bool useStopwatchProvider,
                 bool useRxActionFactory)
             {
                 var dataSource = useDataSource ? DataSource : null;
@@ -111,7 +109,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var navigationService = useNavigationService ? NavigationService : null;
                 var analyticsService = useAnalyticsService ? AnalyticsService : null;
                 var schedulerProvider = useSchedulerProvider ? SchedulerProvider : null;
-                var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;
                 var rxActionFactory = useRxActionFactory ? RxActionFactory : null;
 
                 Action tryingToConstructWithEmptyParameters =
@@ -124,7 +121,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                         navigationService,
                         analyticsService,
                         schedulerProvider,
-                        stopwatchProvider,
                         rxActionFactory);
 
                 tryingToConstructWithEmptyParameters
@@ -168,7 +164,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
             {
                 var observable = Substitute.For<IConnectableObservable<DateTimeOffset>>();
                 TimeService.CurrentDateTimeObservable.Returns(observable);
-                var parameter = StartTimeEntryParameters.ForTimerMode(DateTimeOffset.Now);
+                var parameter = StartTimeEntryParameters.ForTimerMode(DateTimeOffset.Now, false);
 
                 ViewModel.Initialize(parameter);
 
@@ -702,7 +698,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
         {
             public TheCloseWithDefaultResultMethod()
             {
-                var parameter = StartTimeEntryParameters.ForTimerMode(DateTimeOffset.Now);
+                var parameter = StartTimeEntryParameters.ForTimerMode(DateTimeOffset.Now, false);
                 ViewModel.Initialize(parameter);
             }
 
@@ -1128,7 +1124,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
             public async Task TracksStartTimeTap()
             {
                 var now = DateTimeOffset.UtcNow;
-                var parameters = StartTimeEntryParameters.ForTimerMode(now);
+                var parameters = StartTimeEntryParameters.ForTimerMode(now, false);
                 var returnParameter = DurationParameter.WithStartAndDuration(now, TimeSpan.FromMinutes(1));
                 NavigationService
                     .Navigate<EditDurationViewModel, EditDurationParameters, DurationParameter>(Arg.Any<EditDurationParameters>(), ViewModel.View)
@@ -1145,7 +1141,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
         public sealed class TheSetStartDateCommand : StartTimeEntryViewModelTest
         {
             private static readonly DateTimeOffset now = new DateTimeOffset(2018, 02, 13, 23, 59, 12, TimeSpan.FromHours(-1));
-            private static readonly StartTimeEntryParameters prepareParameters = StartTimeEntryParameters.ForTimerMode(now);
+            private static readonly StartTimeEntryParameters prepareParameters = StartTimeEntryParameters.ForTimerMode(now, false);
 
             public TheSetStartDateCommand()
             {
@@ -1179,7 +1175,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
             [Fact]
             public async Task OpensTheSelectDateTimeViewModelWithCorrectLimitsForAStoppedTimeEntry()
             {
-                var stoppedParametsrs = StartTimeEntryParameters.ForManualMode(now);
+                var stoppedParametsrs = StartTimeEntryParameters.ForManualMode(now, false);
                 ViewModel.Initialize(stoppedParametsrs);
 
                 ViewModel.SetStartDate.Execute();

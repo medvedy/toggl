@@ -78,7 +78,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     NavigationService,
                     OnboardingStorage,
                     AnalyticsService,
-                    StopwatchProvider,
                     RxActionFactory,
                     SchedulerProvider);
         }
@@ -285,7 +284,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 bool useInteractorFactory,
                 bool useOnboardingStorage,
                 bool useAnalyticsService,
-                bool useStopwatchProvider,
                 bool useRxActionFactory,
                 bool useSchedulerProvider)
             {
@@ -296,7 +294,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var onboardingStorage = useOnboardingStorage ? OnboardingStorage : null;
                 var interactorFactory = useInteractorFactory ? InteractorFactory : null;
                 var analyticsService = useAnalyticsService ? AnalyticsService : null;
-                var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;
                 var rxActionFactory = useRxActionFactory ? RxActionFactory : null;
                 var schedulerProvider = useSchedulerProvider ? SchedulerProvider : null;
 
@@ -309,7 +306,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
                         navigationService,
                         onboardingStorage,
                         analyticsService,
-                        stopwatchProvider,
                         rxActionFactory,
                         schedulerProvider);
 

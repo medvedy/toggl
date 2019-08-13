@@ -881,14 +881,26 @@ Use them to add keywords to your time entries.</value>
     <data name="YourProfile" xml:space="preserve">
     <value>Your Profile</value>
   </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DateAndTime" xml:space="preserve">
+    <value>Date and Time</value>
+  </data>
     <data name="FormatSettings" xml:space="preserve">
     <value>Format settings</value>
   </data>
     <data name="Use24HourClock" xml:space="preserve">
     <value>Use 24-hour clock</value>
   </data>
+  <data name="SwipeActions" xml:space="preserve">
+    <value>Cell Swipe Actions</value>
+  </data>
     <data name="ManualMode" xml:space="preserve">
     <value>Manual mode</value>
+  </data>
+  <data name="TimerDefaults" xml:space="preserve">
+    <value>Timer Defaults</value>
   </data>
     <data name="ManualModeDescription" xml:space="preserve">
     <value>You can add your data manually, instead of tracking in real time.</value>
@@ -898,6 +910,9 @@ Use them to add keywords to your time entries.</value>
   </data>
     <data name="SubmitFeedback" xml:space="preserve">
     <value>Submit feedback</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
   </data>
     <data name="LoggingOutSecurely" xml:space="preserve">
     <value>Logging you out securely...</value>

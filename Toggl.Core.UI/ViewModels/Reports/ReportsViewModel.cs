@@ -10,7 +10,6 @@ using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Toggl.Core.Analytics;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Interactors;
 using Toggl.Core.Models;
 using Toggl.Core.Models.Interfaces;
@@ -42,7 +41,6 @@ namespace Toggl.Core.UI.ViewModels.Reports
         private readonly ITogglDataSource dataSource;
         private readonly IInteractorFactory interactorFactory;
         private readonly IAnalyticsService analyticsService;
-        private readonly IStopwatchProvider stopwatchProvider;
 
         private readonly Subject<Unit> reportSubject = new Subject<Unit>();
         private readonly BehaviorSubject<bool> isLoading = new BehaviorSubject<bool>(true);
@@ -111,7 +109,6 @@ namespace Toggl.Core.UI.ViewModels.Reports
             IInteractorFactory interactorFactory,
             IAnalyticsService analyticsService,
             ISchedulerProvider schedulerProvider,
-            IStopwatchProvider stopwatchProvider,
             IRxActionFactory rxActionFactory)
             : base(navigationService)
         {
@@ -121,16 +118,14 @@ namespace Toggl.Core.UI.ViewModels.Reports
             Ensure.Argument.IsNotNull(analyticsService, nameof(analyticsService));
             Ensure.Argument.IsNotNull(interactorFactory, nameof(interactorFactory));
             Ensure.Argument.IsNotNull(schedulerProvider, nameof(schedulerProvider));
-            Ensure.Argument.IsNotNull(stopwatchProvider, nameof(stopwatchProvider));
             Ensure.Argument.IsNotNull(navigationService, nameof(navigationService));
 
             this.dataSource = dataSource;
             this.timeService = timeService;
             this.analyticsService = analyticsService;
             this.interactorFactory = interactorFactory;
-            this.stopwatchProvider = stopwatchProvider;
 
-            CalendarViewModel = new ReportsCalendarViewModel(timeService, dataSource, rxActionFactory, navigationService);
+            CalendarViewModel = new ReportsCalendarViewModel(timeService, dataSource, rxActionFactory, navigationService, schedulerProvider);
 
             var totalsObservable = reportSubject
                 .SelectMany(_ => interactorFactory.GetReportsTotals(userId, workspaceId, startDate, endDate).Execute())
@@ -229,11 +224,6 @@ namespace Toggl.Core.UI.ViewModels.Reports
         {
             base.ViewAppeared();
 
-            var firstTimeOpenedFromMainTabBarStopwatch = stopwatchProvider.Get(MeasuredOperation.OpenReportsViewForTheFirstTime);
-            stopwatchProvider.Remove(MeasuredOperation.OpenReportsViewForTheFirstTime);
-            firstTimeOpenedFromMainTabBarStopwatch?.Stop();
-            firstTimeOpenedFromMainTabBarStopwatch = null;
-
             if (viewAppearedForTheFirstTime())
                 CalendarViewModel.ViewAppeared();
             else if (timeService.CurrentDateTime - viewDisappearedAtTime >= reloadInterval)
@@ -244,13 +234,6 @@ namespace Toggl.Core.UI.ViewModels.Reports
         {
             base.ViewDisappeared();
             viewDisappearedAtTime = timeService.CurrentDateTime;
-        }
-
-        public void StopNavigationFromMainLogStopwatch()
-        {
-            var navigationStopwatch = stopwatchProvider.Get(MeasuredOperation.OpenReportsFromGiskard);
-            stopwatchProvider.Remove(MeasuredOperation.OpenReportsFromGiskard);
-            navigationStopwatch?.Stop();
         }
 
         private bool viewAppearedForTheFirstTime()

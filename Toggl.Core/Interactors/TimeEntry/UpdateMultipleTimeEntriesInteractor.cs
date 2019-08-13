@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using Toggl.Core.DataSources;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.DTOs;
 using Toggl.Core.Extensions;
 using Toggl.Core.Models;
@@ -21,20 +20,17 @@ namespace Toggl.Core.Interactors
         private readonly ITimeService timeService;
         private readonly ITogglDataSource dataSource;
         private readonly IInteractorFactory interactorFactory;
-        private readonly IStopwatchProvider stopwatchProvider;
         private readonly ISyncManager syncManager;
 
         public UpdateMultipleTimeEntriesInteractor(
             ITimeService timeService,
             ITogglDataSource dataSource,
-            IStopwatchProvider stopwatchProvider,
             IInteractorFactory interactorFactory,
             ISyncManager syncManager,
             EditTimeEntryDto[] timeEntriesDtos)
         {
             Ensure.Argument.IsNotNull(timeService, nameof(timeService));
             Ensure.Argument.IsNotNull(dataSource, nameof(dataSource));
-            Ensure.Argument.IsNotNull(stopwatchProvider, nameof(stopwatchProvider));
             Ensure.Argument.IsNotNull(interactorFactory, nameof(interactorFactory));
             Ensure.Argument.IsNotNull(timeEntriesDtos, nameof(timeEntriesDtos));
             Ensure.Argument.IsNotNull(syncManager, nameof(syncManager));
@@ -43,15 +39,11 @@ namespace Toggl.Core.Interactors
             this.timeService = timeService;
             this.dataSource = dataSource;
             this.interactorFactory = interactorFactory;
-            this.stopwatchProvider = stopwatchProvider;
             this.syncManager = syncManager;
         }
 
         public IObservable<IEnumerable<IThreadSafeTimeEntry>> Execute()
         {
-            var updateTimeMeasurement = stopwatchProvider.Create(MeasuredOperation.UpdateTimeEntriesGroup);
-            updateTimeMeasurement.Start();
-
             var dtosMap = timeEntriesDtos.ToDictionary(dto => dto.Id);
 
             var ids = dtosMap.Keys.ToArray();
@@ -61,8 +53,7 @@ namespace Toggl.Core.Interactors
                 .Select(timeEntries => timeEntries.Select(timeEntry => createUpdatedTimeEntry(timeEntry, dtosMap[timeEntry.Id])))
                 .SelectMany(dataSource.TimeEntries.BatchUpdate)
                 .UnwrapUpdatedThreadSafeEntities()
-                .Do(syncManager.InitiatePushSync)
-                .Do(_ => updateTimeMeasurement.Stop());
+                .Do(syncManager.InitiatePushSync);
         }
 
         private TimeEntry createUpdatedTimeEntry(IThreadSafeTimeEntry timeEntry, EditTimeEntryDto dto)

@@ -46,14 +46,28 @@ namespace Toggl.Core.UI.Parameters
             Origin = origin;
         }
 
-        public static StartTimeEntryParameters ForManualMode(DateTimeOffset now)
+        public static StartTimeEntryParameters ForCalendarTapAndDrag(DateTimeOffset startTime)
             => new StartTimeEntryParameters(
-                now.Subtract(defaultManualModeDuration),
-                Resources.ManualTimeEntryPlaceholder,
-                defaultManualModeDuration,
-                null);
+                startTime: startTime.Subtract(defaultManualModeDuration),
+                placeholderText: Resources.ManualTimeEntryPlaceholder,
+                duration: defaultManualModeDuration,
+                workspaceId: null,
+                origin: TimeEntryStartOrigin.CalendarTapAndDrag);
 
-        public static StartTimeEntryParameters ForTimerMode(DateTimeOffset now)
-            => new StartTimeEntryParameters(now, Resources.StartTimeEntryPlaceholder, null, null);
+        public static StartTimeEntryParameters ForManualMode(DateTimeOffset now, bool fromLongPress)
+            => new StartTimeEntryParameters(
+                startTime: now.Subtract(defaultManualModeDuration),
+                placeholderText: Resources.ManualTimeEntryPlaceholder,
+                duration: defaultManualModeDuration,
+                workspaceId: null,
+                origin: fromLongPress ? TimeEntryStartOrigin.ManualLongPress : TimeEntryStartOrigin.Manual);
+
+        public static StartTimeEntryParameters ForTimerMode(DateTimeOffset now, bool fromLongPress)
+            => new StartTimeEntryParameters(
+                startTime: now,
+                placeholderText: Resources.StartTimeEntryPlaceholder,
+                duration: null,
+                workspaceId: null,
+                origin: fromLongPress ? TimeEntryStartOrigin.TimerLongPress : TimeEntryStartOrigin.Timer);
     }
 }

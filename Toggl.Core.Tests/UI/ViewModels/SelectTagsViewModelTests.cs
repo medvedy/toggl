@@ -26,7 +26,6 @@ namespace Toggl.Core.Tests.UI.ViewModels
             protected override SelectTagsViewModel CreateViewModel()
                 => new SelectTagsViewModel(
                     NavigationService,
-                    StopwatchProvider,
                     InteractorFactory,
                     SchedulerProvider,
                     RxActionFactory
@@ -71,20 +70,17 @@ namespace Toggl.Core.Tests.UI.ViewModels
             public void ThrowsIfAnyOfTheArgumentsIsNull(
                 bool useNavigationService,
                 bool useInteractorFactory,
-                bool useStopwatchProvider,
                 bool useRxActionFactory,
                 bool useSchedulerProvider)
             {
                 var navigationService = useNavigationService ? NavigationService : null;
                 var interactorFactory = useInteractorFactory ? InteractorFactory : null;
-                var stopwatchProvider = useStopwatchProvider ? StopwatchProvider : null;
                 var rxActionFactory = useRxActionFactory ? RxActionFactory : null;
                 var schedulerProvider = useSchedulerProvider ? SchedulerProvider : null;
 
                 Action tryingToConstructWithEmptyParameters =
                     () => new SelectTagsViewModel(
                         navigationService,
-                        stopwatchProvider,
                         interactorFactory,
                         schedulerProvider,
                         rxActionFactory);

@@ -15,7 +15,7 @@ namespace Toggl.Droid.Autocomplete
         public string TaskName { get; set; }
 
         public ProjectTokenSpan(long projectId, string projectName, string projectColor, long? taskId, string taskName)
-            : base(Color.White, Color.ParseColor(projectColor), false)
+            : base(Color.ParseColor(projectColor), Color.White, false)
         {
             ProjectId = projectId;
             ProjectName = projectName;

@@ -107,6 +107,10 @@ namespace Toggl.iOS.ViewControllers
 
             tableViewSource = new TimeEntriesLogViewSource();
 
+            ViewModel.SwipeActionsEnabled
+                .Subscribe(tableViewSource.SetSwipeActionsEnabled)
+                .DisposedBy(disposeBag);
+
             TimeEntriesLogTableView.Source = tableViewSource;
 
             ViewModel.TimeEntries
@@ -224,7 +228,7 @@ namespace Toggl.iOS.ViewControllers
                 .Select(te => te?.ToFormattedTimeEntryString(capHeight, clientColor, shouldColorProject: true))
                 .Subscribe(CurrentTimeEntryProjectTaskClientLabel.Rx().AttributedText())
                 .DisposedBy(DisposeBag);
-            
+
             //Accessibility
             CurrentTimeEntryCard.IsAccessibilityElementFocused
                 .CombineLatest(ViewModel.CurrentRunningTimeEntry,

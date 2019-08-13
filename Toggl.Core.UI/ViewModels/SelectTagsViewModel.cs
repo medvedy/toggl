@@ -5,7 +5,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Toggl.Core.Autocomplete.Suggestions;
-using Toggl.Core.Diagnostics;
 using Toggl.Core.Extensions;
 using Toggl.Core.Interactors;
 using Toggl.Core.Services;
@@ -21,14 +20,12 @@ namespace Toggl.Core.UI.ViewModels
     public sealed class SelectTagsViewModel : ViewModel<SelectTagsParameter, long[]>
     {
         private readonly IInteractorFactory interactorFactory;
-        private readonly IStopwatchProvider stopwatchProvider;
         private readonly ISchedulerProvider schedulerProvider;
         private readonly HashSet<long> selectedTagIds = new HashSet<long>();
 
         private long[] defaultResult;
         private long workspaceId;
         private bool creationEnabled = true;
-        private IStopwatch navigationFromEditTimeEntryStopwatch;
 
         public IObservable<IEnumerable<SelectableTagBaseViewModel>> Tags { get; private set; }
         public IObservable<bool> IsEmpty { get; private set; }
@@ -39,18 +36,15 @@ namespace Toggl.Core.UI.ViewModels
 
         public SelectTagsViewModel(
             INavigationService navigationService,
-            IStopwatchProvider stopwatchProvider,
             IInteractorFactory interactorFactory,
             ISchedulerProvider schedulerProvider,
             IRxActionFactory rxActionFactory)
             : base(navigationService)
         {
-            Ensure.Argument.IsNotNull(stopwatchProvider, nameof(stopwatchProvider));
             Ensure.Argument.IsNotNull(interactorFactory, nameof(interactorFactory));
             Ensure.Argument.IsNotNull(rxActionFactory, nameof(rxActionFactory));
             Ensure.Argument.IsNotNull(schedulerProvider, nameof(schedulerProvider));
 
-            this.stopwatchProvider = stopwatchProvider;
             this.interactorFactory = interactorFactory;
             this.schedulerProvider = schedulerProvider;
 
@@ -64,9 +58,6 @@ namespace Toggl.Core.UI.ViewModels
             defaultResult = parameter.TagIds;
             selectedTagIds.AddRange(parameter.TagIds);
             creationEnabled = parameter.CreationEnabled;
-
-            navigationFromEditTimeEntryStopwatch = stopwatchProvider.Get(MeasuredOperation.OpenSelectTagsView);
-            stopwatchProvider.Remove(MeasuredOperation.OpenSelectTagsView);
 
             var filteredTags = FilterText
                 .StartWith(string.Empty)
@@ -110,13 +101,6 @@ namespace Toggl.Core.UI.ViewModels
                 .AsDriver(schedulerProvider);
 
             return base.Initialize(parameter);
-        }
-
-        public override void ViewAppeared()
-        {
-            base.ViewAppeared();
-            navigationFromEditTimeEntryStopwatch?.Stop();
-            navigationFromEditTimeEntryStopwatch = null;
         }
 
         public override void CloseWithDefaultResult()

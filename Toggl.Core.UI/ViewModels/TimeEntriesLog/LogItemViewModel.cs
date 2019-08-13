@@ -13,6 +13,7 @@ namespace Toggl.Core.UI.ViewModels.TimeEntriesLog
         public LogItemVisualizationIntent VisualizationIntent { get; }
 
         public bool IsBillable { get; }
+        public bool IsActive { get; }
         public string Description { get; }
         public string ProjectName { get; }
         public string ProjectColor { get; }
@@ -45,6 +46,7 @@ namespace Toggl.Core.UI.ViewModels.TimeEntriesLog
             long[] representedTimeEntriesIds,
             LogItemVisualizationIntent visualizationIntent,
             bool isBillable,
+            bool isActive,
             string description,
             string duration,
             string projectName,
@@ -63,6 +65,7 @@ namespace Toggl.Core.UI.ViewModels.TimeEntriesLog
             RepresentedTimeEntriesIds = representedTimeEntriesIds.OrderBy(id => id).ToArray();
             VisualizationIntent = visualizationIntent;
             IsBillable = isBillable;
+            IsActive = isActive;
             Description = description;
             Duration = duration;
             ProjectName = projectName ?? string.Empty;
@@ -88,6 +91,7 @@ namespace Toggl.Core.UI.ViewModels.TimeEntriesLog
             if (ReferenceEquals(this, other)) return true;
             return RepresentedTimeEntriesIds.SequenceEqual(other.RepresentedTimeEntriesIds)
                 && IsBillable == other.IsBillable
+                && IsActive == other.IsActive
                 && string.Equals(Description, other.Description)
                 && string.Equals(ProjectName, other.ProjectName)
                 && string.Equals(ProjectColor, other.ProjectColor)
@@ -112,6 +116,7 @@ namespace Toggl.Core.UI.ViewModels.TimeEntriesLog
                 RepresentedTimeEntriesIds.Aggregate(
                     (acc, id) => HashCode.From(acc, id)),
                 IsBillable,
+                IsActive,
                 Description,
                 ProjectName,
                 ProjectColor,

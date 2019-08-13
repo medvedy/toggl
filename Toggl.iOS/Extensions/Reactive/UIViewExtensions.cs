@@ -1,4 +1,5 @@
-﻿using CoreGraphics;
+﻿using CoreFoundation;
+using CoreGraphics;
 using System;
 using System.Reactive;
 using System.Reactive.Disposables;
@@ -21,7 +22,7 @@ namespace Toggl.iOS.Extensions.Reactive
 
                 return Disposable.Create(() =>
                 {
-                    UIApplication.SharedApplication.InvokeOnMainThread(() =>
+                    DispatchQueue.MainQueue.DispatchAsync(() =>
                     {
                         reactive.Base.RemoveGestureRecognizer(gestureRecognizer);
                     });
@@ -58,7 +59,7 @@ namespace Toggl.iOS.Extensions.Reactive
 
                 return Disposable.Create(() =>
                 {
-                    UIApplication.SharedApplication.InvokeOnMainThread(() =>
+                    DispatchQueue.MainQueue.DispatchAsync(() =>
                     {
                         reactive.Base.RemoveGestureRecognizer(gestureRecognizer);
                     });

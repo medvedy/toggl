@@ -118,7 +118,7 @@ namespace Toggl.Core.Tests.Interactors.TimeEntry
         }
 
         private UpdateMultipleTimeEntriesInteractor createInteractor(EditTimeEntryDto[] dtos)
-            => new UpdateMultipleTimeEntriesInteractor(TimeService, DataSource, StopwatchProvider, InteractorFactory, SyncManager, dtos);
+            => new UpdateMultipleTimeEntriesInteractor(TimeService, DataSource, InteractorFactory, SyncManager, dtos);
 
         [Fact, LogIfTooSlow]
         public async Task UpdatesTheDescriptionProperty()
