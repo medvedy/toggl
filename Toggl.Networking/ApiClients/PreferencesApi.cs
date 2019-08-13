@@ -24,11 +24,11 @@ namespace Toggl.Networking.ApiClients
             => SendRequest<Preferences>(endPoints.Get, AuthHeader)
                 .Upcast<IPreferences, Preferences>();
 
-        public Task<IPreferences> Update(IPreferences preferences)
+        public async Task<IPreferences> Update(IPreferences preferences)
         {
             var body = serializer.Serialize(preferences as Preferences ?? new Preferences(preferences), SerializationReason.Post);
-            return SendRequest(endPoints.Post, new[] { AuthHeader }, body)
-                .ContinueWith(_ => preferences);
+            await SendRequest(endPoints.Post, new[] { AuthHeader }, body).ConfigureAwait(false);
+            return preferences;
         }
     }
 }
