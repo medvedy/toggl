@@ -9,15 +9,17 @@ namespace Toggl.Networking.Tests.Integration.BaseTests
     {
         protected sealed override async Task<T> CallEndpointWith(ITogglApi api)
         {
+            T entityToUpdate;
             try
             {
-                var entityToUpdate = await PrepareForCallingUpdateEndpoint(ValidApi);
-                return await CallUpdateEndpoint(api, entityToUpdate);
+                entityToUpdate = await PrepareForCallingUpdateEndpoint(ValidApi);
             }
             catch (ApiException e)
             {
                 throw new InvalidOperationException("Preparation for calling the update endpoint itself failed.", e);
             }
+
+            return await CallUpdateEndpoint(api, entityToUpdate);
         }
 
         protected abstract Task<T> PrepareForCallingUpdateEndpoint(ITogglApi api);
