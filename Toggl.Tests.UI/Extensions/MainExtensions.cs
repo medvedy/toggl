@@ -197,8 +197,7 @@ namespace Toggl.Tests.UI.Extensions
             if (string.IsNullOrEmpty(projectName))
                 return x => x.Marked(Main.TimeEntryRow).Descendant().Text(timeEntryDescription);
 
-            return x => x.Marked(Main.TimeEntryRow).Descendant().Text(timeEntryDescription).Sibling().Contains(projectName);
-
+            return x => x.Marked(Main.TimeEntryRow).Descendant().Text(timeEntryDescription).Parent().Descendant().Contains(projectName);
         }
     }
 }
