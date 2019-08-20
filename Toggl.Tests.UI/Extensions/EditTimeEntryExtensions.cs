@@ -39,7 +39,7 @@ namespace Toggl.Tests.UI.Extensions
             if (stopTime != null && !app.StopTimeIsCorrect(startTime))
                 wrongFields.Add("stop time");
 
-            if (isStopped != null && !app.StoppedStateIsCorrect(isStopped))
+            if (isStopped != null && !app.StoppedStateIsCorrect((bool)isStopped))
                 wrongFields.Add("stopped state");
 
             if (duration != null && !app.DurationIsCorrect(duration))
