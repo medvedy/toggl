@@ -255,7 +255,7 @@ namespace Toggl.Tests.UI
             // Delete the time entry
             app.OpenEditView();
             app.Tap(EditTimeEntry.DeleteButton);
-            var deleteActionButton = app.Query(e => e.All().Property("text").Contains("Delete"))[3];
+            var deleteActionButton = app.Query(e => e.All().Property("text").Contains("Delete"))[1];
             app.TapCoordinates(deleteActionButton.Rect.CenterX, deleteActionButton.Rect.CenterY);
 
             // Create a new entry to with the project from before
@@ -283,7 +283,7 @@ namespace Toggl.Tests.UI
             // Delete the time entry
             app.OpenEditView();
             app.Tap(EditTimeEntry.DeleteButton);
-            var deleteActionButton = app.Query(e => e.All().Property("text").Contains("Delete"))[3];
+            var deleteActionButton = app.Query(e => e.All().Property("text").Contains("Delete"))[1];
             app.TapCoordinates(deleteActionButton.Rect.CenterX, deleteActionButton.Rect.CenterY);
 
             // Create a time entrty by selecting no project
