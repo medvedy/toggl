@@ -55,6 +55,9 @@
         public const string CurrentTimeEntryCard = "CurrentTimeEntryCard";
         public const string TimeEntriesCollection = "TimeEntriesCollection";
         public const string TimeEntryRowContinueButton = "TimeEntryRowContinueButton";
+        public const string StartTimerOnboardingTooltip = "StartTimerOnboardingTooltip";
+        public const string StopTimerOnboardingTooltip = "StopTimerOnboardingTooltip";
+        public const string EditTimerOnboardingTooltip = "EditTimerOnboardingTooltip";
     }
 
     public static class StartTimeEntry

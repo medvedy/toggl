@@ -11,6 +11,7 @@ namespace Toggl.Tests.UI.Extensions
 
         public static void OpenEditView(this IApp app)
         {
+            app.Tap(Main.EditTimerOnboardingTooltip);
             app.TapNthCellInCollection(0);
             app.WaitForElement(EditTimeEntry.EditTags);
         }

@@ -147,6 +147,7 @@ time entries will appear here.</string>
                                 </label>
                             </subviews>
                             <color key="backgroundColor" red="0.14117647059999999" green="0.14117647059999999" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
+                            <accessibility key="accessibilityConfiguration" identifier="EditTimerOnboardingTooltip"/>
                             <constraints>
                                 <constraint firstItem="WZs-Ym-448" firstAttribute="top" secondItem="r2K-j0-0fe" secondAttribute="top" constant="14" id="1dx-Uw-mtJ"/>
                                 <constraint firstItem="rqr-jp-a3k" firstAttribute="bottom" secondItem="r2K-j0-0fe" secondAttribute="top" constant="6" id="EBH-0v-DaS"/>
@@ -217,6 +218,7 @@ time entries will appear here.</string>
                         </view>
                     </subviews>
                     <color key="backgroundColor" red="0.14117647059999999" green="0.14117647059999999" blue="0.14117647059999999" alpha="1" colorSpace="calibratedRGB"/>
+                    <accessibility key="accessibilityConfiguration" identifier="StartTimerOnboardingTooltip"/>
                     <constraints>
                         <constraint firstItem="LCs-H0-PO4" firstAttribute="centerY" secondItem="jpn-gJ-vFB" secondAttribute="centerY" id="2K7-1J-GnZ"/>
                         <constraint firstAttribute="height" constant="48" id="6HD-Rm-eft"/>
@@ -336,6 +338,7 @@ time entries will appear here.</string>
                         </view>
                     </subviews>
                     <color key="backgroundColor" red="0.14117647058823529" green="0.14117647058823529" blue="0.14117647058823529" alpha="1" colorSpace="calibratedRGB"/>
+                    <accessibility key="accessibilityConfiguration" identifier="StopTimerOnboardingTooltip"/>
                     <constraints>
                         <constraint firstItem="tFY-U0-EZM" firstAttribute="centerY" secondItem="0wI-i0-MgR" secondAttribute="centerY" id="Bfu-tU-ZqQ"/>
                         <constraint firstAttribute="trailing" secondItem="tFY-U0-EZM" secondAttribute="trailing" constant="32" id="UEf-bD-eBs"/>
