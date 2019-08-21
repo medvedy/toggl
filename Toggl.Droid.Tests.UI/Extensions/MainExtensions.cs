@@ -13,5 +13,19 @@ namespace Toggl.Tests.UI.Extensions
         {
             app.Tap(x => x.Marked(Misc.SnackbarAction).Text(buttonText));
         }
+
+        public static void SwipeEntryToDelete(this IApp app, string timeEntryDescription)
+        {
+            var timeEntryCellRect = RectForTimeEntryCell(app, timeEntryDescription);
+
+            app.DragCoordinates(
+                fromX: timeEntryCellRect.X + timeEntryCellRect.Width,
+                fromY: timeEntryCellRect.CenterY,
+                toX: timeEntryCellRect.X,
+                toY: timeEntryCellRect.CenterY
+            );
+
+            app.WaitForNoElement(x => x.Text(timeEntryDescription));
+        }
     }
 }

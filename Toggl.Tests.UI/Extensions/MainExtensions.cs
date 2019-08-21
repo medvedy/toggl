@@ -95,21 +95,7 @@ namespace Toggl.Tests.UI.Extensions
             app.WaitForElement(projectCellSelector);
             app.Tap(projectCellSelector);
         }
-
-        public static void SwipeEntryToDelete(this IApp app, string timeEntryDescription)
-        {
-            var timeEntryCellRect = RectForTimeEntryCell(app, timeEntryDescription);
-
-            app.DragCoordinates(
-                fromX: timeEntryCellRect.X + timeEntryCellRect.Width,
-                fromY: timeEntryCellRect.CenterY,
-                toX: timeEntryCellRect.X,
-                toY: timeEntryCellRect.CenterY
-            );
-
-            app.WaitForNoElement(x => x.Text(timeEntryDescription));
-        }
-
+        
         public static void SwipeEntryToContinue(this IApp app, string timeEntryDescription)
         {
             var timeEntryCellRect = RectForTimeEntryCell(app, timeEntryDescription);
