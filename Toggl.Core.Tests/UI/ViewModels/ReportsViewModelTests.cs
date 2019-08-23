@@ -4,7 +4,9 @@ using NSubstitute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
+using NUnit.Framework.Internal;
 using Toggl.Core.Analytics;
 using Toggl.Core.Interactors;
 using Toggl.Core.Models;
@@ -18,6 +20,7 @@ using Toggl.Core.UI.Views;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using Xunit;
+using Notification = System.Reactive.Notification;
 using Task = System.Threading.Tasks.Task;
 
 namespace Toggl.Core.Tests.UI.ViewModels
@@ -34,7 +37,9 @@ namespace Toggl.Core.Tests.UI.ViewModels
             public ReportsViewModelTest()
             {
                 var workspaceObservable = Observable.Return(new MockWorkspace { Id = WorkspaceId });
+                var workspaceIdObservable = Observable.Return(WorkspaceId);
                 InteractorFactory.GetDefaultWorkspace().Execute().Returns(workspaceObservable);
+                InteractorFactory.ObserveDefaultWorkspaceId().Execute().Returns(workspaceIdObservable);
             }
 
             protected override ReportsViewModel CreateViewModel()
@@ -551,8 +556,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     .ForEach(percentage => percentage.Should().BeGreaterOrEqualTo(5));
             }
         }
-
-
+        
         public sealed class TheSelectWorkspaceCommand : ReportsViewModelTest
         {
             [Fact, LogIfTooSlow]
@@ -802,6 +806,24 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 InteractorFactory
                     .DidNotReceive()
                     .GetProjectSummary(Arg.Any<long>(), Arg.Any<DateTimeOffset>(), Arg.Any<DateTimeOffset>());
+            }
+        }
+
+        public sealed class TheReports : ReportsViewModelTest
+        {
+            [Fact, LogIfTooSlow]
+            public async Task AreNotReloadedAfterTheViewAppearedWhenTheDefaultWorkspaceHasNotChanged()
+            {
+                TimeService.CurrentDateTime.Returns(DateTimeOffset.Now);
+                await ViewModel.Initialize();
+                ViewModel.ViewAppeared();
+                
+                TestScheduler.Start();
+
+                InteractorFactory.Received(1).GetProjectSummary(
+                    Arg.Any<long>(),
+                    Arg.Any<DateTimeOffset>(),
+                    Arg.Any<DateTimeOffset>());
             }
         }
     }
