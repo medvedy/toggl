@@ -39,6 +39,9 @@ namespace Toggl.Core.UI.ViewModels
         private readonly IUserPreferences userPreferences;
         private readonly ISyncManager syncManager;
 
+        private readonly ActivityObserver activityObserver = new ActivityObserver();
+
+        public IObservable<bool> GettingSuggestions { get; private set; }
         public IObservable<IImmutableList<Suggestion>> Suggestions { get; private set; }
         public IObservable<bool> IsEmpty { get; private set; }
         public RxAction<Suggestion, IThreadSafeTimeEntry> StartTimeEntry { get; private set; }
@@ -78,6 +81,8 @@ namespace Toggl.Core.UI.ViewModels
             this.backgroundService = backgroundService;
             this.userPreferences = userPreferences;
             this.syncManager = syncManager;
+
+            GettingSuggestions = activityObserver.running;
         }
 
         public override Task Initialize()
@@ -110,6 +115,7 @@ namespace Toggl.Core.UI.ViewModels
                     .Do(suggestions => trackPresentedSuggestions(suggestions, isCalendarAuthorized)))
                 .DistinctUntilChanged(suggestionsComparer)
                 .ObserveOn(schedulerProvider.BackgroundScheduler)
+                .TrackExecution(activityObserver)
                 .AsDriver(onErrorJustReturn: ImmutableList.Create<Suggestion>(), schedulerProvider: schedulerProvider);
 
             IsEmpty = Suggestions
