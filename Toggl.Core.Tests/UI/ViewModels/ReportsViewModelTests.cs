@@ -825,6 +825,36 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     Arg.Any<DateTimeOffset>(),
                     Arg.Any<DateTimeOffset>());
             }
+
+            [Fact, LogIfTooSlow]
+            public async Task AreReloadedWhenANewWorkspaceIdIsObserved()
+            {
+                var initialWorkspaceId = 10L;
+                var newlySelectedWorkspaceId = 11L;
+                var observable = TestScheduler.CreateColdObservable(
+                    OnNext(0, initialWorkspaceId),
+                    OnNext(1, newlySelectedWorkspaceId)
+                );
+                var workspace10 = Observable.Return(new MockWorkspace(initialWorkspaceId));
+                var workspace11 = Observable.Return(new MockWorkspace(newlySelectedWorkspaceId));
+                InteractorFactory.GetWorkspaceById(initialWorkspaceId).Execute().Returns(workspace10);
+                InteractorFactory.GetWorkspaceById(newlySelectedWorkspaceId).Execute().Returns(workspace11);
+                InteractorFactory.ObserveDefaultWorkspaceId().Execute().Returns(observable);
+                TimeService.CurrentDateTime.Returns(DateTimeOffset.Now);
+                await ViewModel.Initialize();
+                ViewModel.ViewAppeared();
+                TestScheduler.AdvanceTo(100);
+                TestScheduler.Start();
+                
+                InteractorFactory.Received(1).GetProjectSummary(
+                    initialWorkspaceId,
+                    Arg.Any<DateTimeOffset>(),
+                    Arg.Any<DateTimeOffset>());
+                InteractorFactory.Received(1).GetProjectSummary(
+                    newlySelectedWorkspaceId,
+                    Arg.Any<DateTimeOffset>(),
+                    Arg.Any<DateTimeOffset>());
+            }
         }
     }
 }
