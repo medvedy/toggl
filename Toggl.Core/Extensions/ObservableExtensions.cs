@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Toggl.Core.Analytics;
 using Toggl.Core.Sync;
 using Toggl.Shared.Extensions;
@@ -48,6 +50,62 @@ namespace Toggl.Core.Extensions
         {
             var signal = otherObservable.StartWith(Unit.Default);
             return observable.CombineLatest(signal, (t1, _) => t1);
+        }
+
+        public static IObservable<T> TrackExecution<T>(this IObservable<T> observable, ActivityObserver activityObserver)
+        {
+            return activityObserver.trackActivityOfObservable(observable);
+        }
+    }
+
+    internal class ActivityToken<E> : IDisposable
+    {
+        private IObservable<E> _source;
+        private IDisposable _dispose;
+
+        internal ActivityToken(IObservable<E> source, BehaviorSubject<bool> running)
+        {
+            _source = source;
+            _dispose = Disposable.Create(() => running.OnNext(false));
+        }
+
+        internal IObservable<E> AsObservable()
+        {
+            return _source;
+        }
+
+        public void Dispose()
+        {
+            _dispose.Dispose();
+        }
+    }
+
+    public class ActivityObserver : IDisposable
+    {
+        public IObservable<bool> running { get; }
+        private BehaviorSubject<bool> runningSubject = new BehaviorSubject<bool>(false);
+
+        public ActivityObserver()
+        {
+            running = runningSubject.AsObservable();
+            runningSubject.OnNext(true);
+        }
+
+        public void Dispose()
+        {
+            runningSubject.OnNext(false);
+        }
+
+        internal IObservable<T> trackActivityOfObservable<T>(IObservable<T> source)
+        {
+            return Observable.Using(
+                () =>
+                {
+                    runningSubject.OnNext(true);
+                    return new ActivityToken<T>(source, runningSubject);
+                },
+                t => t.AsObservable()
+            );
         }
     }
 }
