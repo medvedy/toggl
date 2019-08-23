@@ -1,4 +1,3 @@
-using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -13,14 +12,10 @@ namespace Toggl.Droid.Fragments
 {
     public sealed partial class NoWorkspaceFragment : ReactiveDialogFragment<NoWorkspaceViewModel>
     {
-        public NoWorkspaceFragment()
-        {
-        }
+        public NoWorkspaceFragment() { }
 
         public NoWorkspaceFragment(IntPtr javaReference, JniHandleOwnership transfer)
-            : base(javaReference, transfer)
-        {
-        }
+            : base(javaReference, transfer) { }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {

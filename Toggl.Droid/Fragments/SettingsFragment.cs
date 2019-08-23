@@ -1,4 +1,5 @@
 using Android.OS;
+using Android.Runtime;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Widget;
@@ -16,6 +17,10 @@ namespace Toggl.Droid.Fragments
 {
     public sealed partial class SettingsFragment : ReactiveTabFragment<SettingsViewModel>, IScrollableToTop
     {
+        public SettingsFragment() { }
+
+        public SettingsFragment(IntPtr javaReference, JniHandleOwnership transfer)
+            : base(javaReference, transfer) { }
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             var view = inflater.Inflate(Resource.Layout.SettingsFragment, container, false);

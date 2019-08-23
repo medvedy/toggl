@@ -1,6 +1,8 @@
 ﻿using Android.OS;
+using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
+using System;
 using Toggl.Core.UI.ViewModels;
 using Toggl.Droid.Adapters;
 using Toggl.Droid.Extensions;
@@ -11,6 +13,11 @@ namespace Toggl.Droid.Fragments
 {
     public partial class SelectWorkspaceFragment : ReactiveDialogFragment<SelectWorkspaceViewModel>
     {
+        public SelectWorkspaceFragment() { }
+
+        public SelectWorkspaceFragment(IntPtr javaReference, JniHandleOwnership transfer)
+            : base(javaReference, transfer) { }
+
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             base.OnCreateView(inflater, container, savedInstanceState);

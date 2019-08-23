@@ -1,5 +1,7 @@
 using Android.OS;
+using Android.Runtime;
 using Android.Views;
+using System;
 using Toggl.Core.UI.ViewModels;
 using Toggl.Droid.Extensions;
 using Toggl.Droid.Views;
@@ -9,6 +11,11 @@ namespace Toggl.Droid.Fragments
     public class ReportsCalendarFragment : ReactiveDialogFragment<ReportsCalendarViewModel>
     {
         private ReportsCalendarView calendarView;
+
+        public ReportsCalendarFragment() { }
+
+        public ReportsCalendarFragment(IntPtr javaReference, JniHandleOwnership transfer)
+            : base(javaReference, transfer) { }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {

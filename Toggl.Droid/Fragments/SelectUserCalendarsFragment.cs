@@ -1,4 +1,5 @@
 ﻿using Android.OS;
+using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
 using System;
@@ -15,6 +16,11 @@ namespace Toggl.Droid.Fragments
     public sealed partial class SelectUserCalendarsFragment : ReactiveDialogFragment<SelectUserCalendarsViewModel>
     {
         private UserCalendarsRecyclerAdapter userCalendarsAdapter;
+
+        public SelectUserCalendarsFragment() { }
+
+        public SelectUserCalendarsFragment(IntPtr javaReference, JniHandleOwnership transfer)
+            : base(javaReference, transfer) { }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {

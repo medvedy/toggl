@@ -1,4 +1,5 @@
 ﻿using Android.OS;
+using Android.Runtime;
 using Android.Support.V7.App;
 using Android.Support.V7.Widget;
 using Android.Views;
@@ -19,6 +20,11 @@ namespace Toggl.Droid.Fragments
     {
         private static readonly TimeSpan toggleCalendarThrottleDuration = TimeSpan.FromMilliseconds(300);
         private ReportsRecyclerAdapter reportsRecyclerAdapter;
+
+        public ReportsFragment() { }
+
+        public ReportsFragment(IntPtr javaReference, JniHandleOwnership transfer)
+            : base(javaReference, transfer) { }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {

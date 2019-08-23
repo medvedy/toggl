@@ -1,6 +1,8 @@
 ﻿using Android.OS;
+using Android.Runtime;
 using Android.Support.V7.Widget;
 using Android.Views;
+using System;
 using Toggl.Core.UI.ViewModels.Settings;
 using Toggl.Droid.Adapters;
 using Toggl.Shared.Extensions;
@@ -10,6 +12,11 @@ namespace Toggl.Droid.Fragments
     public sealed partial class UpcomingEventsNotificationSettingsFragment : ReactiveDialogFragment<UpcomingEventsNotificationSettingsViewModel>
     {
         private SelectCalendarNotificationsOptionAdapter adapter;
+
+        public UpcomingEventsNotificationSettingsFragment() { }
+
+        public UpcomingEventsNotificationSettingsFragment(IntPtr javaReference, JniHandleOwnership transfer)
+            : base(javaReference, transfer) { }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {

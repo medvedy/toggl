@@ -2,6 +2,7 @@ using Android.App;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.OS;
+using Android.Runtime;
 using Android.Support.Design.Widget;
 using Android.Support.V4.Content;
 using Android.Support.V7.App;
@@ -17,7 +18,6 @@ using Toggl.Core.Extensions;
 using Toggl.Core.Models.Interfaces;
 using Toggl.Core.Sync;
 using Toggl.Core.UI.Extensions;
-using Toggl.Core.UI.Helper;
 using Toggl.Core.UI.ViewModels;
 using Toggl.Core.UI.ViewModels.TimeEntriesLog;
 using Toggl.Droid.Adapters;
@@ -45,6 +45,11 @@ namespace Toggl.Droid.Fragments
 
         private Drawable addDrawable;
         private Drawable playDrawable;
+
+        public MainFragment() { }
+
+        public MainFragment(IntPtr javaReference, JniHandleOwnership transfer)
+            : base(javaReference, transfer) { }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
@@ -150,7 +155,6 @@ namespace Toggl.Droid.Fragments
                 .DisposedBy(DisposeBag);
 
             mainRecyclerAdapter.ContinueTimeEntry
-                .Select(vm => new ContinueTimeEntryInfo(vm.LogItem, vm.ContinueMode))
                 .Subscribe(ViewModel.ContinueTimeEntry.Inputs)
                 .DisposedBy(DisposeBag);
 

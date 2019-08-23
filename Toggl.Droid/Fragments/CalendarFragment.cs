@@ -1,4 +1,5 @@
 using Android.OS;
+using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
@@ -9,7 +10,6 @@ using System.Reactive.Linq;
 using Toggl.Core.Calendar;
 using Toggl.Core.UI.ViewModels.Calendar;
 using Toggl.Droid.Adapters.Calendar;
-using Toggl.Droid.Extensions;
 using Toggl.Droid.Extensions.Reactive;
 using Toggl.Droid.Presentation;
 using Toggl.Droid.Views.Calendar;
@@ -20,6 +20,11 @@ namespace Toggl.Droid.Fragments
     public partial class CalendarFragment : ReactiveTabFragment<CalendarViewModel>, IScrollableToTop
     {
         private CalendarLayoutManager calendarLayoutManager;
+
+        public CalendarFragment() { }
+
+        public CalendarFragment(IntPtr javaReference, JniHandleOwnership transfer)
+            : base(javaReference, transfer) { }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
