@@ -219,6 +219,21 @@ namespace Toggl.Core.UI.ViewModels.Reports
                 .Select(currentUser => currentUser.BeginningOfWeek)
                 .Subscribe(onBeginningOfWeekChanged)
                 .DisposedBy(disposeBag);
+            
+            interactorFactory.ObserveDefaultWorkspaceId()
+                .Execute()
+                .Where(newWorkspaceId => newWorkspaceId != workspaceId)
+                .SelectMany(id => interactorFactory.GetWorkspaceById(id).Execute())
+                .Where(ws => !ws.IsInaccessible)
+                .Subscribe(updateWorkspace)
+                .DisposedBy(disposeBag);
+        }
+
+        private void updateWorkspace(IThreadSafeWorkspace newWorkspace)
+        {
+            if (viewAppearedForTheFirstTime()) return;
+            
+            loadReport(newWorkspace, startDate, endDate, source);
         }
 
         public override void ViewAppeared()
