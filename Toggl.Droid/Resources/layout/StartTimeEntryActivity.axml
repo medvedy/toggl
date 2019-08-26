@@ -20,11 +20,6 @@
         android:layout_height="64dp"
         android:layout_gravity="bottom"
         android:layout_width="match_parent">
-        <ImageView
-            android:src="@drawable/TopShadow"
-            android:layout_height="8dp"
-            android:layout_width="match_parent"
-            app:layout_constraintTop_toTopOf="parent"/>
         <TextView
             android:id="@+id/DurationText"
             tools:text="999:00:00"
