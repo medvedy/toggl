@@ -1,45 +1,42 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-    <style name="Theme.Splash" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.Splash" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@drawable/Splash</item>
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@color/background</item>
     </style>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="BaseAppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:actionBarSize">56dp</item>
-        <item name="android:colorAccent">#328FFF</item>
-        <item name="colorControlActivated">#328FFF</item>
-        <item name="android:statusBarColor">#2C2C2C</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="colorControlActivated">@color/accent</item>
+        <item name="android:statusBarColor">@color/fallbackStatusBar</item>
+        <item name="android:windowBackground">@color/background</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">false</item>
     </style>
 
-    <style name="AppTheme.Light">
-      <item name="android:windowBackground">@color/lightGray</item>
+    <style name="AppTheme" parent="@style/BaseAppTheme">
+      <item name="android:statusBarColor">@color/background</item>
+      <item name="android:navigationBarColor">@color/navigationBar</item>
     </style>
 
-    <style name="AppTheme.Light.WhiteBackground">
-      <item name="android:windowBackground">@android:color/white</item>
-      <item name="colorControlActivated">@color/defaultEditText</item>
+    <style name="AppTheme.OutdatedAppStatusBarColor">
+        <item name="android:statusBarColor">@color/outdatedStatusBar</item>
     </style>
 
-    <style name="AppTheme.Light.OutdatedAppStatusBarColor">
-        <item name="android:statusBarColor">#BDBDBD</item>
-    </style>
-    
-    <style name="AppTheme.TransparentActionBar">
-        <item name="windowActionBarOverlay">true</item>
-        <item name="android:windowActionBarOverlay">true</item>
-    </style>
     <style name="TogglDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:colorAccent">#328FFF</item>
-		<item name="colorControlActivated">#328FFF</item>
+      <item name="android:colorAccent">#328FFF</item>
+		  <item name="colorControlActivated">#328FFF</item>
     </style>
+  
     <style name="TextInputLayoutErrorAppearance" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/errorText</item>
         <item name="android:textSize">12sp</item>
     </style>
+  
     <style name="TextInputLayoutRegularTextAppearance" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/defaultText</item>
+        <item name="android:textColor">@color/secondaryText</item>
         <item name="android:textSize">12sp</item>
     </style>
     <style name="WheelDialogStyle" parent="android:Theme.Material.Light.Dialog">
