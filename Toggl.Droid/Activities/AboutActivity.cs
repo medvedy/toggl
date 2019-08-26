@@ -16,7 +16,7 @@ namespace Toggl.Droid.Activities
     {
         public AboutActivity() : base(
             Resource.Layout.AboutActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromRight)
         {
         }

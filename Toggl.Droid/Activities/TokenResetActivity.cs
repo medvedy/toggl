@@ -17,7 +17,7 @@ namespace Toggl.Droid.Activities
     {
         public TokenResetActivity() : base(
             Resource.Layout.TokenResetActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.Fade)
         { }
 

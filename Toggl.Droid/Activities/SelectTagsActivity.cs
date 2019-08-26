@@ -18,7 +18,7 @@ namespace Toggl.Droid.Activities
     {
         public SelectTagsActivity() : base(
             Resource.Layout.SelectTagsActivity,
-            Resource.Style.AppTheme_Light_WhiteBackground,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromBottom)
         { }
 

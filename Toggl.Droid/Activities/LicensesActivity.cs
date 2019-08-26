@@ -22,7 +22,7 @@ namespace Toggl.Droid.Activities
 
         public LicensesActivity() : base(
             Resource.Layout.LicensesActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromRight)
         {
         }

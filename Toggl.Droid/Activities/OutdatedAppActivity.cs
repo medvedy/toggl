@@ -16,7 +16,7 @@ namespace Toggl.Droid.Activities
     {
         public OutdatedAppActivity() : base(
             Resource.Layout.OutdatedAppActivity,
-            Resource.Style.AppTheme_Light_OutdatedAppStatusBarColor,
+            Resource.Style.AppTheme_OutdatedAppStatusBarColor,
             Transitions.Fade)
         { }
 

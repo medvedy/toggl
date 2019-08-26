@@ -22,7 +22,7 @@ namespace Toggl.Droid.Activities
 
         public SendFeedbackActivity() : base(
             Resource.Layout.SendFeedbackActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromRight)
         { }
 

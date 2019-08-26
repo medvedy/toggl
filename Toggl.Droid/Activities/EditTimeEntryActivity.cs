@@ -27,7 +27,7 @@ namespace Toggl.Droid.Activities
     {
         public EditTimeEntryActivity() : base(
             Resource.Layout.EditTimeEntryActivity,
-            Resource.Style.AppTheme_Light_WhiteBackground,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromBottom)
         { }
 

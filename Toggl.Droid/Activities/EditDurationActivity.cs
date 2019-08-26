@@ -47,7 +47,7 @@ namespace Toggl.Droid.Activities
 
         public EditDurationActivity() : base(
             Resource.Layout.EditDurationActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromBottom)
         { }
 

@@ -39,7 +39,7 @@ namespace Toggl.Droid.Activities
 
         public MainTabBarActivity() : base(
             Resource.Layout.MainTabBarActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.Fade)
         { }
 

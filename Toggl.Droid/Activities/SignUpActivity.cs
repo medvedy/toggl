@@ -20,7 +20,7 @@ namespace Toggl.Droid.Activities
     {
         public SignUpActivity() : base(
             Resource.Layout.SignUpActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromBottom)
         { }
 

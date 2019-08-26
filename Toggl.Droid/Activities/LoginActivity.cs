@@ -22,7 +22,7 @@ namespace Toggl.Droid.Activities
     {
         public LoginActivity() : base(
             Resource.Layout.LoginActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromBottom)
         { }
 

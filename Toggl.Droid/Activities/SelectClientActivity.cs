@@ -17,7 +17,7 @@ namespace Toggl.Droid.Activities
     {
         public SelectClientActivity() : base(
             Resource.Layout.SelectClientActivity,
-            Resource.Style.AppTheme_Light_WhiteBackground,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromBottom)
         { }
 

@@ -17,7 +17,7 @@ namespace Toggl.Droid.Activities
     {
         public SelectCountryActivity() : base(
             Resource.Layout.SelectCountryActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromRight)
         { }
 

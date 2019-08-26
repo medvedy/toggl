@@ -31,7 +31,7 @@ namespace Toggl.Droid.Activities
 
         public StartTimeEntryActivity() : base(
             Resource.Layout.StartTimeEntryActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromBottom)
         { }
 

@@ -22,7 +22,7 @@ namespace Toggl.Droid.Activities
     {
         public EditProjectActivity() : base(
             Resource.Layout.EditProjectActivity,
-            Resource.Style.AppTheme_Light_WhiteBackground,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromBottom)
         { }
 

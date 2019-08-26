@@ -22,7 +22,7 @@ namespace Toggl.Droid.Activities
     {
         public ForgotPasswordActivity() : base(
             Resource.Layout.ForgotPasswordActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromRight)
         { }
 

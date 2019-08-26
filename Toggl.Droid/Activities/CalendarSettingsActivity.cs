@@ -18,7 +18,7 @@ namespace Toggl.Droid.Activities
     {
         public CalendarSettingsActivity() : base(
             Resource.Layout.CalendarSettingsActivity,
-            Resource.Style.AppTheme_Light,
+            Resource.Style.AppTheme,
             Transitions.SlideInFromRight)
         { }
 
