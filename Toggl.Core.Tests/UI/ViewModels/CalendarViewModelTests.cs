@@ -1209,7 +1209,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
             {
                 var expectedOutput = date.ToLocalTime().ToString(format.Long, CultureInfo.InvariantCulture);
                 var observer = TestScheduler.CreateObserver<string>();
-                ViewModel.CurrentDate.Subscribe(observer);
+                ViewModel.FormattedDate.Subscribe(observer);
 
                 dateFormatSubject.OnNext(format);
                 dateSubject.OnNext(date);

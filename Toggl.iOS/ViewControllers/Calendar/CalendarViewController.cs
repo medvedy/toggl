@@ -69,7 +69,7 @@ namespace Toggl.iOS.ViewControllers
                 .Subscribe(TimeTrackedTodayLabel.Rx().Text())
                 .DisposedBy(DisposeBag);
 
-            ViewModel.CurrentDate
+            ViewModel.FormattedDate
                 .Subscribe(CurrentDateLabel.Rx().Text())
                 .DisposedBy(DisposeBag);
 

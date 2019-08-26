@@ -56,7 +56,7 @@ namespace Toggl.Core.UI.ViewModels.Calendar
 
         public IObservable<string> TimeTrackedToday { get; }
 
-        public IObservable<string> CurrentDate { get; }
+        public IObservable<string> FormattedDate { get; }
 
         public UIAction GetStarted { get; }
 
