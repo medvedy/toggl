@@ -24,6 +24,10 @@ namespace Toggl.Droid.Fragments
 
         protected ReactiveDialogFragment()
         {
+            ViewModel = AndroidDependencyContainer
+                .Instance
+                .ViewModelCache
+                .Get<TViewModel>();
         }
 
         protected ReactiveDialogFragment(IntPtr javaReference, JniHandleOwnership transfer)
@@ -40,10 +44,6 @@ namespace Toggl.Droid.Fragments
         public override void OnViewCreated(View view, Bundle savedInstanceState)
         {
             base.OnViewCreated(view, savedInstanceState);
-            ViewModel = AndroidDependencyContainer
-                .Instance
-                .ViewModelCache
-                .Get<TViewModel>();
 
             ViewModel?.AttachView(this);
         }

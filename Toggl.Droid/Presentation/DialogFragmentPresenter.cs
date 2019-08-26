@@ -21,6 +21,7 @@ namespace Toggl.Droid.Presentation
             typeof(SelectBeginningOfWeekViewModel),
             typeof(SelectColorViewModel),
             typeof(SelectDateFormatViewModel),
+            typeof(SelectDateTimeViewModel),
             typeof(SelectDefaultWorkspaceViewModel),
             typeof(SelectDurationFormatViewModel),
             typeof(SelectUserCalendarsViewModel),
@@ -35,11 +36,11 @@ namespace Toggl.Droid.Presentation
             if (fragmentManager == null)
                 throw new Exception($"Parent ViewModel's view trying to present {viewModel.GetType().Name} doesn't have a FragmentManager");
 
-            var dialog = createReactiveDialog(viewModel);
-
             AndroidDependencyContainer.Instance
                 .ViewModelCache
                 .Cache(viewModel);
+
+            var dialog = createReactiveDialog(viewModel);
 
             dialog.Show(fragmentManager, dialog.GetType().Name);
         }
@@ -62,6 +63,9 @@ namespace Toggl.Droid.Presentation
 
                 case SelectDateFormatViewModel _:
                     return new SelectDateFormatFragment();
+
+                case SelectDateTimeViewModel _:
+                    return new SelectDateTimeFragment();
 
                 case SelectDefaultWorkspaceViewModel _:
                     return new SelectDefaultWorkspaceFragment { Cancelable = false };
