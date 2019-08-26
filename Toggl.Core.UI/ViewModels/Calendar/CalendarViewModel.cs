@@ -24,6 +24,7 @@ using Toggl.Core.UI.Views;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using Toggl.Storage.Settings;
+using static Toggl.Core.Helper.Constants;
 
 namespace Toggl.Core.UI.ViewModels.Calendar
 {
@@ -311,7 +312,7 @@ namespace Toggl.Core.UI.ViewModels.Calendar
         private async Task pickNewCalendarDate()
         {
             var now = timeService.CurrentDateTime;
-            var minDate = now.AddMonths(-2);
+            var minDate = now.AddMonths(-FetchTimeEntriesForMonths);
             var maxDate = now;
             var parameters = DateTimePickerParameters
                 .WithDates(DateTimePickerMode.Date, now, minDate, maxDate);
