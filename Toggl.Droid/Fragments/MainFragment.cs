@@ -152,7 +152,6 @@ namespace Toggl.Droid.Fragments
                 .DisposedBy(DisposeBag);
 
             mainRecyclerAdapter.ContinueTimeEntry
-                .Select(vm => new ContinueTimeEntryInfo(vm.LogItem, vm.ContinueMode))
                 .Subscribe(ViewModel.ContinueTimeEntry.Inputs)
                 .DisposedBy(DisposeBag);
 
