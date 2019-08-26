@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content.PM;
+using Android.Graphics;
 using Android.Runtime;
 using Android.Views;
 using System;
@@ -9,7 +10,6 @@ using Toggl.Droid.Extensions;
 using Toggl.Droid.Extensions.Reactive;
 using Toggl.Droid.Presentation;
 using Toggl.Shared.Extensions;
-using AndroidColor = Android.Graphics.Color;
 using FoundationResources = Toggl.Shared.Resources;
 
 namespace Toggl.Droid.Activities
@@ -95,7 +95,8 @@ namespace Toggl.Droid.Activities
                 .Subscribe(clientNameTextView.Rx().TextObserver())
                 .DisposedBy(DisposeBag);
 
-            var noClientColor = AndroidColor.ParseColor("#CECECE");
+            var primaryTextColor = new Color(GetColor(Resource.Color.primaryText));
+            var placeholderTextColor = new Color(GetColor(Resource.Color.placeholderText));
             ViewModel.ClientName
                 .Select(clientTextColor)
                 .Subscribe(clientNameTextView.SetTextColor)
@@ -116,8 +117,6 @@ namespace Toggl.Droid.Activities
                 .BindAction(ViewModel.Save)
                 .DisposedBy(DisposeBag);
 
-            var enabledColor = AndroidColor.Black;
-            var disabledColor = AndroidColor.LightGray;
             ViewModel.Save.Enabled
                 .Select(createProjectTextColor)
                 .Subscribe(createProjectButton.SetTextColor)
@@ -126,11 +125,11 @@ namespace Toggl.Droid.Activities
             string clientNameWithEmptyText(string clientName)
                 => string.IsNullOrEmpty(clientName) ? FoundationResources.AddClient : clientName;
 
-            AndroidColor clientTextColor(string clientName)
-                => string.IsNullOrEmpty(clientName) ? noClientColor : AndroidColor.Black;
+            Color clientTextColor(string clientName)
+                => string.IsNullOrEmpty(clientName) ? placeholderTextColor : primaryTextColor;
 
-            AndroidColor createProjectTextColor(bool enabled)
-                => enabled ? enabledColor : disabledColor;
+            Color createProjectTextColor(bool enabled)
+                => enabled ? primaryTextColor : placeholderTextColor;
         }
     }
 }
