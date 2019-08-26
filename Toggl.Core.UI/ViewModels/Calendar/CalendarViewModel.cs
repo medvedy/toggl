@@ -39,44 +39,32 @@ namespace Toggl.Core.UI.ViewModels.Calendar
         private readonly IOnboardingStorage onboardingStorage;
         private readonly ISchedulerProvider schedulerProvider;
         private readonly IPermissionsChecker permissionsChecker;
-        private readonly IRxActionFactory rxActionFactory;
 
-        private readonly ISubject<bool> shouldShowOnboardingSubject;
         private readonly ISubject<bool> hasCalendarsLinkedSubject;
+        private readonly ISubject<bool> shouldShowOnboardingSubject;
+        private readonly BehaviorSubject<DateTime> selectedDateSubject;
         private readonly ISubject<bool> calendarPermissionsOnViewAppearedSubject;
         private readonly CompositeDisposable disposeBag = new CompositeDisposable();
 
         public IObservable<bool> SettingsAreVisible { get; }
-
         public IObservable<bool> ShouldShowOnboarding { get; }
-
         public IObservable<bool> HasCalendarsLinked { get; }
-
         public IObservable<TimeFormat> TimeOfDayFormat { get; }
-
         public IObservable<string> TimeTrackedToday { get; }
-
         public IObservable<string> FormattedDate { get; }
+        public IObservable<DateTime> SelectedDate { get; }
+        public ObservableGroupedOrderedCollection<CalendarItem> CalendarItems { get; }
 
         public UIAction GetStarted { get; }
-
         public UIAction SkipOnboarding { get; }
-
         public UIAction LinkCalendars { get; }
-
         public UIAction SelectCalendars { get; }
-
+        public UIAction PickCalendarDay { get; }
         public InputAction<CalendarItem> OnItemTapped { get; }
-
         public InputAction<CalendarItem> OnCalendarEventLongPressed { get; }
-
         public InputAction<(DateTimeOffset, TimeSpan)> OnDurationSelected { get; }
-
         public InputAction<DateTimeOffset> CreateTimeEntryAtOffset { get; }
-
         public InputAction<CalendarItem> OnUpdateTimeEntry { get; }
-
-        public ObservableGroupedOrderedCollection<CalendarItem> CalendarItems { get; }
 
         public CalendarViewModel(
             ITogglDataSource dataSource,
@@ -112,11 +100,10 @@ namespace Toggl.Core.UI.ViewModels.Calendar
             this.onboardingStorage = onboardingStorage;
             this.schedulerProvider = schedulerProvider;
             this.permissionsChecker = permissionsChecker;
-            this.rxActionFactory = rxActionFactory;
 
             var isCompleted = onboardingStorage.CompletedCalendarOnboarding();
-            shouldShowOnboardingSubject = new BehaviorSubject<bool>(!isCompleted);
             hasCalendarsLinkedSubject = new BehaviorSubject<bool>(false);
+            shouldShowOnboardingSubject = new BehaviorSubject<bool>(!isCompleted);
             calendarPermissionsOnViewAppearedSubject = new BehaviorSubject<bool>(false);
 
             var onboardingObservable = shouldShowOnboardingSubject
@@ -140,9 +127,14 @@ namespace Toggl.Core.UI.ViewModels.Calendar
                 .CombineLatest(durationFormat, DurationAndFormatToString.Convert)
                 .AsDriver(schedulerProvider);
 
-            CurrentDate = timeService.CurrentDateTimeObservable
-                .Select(dateTime => dateTime.ToLocalTime().Date)
-                .DistinctUntilChanged()
+            selectedDateSubject = new BehaviorSubject<DateTime>(timeService.CurrentDateTime.Date);
+
+            var selectedDate = selectedDateSubject
+                .DistinctUntilChanged(date => date.Day);
+
+            SelectedDate = selectedDate.AsDriver(schedulerProvider);
+
+            FormattedDate = selectedDate
                 .CombineLatest(dateFormat, (date, format) => DateTimeToFormattedString.Convert(date, format.Long))
                 .AsDriver(schedulerProvider);
 
@@ -163,6 +155,8 @@ namespace Toggl.Core.UI.ViewModels.Calendar
                     hasCalendarsLinked)
                 .DistinctUntilChanged();
 
+            PickCalendarDay = rxActionFactory.FromAsync(pickNewCalendarDate);
+
             SelectCalendars = rxActionFactory.FromAsync(() => selectUserCalendars(false), SettingsAreVisible);
 
             OnDurationSelected = rxActionFactory.FromAsync<(DateTimeOffset StartTime, TimeSpan Duration)>(
@@ -176,6 +170,12 @@ namespace Toggl.Core.UI.ViewModels.Calendar
                 indexKey: item => item.StartTime,
                 orderingKey: item => item.StartTime,
                 groupingKey: _ => 0);
+
+            timeService.CurrentDateTimeObservable
+                .Select(dateTime => dateTime.Date)
+                .DistinctUntilChanged(date => date.Day)
+                .Subscribe(selectedDateSubject)
+                .DisposedBy(disposeBag);
         }
 
         public void Init(string eventId)
@@ -213,7 +213,8 @@ namespace Toggl.Core.UI.ViewModels.Calendar
                 .Merge(appResumedFromBackgroundObservable)
                 .SubscribeOn(schedulerProvider.BackgroundScheduler)
                 .ObserveOn(schedulerProvider.BackgroundScheduler)
-                .SelectMany(_ => reloadData())
+                .CombineLatest(selectedDateSubject, (_, date) => reloadData(date))
+                .Flatten()
                 .Subscribe(CalendarItems.ReplaceWith)
                 .DisposedBy(disposeBag);
 
@@ -305,6 +306,18 @@ namespace Toggl.Core.UI.ViewModels.Calendar
             {
                 await View.Alert(Resources.Oops, Resources.NoCalendarsFoundMessage, Resources.Ok);
             }
+        }
+
+        private async Task pickNewCalendarDate()
+        {
+            var now = timeService.CurrentDateTime;
+            var minDate = now.AddMonths(-2);
+            var maxDate = now;
+            var parameters = DateTimePickerParameters
+                .WithDates(DateTimePickerMode.Date, now, minDate, maxDate);
+
+            var newDate = await Navigate<SelectDateTimeViewModel, DateTimePickerParameters, DateTimeOffset>(parameters);
+            selectedDateSubject.OnNext(newDate.Date);
         }
 
         private async Task handleCalendarItem(CalendarItem calendarItem)
@@ -415,9 +428,7 @@ namespace Toggl.Core.UI.ViewModels.Calendar
             await interactorFactory.UpdateTimeEntry(dto).Execute();
         }
 
-        private IObservable<IEnumerable<CalendarItem>> reloadData()
-        {
-            return interactorFactory.GetCalendarItemsForDate(timeService.CurrentDateTime.ToLocalTime().Date).Execute();
-        }
+        private IObservable<IEnumerable<CalendarItem>> reloadData(DateTime date)
+            => interactorFactory.GetCalendarItemsForDate(date).Execute();
     }
 }

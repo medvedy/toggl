@@ -43,10 +43,7 @@ namespace Toggl.Droid.Fragments
             calendarRecyclerView.SetTimeService(timeService);
             calendarRecyclerView.SetAdapter(calendarAdapter);
 
-            timeService
-                .CurrentDateTimeObservable
-                .DistinctUntilChanged(offset => offset.Day)
-                .ObserveOn(schedulerProvider.MainScheduler)
+            ViewModel.SelectedDate
                 .Subscribe(configureHeaderDate)
                 .DisposedBy(DisposeBag);
 
@@ -96,6 +93,10 @@ namespace Toggl.Droid.Fragments
 
             ViewModel.ShouldShowOnboarding
                 .Subscribe(onboardingVisibilityChanged)
+                .DisposedBy(DisposeBag);
+
+            daySelectionView.Rx().Tap()
+                .Subscribe(ViewModel.PickCalendarDay.Inputs)
                 .DisposedBy(DisposeBag);
         }
 
@@ -164,7 +165,7 @@ namespace Toggl.Droid.Fragments
                 .Count();
         }
 
-        private void configureHeaderDate(DateTimeOffset offset)
+        private void configureHeaderDate(DateTime offset)
         {
             var day = offset.Day.ToString();
             headerDayTextView.Text = day;

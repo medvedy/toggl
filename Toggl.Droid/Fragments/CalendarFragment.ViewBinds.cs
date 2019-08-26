@@ -7,6 +7,7 @@ namespace Toggl.Droid.Fragments
 {
     public partial class CalendarFragment
     {
+        private View daySelectionView;
         private View headerCalendarEventsView;
         private View headerTimeEntriesView;
         private TextView headerDayTextView;
@@ -27,9 +28,10 @@ namespace Toggl.Droid.Fragments
 
         protected override void InitializeViews(View view)
         {
-            headerCalendarEventsView = view.FindViewById(Resource.Id.HeaderCalendarEventsView);
-            headerTimeEntriesView = view.FindViewById(Resource.Id.HeaderTimeEntriesView);
+            daySelectionView = view.FindViewById(Resource.Id.DaySelection);
             headerDayTextView = view.FindViewById<TextView>(Resource.Id.Day);
+            headerTimeEntriesView = view.FindViewById(Resource.Id.HeaderTimeEntriesView);
+            headerCalendarEventsView = view.FindViewById(Resource.Id.HeaderCalendarEventsView);
             headerWeekdayTextView = view.FindViewById<TextView>(Resource.Id.Weekday);
             headerCalendarEventsTextView = view.FindViewById<TextView>(Resource.Id.HeaderCalendarEventsTextView);
             headerCalendarEventsLabel = view.FindViewById<TextView>(Resource.Id.HeaderCalendarEventsLabel);

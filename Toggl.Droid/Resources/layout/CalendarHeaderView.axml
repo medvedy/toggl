@@ -13,6 +13,7 @@
         android:orientation="horizontal"
         android:background="@color/defaultBackground">
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/DaySelection"
             android:layout_width="68dp"
             android:layout_height="match_parent">
             <TextView
