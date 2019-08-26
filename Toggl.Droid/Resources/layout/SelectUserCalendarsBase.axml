@@ -16,7 +16,7 @@
         android:textSize="20sp"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
-        android:textColor="@android:color/black"
+        android:textColor="@color/primaryText"
         android:lineSpacingExtra="8sp"
         tools:text="Select calendars"/>
     <TextView
@@ -29,7 +29,7 @@
         android:textSize="16sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
-        android:textColor="@android:color/black"
+        android:textColor="@color/primaryText"
         android:letterSpacing="0.01"
         android:lineSpacingExtra="8sp"
         tools:text="Choose the calendars containing events you\u{2019}d like to log in Toggl"/>

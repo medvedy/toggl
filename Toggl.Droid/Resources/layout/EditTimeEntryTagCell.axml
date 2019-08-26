@@ -15,7 +15,7 @@
         android:id="@+id/Text"
         tools:text="Tag"
         android:textSize="12sp"
-        android:textColor="@color/buttonBlue"
+        android:textColor="@color/flatButtonText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>

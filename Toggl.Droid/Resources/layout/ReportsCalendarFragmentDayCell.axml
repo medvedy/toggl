@@ -5,6 +5,6 @@
     tools:text="5"
     android:textSize="16sp"
     android:gravity="center"
-    android:textColor="@android:color/black"
+    android:textColor="@color/primaryText"
     android:layout_height="51dp"
     android:layout_width="match_parent" />

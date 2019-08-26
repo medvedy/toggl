@@ -13,6 +13,7 @@ using Toggl.Droid.ViewHelpers;
 using Toggl.Droid.ViewHolders;
 using Toggl.Shared.Extensions;
 using Android.Content;
+using Toggl.Core.UI.Helper;
 
 namespace Toggl.Droid.Adapters
 {
@@ -32,7 +33,7 @@ namespace Toggl.Droid.Adapters
         public IObservable<LogItemViewModel> TimeEntryTaps
             => timeEntryTappedSubject.Select(item => item.ViewModel).AsObservable();
 
-        public IObservable<(LogItemViewModel LogItem, ContinueTimeEntryMode ContinueMode)> ContinueTimeEntry
+        public IObservable<ContinueTimeEntryInfo> ContinueTimeEntry
             => continueTimeEntrySubject.AsObservable();
 
         public IObservable<LogItemViewModel> DeleteTimeEntrySubject
@@ -42,9 +43,9 @@ namespace Toggl.Droid.Adapters
         public RatingViewModel RatingViewModel { get; set; }
 
         private readonly Subject<GroupId> toggleGroupExpansionSubject = new Subject<GroupId>();
-        private readonly Subject<TimeEntryViewData> timeEntryTappedSubject = new Subject<TimeEntryViewData>();
-        private readonly Subject<(LogItemViewModel, ContinueTimeEntryMode)> continueTimeEntrySubject = new Subject<(LogItemViewModel, ContinueTimeEntryMode)>();
         private readonly Subject<LogItemViewModel> deleteTimeEntrySubject = new Subject<LogItemViewModel>();
+        private readonly Subject<TimeEntryViewData> timeEntryTappedSubject = new Subject<TimeEntryViewData>();
+        private readonly Subject<ContinueTimeEntryInfo> continueTimeEntrySubject = new Subject<ContinueTimeEntryInfo>();
 
         public MainRecyclerAdapter(Context context, ITimeService timeService)
         {
@@ -61,7 +62,7 @@ namespace Toggl.Droid.Adapters
                 ? ContinueTimeEntryMode.TimeEntriesGroupSwipe
                 : ContinueTimeEntryMode.SingleTimeEntrySwipe;
 
-            continueTimeEntrySubject.OnNext((continuedTimeEntry, continueMode));
+            continueTimeEntrySubject.OnNext(new ContinueTimeEntryInfo(continuedTimeEntry, continueMode));
         }
 
         public void DeleteTimeEntry(int position)

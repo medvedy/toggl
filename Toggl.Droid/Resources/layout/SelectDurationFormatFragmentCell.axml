@@ -22,7 +22,7 @@
         android:textSize="15sp"
         tools:text="Improved (0:47:06)"
         android:lineSpacingExtra="5sp"
-        android:textColor="@android:color/black"
+        android:textColor="@color/primaryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>

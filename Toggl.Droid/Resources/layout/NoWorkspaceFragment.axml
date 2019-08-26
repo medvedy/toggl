@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:animateLayoutChanges="true"
-    android:background="@color/lightGray"
+    android:background="@color/background"
     android:layout_width="280dp"
     android:layout_height="match_parent">
     <ImageView
@@ -23,7 +23,7 @@
         android:id="@+id/UhOhTextView"
         android:textSize="20dp"
         tools:text="Uh oh."
-        android:textColor="@color/darkLabel"
+        android:textColor="@color/primaryText"
         android:fontFamily="sans-serif-medium"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -39,7 +39,7 @@
         android:textSize="16dp"
         android:lineSpacingExtra="2dp"
         android:fontFamily="sans-serif"
-        android:textColor="@color/darkLabel"
+        android:textColor="@color/primaryText"
         tools:text="Seems someone has removed you from their workspace.\nNo worries. Create a new workspace to continue."
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

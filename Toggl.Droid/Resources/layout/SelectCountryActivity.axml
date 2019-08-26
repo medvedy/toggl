@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@android:color/white"
+    android:background="@color/card"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
         android:elevation="2dp"
         android:orientation="horizontal"
-        android:background="@android:color/white"
+        android:background="@color/background"
         android:minHeight="?android:attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -16,6 +16,7 @@
             android:padding="16dp"
             android:clickable="true"
             android:src="@drawable/arrow_back"
+            android:tint="@color/primaryText"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="56dp"
             android:layout_height="56dp" />
@@ -24,8 +25,8 @@
             android:textSize="19sp"
             android:letterSpacing="-0.01"
             android:lineSpacingExtra="5sp"
-            android:background="@android:color/white"
-            android:textColor="@color/defaultEditText"
+            android:background="@color/background"
+            android:textColor="@color/primaryText"
             android:textColorHint="@color/placeholderText"
             tools:hint="Select country of residence"
             android:layout_width="wrap_content"

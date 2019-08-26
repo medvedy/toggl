@@ -39,7 +39,7 @@
       android:focusable="true"
       android:elevation="8dp"
       android:layout_gravity="bottom|center_horizontal"
-      android:background="@android:color/white"
+      android:background="@color/card"
       android:foreground="?android:attr/selectableItemBackground"
       app:layout_behavior="toggl.droid.presentation.RunningTimeEntrySheetBehavior">
         <include layout="@layout/MainRunningTimeEntry" />
@@ -48,7 +48,7 @@
         android:id="@+id/MainPlayButton"
         app:elevation="4dp"
         android:src="@drawable/play_white"
-        app:backgroundTint="@color/playButtonGreen"
+        app:backgroundTint="@color/startTimeEntryButtonBackground"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_marginRight="16dp"
@@ -61,7 +61,7 @@
         android:layout_height="wrap_content">
         <android.support.v7.widget.Toolbar
             android:id="@+id/Toolbar"
-            android:background="@color/defaultBackground"
+            android:background="@color/background"
             app:layout_scrollFlags="scroll|enterAlways"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">

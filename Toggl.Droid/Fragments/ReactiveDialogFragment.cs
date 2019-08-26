@@ -34,7 +34,7 @@ namespace Toggl.Droid.Fragments
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            SetStyle(StyleNoTitle, Activity.ApplicationInfo.Theme);
+            SetStyle(StyleNoTitle, Resource.Style.AppTheme);
         }
 
         public override void OnViewCreated(View view, Bundle savedInstanceState)

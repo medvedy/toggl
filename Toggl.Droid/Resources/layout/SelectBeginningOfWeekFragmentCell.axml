@@ -22,7 +22,7 @@
         tools:text="Monday"
         android:textSize="15sp"
         android:lineSpacingExtra="5sp"
-        android:textColor="@android:color/black"
+        android:textColor="@color/primaryText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>

@@ -7,6 +7,7 @@ using Android.Widget;
 using System;
 using System.Reactive.Subjects;
 using Toggl.Core.Analytics;
+using Toggl.Core.UI.Helper;
 using Toggl.Core.UI.ViewModels.TimeEntriesLog;
 using Toggl.Droid.Extensions;
 using Toggl.Droid.ViewHelpers;
@@ -17,22 +18,10 @@ namespace Toggl.Droid.ViewHolders
 {
     public class MainLogCellViewHolder : BaseRecyclerViewHolder<TimeEntryViewData>
     {
-        public enum AnimationSide
-        {
-            Left,
-            Right
-        }
+        private Color cardColor;
+        private Color backgroundColor;
 
-        public MainLogCellViewHolder(View itemView)
-            : base(itemView)
-        {
-        }
-
-        public MainLogCellViewHolder(IntPtr handle, JniHandleOwnership ownership)
-            : base(handle, ownership)
-        {
-        }
-
+        private GroupId groupId;
         private TextView timeEntriesLogCellDescription;
         private TextView addDescriptionLabel;
         private TextView timeEntriesLogCellProjectLabel;
@@ -53,20 +42,24 @@ namespace Toggl.Droid.ViewHolders
         private View groupExpansionButton;
 
         public bool CanSync => Item.ViewModel.CanContinue;
-
         public View MainLogContentView { get; private set; }
-        public Subject<(LogItemViewModel, ContinueTimeEntryMode)> ContinueButtonTappedSubject { get; set; }
+        public Subject<ContinueTimeEntryInfo> ContinueButtonTappedSubject { get; set; }
         public Subject<GroupId> ToggleGroupExpansionSubject { get; set; }
 
-        private GroupId groupId;
+        public MainLogCellViewHolder(View itemView)
+            : base(itemView)
+        {
+        }
 
-        private Color whiteColor;
-        private Color grayColor;
+        public MainLogCellViewHolder(IntPtr handle, JniHandleOwnership ownership)
+            : base(handle, ownership)
+        {
+        }
 
         protected override void InitializeViews()
         {
-            whiteColor = new Color(ContextCompat.GetColor(ItemView.Context, Resource.Color.mainLogCellPaddingWhite));
-            grayColor = new Color(ContextCompat.GetColor(ItemView.Context, Resource.Color.mainLogCellPaddingLightGray));
+            cardColor = new Color(ContextCompat.GetColor(ItemView.Context, Resource.Color.card));
+            backgroundColor = new Color(ContextCompat.GetColor(ItemView.Context, Resource.Color.background));
 
             groupItemBackground = ItemView.FindViewById<View>(MainLogGroupBackground);
             groupCountTextView = ItemView.FindViewById<TextView>(TimeEntriesLogCellGroupCount);
@@ -126,7 +119,7 @@ namespace Toggl.Droid.ViewHolders
                 ? ContinueTimeEntryMode.TimeEntriesGroupContinueButton
                 : ContinueTimeEntryMode.SingleTimeEntryContinueButton;
 
-            ContinueButtonTappedSubject?.OnNext((Item.ViewModel, continueMode));
+            ContinueButtonTappedSubject?.OnNext(new ContinueTimeEntryInfo(Item.ViewModel, continueMode));
         }
 
         private ConstraintLayout.LayoutParams getDurationPaddingWidthDependentOnIcons()
@@ -198,8 +191,8 @@ namespace Toggl.Droid.ViewHolders
             groupCountTextView.Visibility = ViewStates.Visible;
             groupCountTextView.SetTextColor(GroupingColor.Collapsed.Text.ToNativeColor());
             groupItemBackground.Visibility = ViewStates.Gone;
-            durationPadding.SetBackgroundColor(whiteColor);
-            durationFadeGradient.SetBackgroundResource(Resource.Drawable.TransparentToWhiteGradient);
+            durationPadding.SetBackgroundColor(cardColor);
+            durationFadeGradient.SetBackgroundResource(Resource.Drawable.TransparentToCardColorGradient);
         }
 
         private void presentAsExpandedGroupHeader(int timeEntriesCount)
@@ -211,8 +204,8 @@ namespace Toggl.Droid.ViewHolders
             groupCountTextView.Visibility = ViewStates.Visible;
             groupCountTextView.SetTextColor(GroupingColor.Expanded.Text.ToNativeColor());
             groupItemBackground.Visibility = ViewStates.Gone;
-            durationPadding.SetBackgroundColor(whiteColor);
-            durationFadeGradient.SetBackgroundResource(Resource.Drawable.TransparentToWhiteGradient);
+            durationPadding.SetBackgroundColor(cardColor);
+            durationFadeGradient.SetBackgroundResource(Resource.Drawable.TransparentToCardColorGradient);
         }
 
         private void presentAsSingleTimeEntry()
@@ -220,8 +213,8 @@ namespace Toggl.Droid.ViewHolders
             groupExpansionButton.Enabled = false;
             groupCountTextView.Visibility = ViewStates.Gone;
             groupItemBackground.Visibility = ViewStates.Gone;
-            durationPadding.SetBackgroundColor(whiteColor);
-            durationFadeGradient.SetBackgroundResource(Resource.Drawable.TransparentToWhiteGradient);
+            durationPadding.SetBackgroundColor(cardColor);
+            durationFadeGradient.SetBackgroundResource(Resource.Drawable.TransparentToCardColorGradient);
         }
 
         private void presentAsTimeEntryInAGroup()
@@ -229,8 +222,8 @@ namespace Toggl.Droid.ViewHolders
             groupExpansionButton.Enabled = false;
             groupCountTextView.Visibility = ViewStates.Invisible;
             groupItemBackground.Visibility = ViewStates.Visible;
-            durationPadding.SetBackgroundColor(grayColor);
-            durationFadeGradient.SetBackgroundResource(Resource.Drawable.TransparentToLightGrayGradient);
+            durationPadding.SetBackgroundColor(backgroundColor);
+            durationFadeGradient.SetBackgroundResource(Resource.Drawable.TransparentToBackgroundGradient);
         }
 
         protected override void Dispose(bool disposing)
@@ -242,6 +235,12 @@ namespace Toggl.Droid.ViewHolders
 
             timeEntriesLogCellContinueButton.Click -= onContinueClick;
             groupExpansionButton.Click -= onExpansionClick;
+        }
+
+        public enum AnimationSide
+        {
+            Left,
+            Right
         }
     }
 }

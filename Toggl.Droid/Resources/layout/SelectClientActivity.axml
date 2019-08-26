@@ -9,7 +9,7 @@
         android:paddingRight="16dp"
         android:orientation="horizontal"
         android:minHeight="?attr/actionBarSize"
-        android:background="@android:color/white"
+        android:background="@color/background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
@@ -17,7 +17,7 @@
             android:padding="16dp"
             android:clickable="true"
             android:src="@drawable/arrow_back"
-            android:tint="@android:color/black"
+            android:tint="@color/primaryText"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="56dp"
             android:layout_height="56dp" />
@@ -31,7 +31,7 @@
             android:lineSpacingExtra="5sp"
             android:textCursorDrawable="@null"
             tools:hint="Add/filter clients"
-            android:textColor="@color/defaultEditText"
+            android:textColor="@color/primaryText"
             android:textColorHint="@color/placeholderText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

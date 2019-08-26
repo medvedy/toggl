@@ -6,7 +6,7 @@
     <RelativeLayout
         android:elevation="4dp"
         android:orientation="horizontal"
-        android:background="@android:color/white"
+        android:background="@color/background"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize">
         <ImageView
@@ -14,7 +14,7 @@
             android:padding="16dp"
             android:clickable="true"
             android:src="@drawable/arrow_back"
-            android:tint="@android:color/black"
+            android:tint="@color/primaryText"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="56dp"
             android:layout_height="56dp" />
@@ -27,7 +27,7 @@
             android:lineSpacingExtra="5sp"
             tools:hint="Add/filter tags"
             android:textCursorDrawable="@null"
-            android:textColor="@color/defaultEditText"
+            android:textColor="@color/primaryText"
             android:textColorHint="@color/placeholderText"
             android:layout_marginLeft="56dp"
             android:layout_width="match_parent"

@@ -52,7 +52,7 @@
         android:singleLine="true"
         android:fontFamily="sans-serif"
         tools:text="Add description"
-        android:textColor="@color/defaultText"
+        android:textColor="@color/secondaryText"
         app:layout_constraintBaseline_toBaselineOf="@id/LeadingTextView"
         app:layout_constraintLeft_toRightOf="@id/MainRunningTimeEntryDescription"
         app:layout_constraintRight_toLeftOf="@+id/MainRunningTimeEntryProjectDotContainer"
@@ -96,7 +96,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/TransparentToWhiteGradient"
+        android:background="@drawable/TransparentToCardColorGradient"
         android:layout_height="0dp"
         android:layout_width="144dp" />
     <View
@@ -110,7 +110,7 @@
         android:id="@+id/MainStopButton"
         app:elevation="4dp"
         android:src="@drawable/stop_white"
-        app:backgroundTint="@color/playButtonRed"
+        app:backgroundTint="@color/stopTimeEntryButtonBackground"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="56dp"

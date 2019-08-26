@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/defaultBackground">
+    android:background="@color/background">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 android:textSize="20sp"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                android:textColor="@android:color/black"
+                android:textColor="@color/primaryText"
                 android:letterSpacing="-0.01"
                 android:lineSpacingExtra="4sp"
                 tools:text="Get started with Calendar" />
@@ -39,7 +39,7 @@
                 android:textSize="15sp"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                android:textColor="@color/defaultText"
+                android:textColor="@color/secondaryText"
                 android:letterSpacing="-0.01"
                 android:lineSpacingExtra="4sp"
                 tools:text="View your calendar events in Toggl and turn them into time entries with a tap" />
@@ -70,7 +70,7 @@
                 android:textSize="14sp"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="normal"
-                android:textColor="@color/buttonBlue"
+                android:textColor="@color/flatButtonText"
                 android:letterSpacing="0.04"
                 android:lineSpacingExtra="2sp"
                 tools:text="Skip" />

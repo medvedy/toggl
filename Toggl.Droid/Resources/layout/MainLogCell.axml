@@ -18,7 +18,7 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical|start"
         android:textColor="@android:color/white"
-        android:background="@color/playButtonGreen"
+        android:background="@color/startTimeEntryButtonBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <TextView
@@ -32,13 +32,13 @@
         android:gravity="center_vertical|end"
         android:fontFamily="sans-serif-medium"
         android:textColor="@android:color/white"
-        android:background="@color/playButtonRed"
+        android:background="@color/stopTimeEntryButtonBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <android.support.constraint.ConstraintLayout
         android:id="@+id/MainLogContentView"
         android:elevation="1dp"
-        android:background="@android:color/white"
+        android:background="@color/card"
         android:layout_height="72dp"
         android:layout_width="match_parent">
         <android.support.constraint.Guideline
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content" />
         <View 
             android:id="@+id/MainLogGroupBackground"
-            android:background="@color/lightGray"
+            android:background="@color/background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
         <TextView
@@ -82,7 +82,7 @@
             android:ellipsize="end"
             android:textSize="15sp"
             app:layout_goneMarginBottom="8dp"
-            android:textColor="@android:color/black"
+            android:textColor="@color/primaryText"
             tools:text="Exporting assets to Zeplin and organizing"
             app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintTop_toBottomOf="@id/TopGuideline"
@@ -102,7 +102,7 @@
             tools:text="Add description"
             app:layout_goneMarginTop="8dp"
             app:layout_goneMarginBottom="8dp"
-            android:textColor="@color/defaultText"
+            android:textColor="@color/secondaryText"
             app:layout_constraintLeft_toRightOf="@id/TimeEntriesLogCellGroupCount"
             app:layout_constraintTop_toBottomOf="@id/TimeEntriesLogCellDescription"
             app:layout_constraintBottom_toTopOf="@+id/TimeEntriesLogCellProjectLabel"
@@ -151,7 +151,7 @@
             android:id="@+id/TimeEntriesLogCellDurationGradient"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:background="@drawable/TransparentToWhiteGradient"
+            android:background="@drawable/TransparentToCardColorGradient"
             app:layout_constraintRight_toLeftOf="@id/TimeEntriesLogCellDurationPaddingArea"
             android:layout_height="0dp"
             android:layout_width="48dp" />

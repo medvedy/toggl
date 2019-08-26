@@ -23,7 +23,7 @@
             android:maxLines="1"
             tools:text="Toggl Workspace"
             android:lineSpacingExtra="5sp"
-            android:textColor="@android:color/black"
+            android:textColor="@color/primaryText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 </LinearLayout>

@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/expandedToolbarHeight" />
     <android.support.constraint.ConstraintLayout
         android:id="@+id/DurationCard"
-        android:background="@android:color/white"
+        android:background="@color/card"
         android:layout_height="64dp"
         android:layout_gravity="bottom"
         android:layout_width="match_parent">
@@ -88,6 +88,7 @@
     <RelativeLayout
         android:id="@+id/Toolbar"
         android:elevation="4dp"
+        android:background="@color/background"
         android:layout_width="match_parent"
         android:layout_height="@dimen/expandedToolbarHeight">
         <ImageView
@@ -95,7 +96,7 @@
             android:padding="16dp"
             android:clickable="true"
             android:src="@drawable/close"
-            android:tint="@android:color/black"
+            android:tint="@color/primaryText"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize" />
@@ -108,7 +109,7 @@
             android:letterSpacing="-0.01"
             android:lineSpacingExtra="5sp"
             android:scrollHorizontally="true"
-            android:textColor="@android:color/black"
+            android:textColor="@color/primaryText"
             android:background="@null"
             android:textCursorDrawable="@drawable/EditTextCursor"
             android:textColorHint="@color/placeholderText"
@@ -123,7 +124,7 @@
             android:paddingLeft="16dp"
             tools:text="Save"
             android:paddingRight="16dp"
-            android:textColor="@android:color/black"
+            android:textColor="@color/primaryText"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_height="46dp"
             android:layout_width="wrap_content"
