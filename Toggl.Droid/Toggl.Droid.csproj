@@ -749,8 +749,8 @@
     <AndroidResource Include="Resources\layout\MainFragment.axml" />
     <AndroidResource Include="Resources\layout\LoginActivity.axml" />
     <AndroidResource Include="Resources\values\Styles.xml" />
-    <AndroidResource Include="Resources\values-v23\Styles.xml" />
-    <AndroidResource Include="Resources\values-v27\Styles.xml" />
+    <AndroidResource Include="Resources\values-notnight-v23\Styles.xml" />
+    <AndroidResource Include="Resources\values-notnight-v27\Styles.xml" />
     <AndroidResource Include="Resources\drawable-hdpi\arrow_back.png" />
     <AndroidResource Include="Resources\drawable-hdpi\billable.png" />
     <AndroidResource Include="Resources\drawable-hdpi\check_light.png" />
@@ -946,7 +946,6 @@
     <AndroidResource Include="Resources\layout\ReportsCalendarFragmentDayCell.axml" />
     <AndroidResource Include="Resources\layout\ReportsCalendarFragmentPage.axml" />
     <AndroidResource Include="Resources\layout\ReportsCalendarShortcutCell.axml" />
-    <AndroidResource Include="Resources\drawable\OnboardingGradient.xml" />
     <AndroidResource Include="Resources\drawable-hdpi\book.png" />
     <AndroidResource Include="Resources\drawable-hdpi\timer.png" />
     <AndroidResource Include="Resources\drawable-mdpi\book.png" />
@@ -1050,7 +1049,6 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\ic_illustration_error_workspace.png" />
     <AndroidResource Include="Resources\layout\ReportsFragmentWorkspaceName.axml" />
     <AndroidResource Include="Resources\drawable\workspace_white.xml" />
-    <AndroidResource Include="Resources\values-v23\Strings.xml" />
     <AndroidResource Include="Resources\layout\SelectDefaultWorkspaceFragment.axml" />
     <AndroidResource Include="Resources\layout\SelectDefaultWorkspaceFragmentCell.axml" />
     <AndroidResource Include="Resources\drawable\bg_noise_login.png" />
@@ -1186,6 +1184,42 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\license_background.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-night\Colors.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-notnight\Colors.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-night-v27\Styles.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-night-v23\Styles.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-night\Styles.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values-notnight\Styles.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

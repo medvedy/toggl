@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+  <style name="AppBarPopupTheme" parent="ThemeOverlay.AppCompat">
+  </style>
+  <style name="AppBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+  </style>
+</resources>

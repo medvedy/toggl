@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+  <color name="card">#FF424242</color>
+  <color name="background">#FF121212</color>
+  <color name="transparentCard">#002D2D2D</color>
+  <color name="transparentBackground">#00121212</color>
+  <color name="primaryText">#DDFFFFFF</color>
+  <color name="secondaryText">#BBFFFFFF</color>
+  <color name="navigationBar">#FF424242</color>
+  <color name="errorText">#FFCF6679</color>
+  <color name="separator">#26FFFFFF</color>
+  <color name="stopTimeEntryButtonBackground">#FFCF6679</color>
+  <color name="startTimeEntryButtonBackground">#FF69F0AE</color>
+</resources>
