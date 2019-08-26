@@ -23,7 +23,7 @@
         android:minHeight="70dp"
         android:visibility="gone"
         app:cardCornerRadius="4dp"
-        android:background="@color/card"
+        app:cardBackgroundColor="@color/card"
         android:layout_marginTop="12dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"

@@ -35,7 +35,7 @@
                 android:layout_gravity="left"
                 android:padding="16dp"
                 android:src="@drawable/close"
-                android:tint="@android:color/black" />
+                android:tint="@color/primaryText" />
             <EditText
                 android:id="@+id/DescriptionEditText"
                 android:layout_width="match_parent"

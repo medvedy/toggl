@@ -24,9 +24,6 @@
   <color name="bottomBarIcon">#FF328FFF</color>
   <color name="bottomBarText">#FF9F9F9F</color>
 
-  <!-- Timer page-->
-  <color name="runningEntryDescription">#000000</color>
-
   <!-- Reports page-->
   <color name="reportsLabel">#FF757575</color>
   <color name="calendarSelected">#FF328FFF</color>
