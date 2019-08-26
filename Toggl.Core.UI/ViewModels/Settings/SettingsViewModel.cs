@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
@@ -12,7 +10,6 @@ using Toggl.Core.DataSources;
 using Toggl.Core.DTOs;
 using Toggl.Core.Extensions;
 using Toggl.Core.Interactors;
-using Toggl.Core.Login;
 using Toggl.Core.Models.Interfaces;
 using Toggl.Core.Services;
 using Toggl.Core.Sync;
@@ -22,6 +19,7 @@ using Toggl.Core.UI.Parameters;
 using Toggl.Core.UI.Services;
 using Toggl.Core.UI.Transformations;
 using Toggl.Core.UI.ViewModels.Settings;
+using Toggl.Core.UI.Views;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using Toggl.Storage.Settings;
@@ -30,11 +28,10 @@ using static Toggl.Shared.Extensions.CommonFunctions;
 
 namespace Toggl.Core.UI.ViewModels
 {
-    using WorkspaceToSelectableWorkspaceLambda = Func<IEnumerable<IThreadSafeWorkspace>, IList<SelectableWorkspaceViewModel>>;
-
     [Preserve(AllMembers = true)]
     public sealed class SettingsViewModel : ViewModel
     {
+        private readonly ISubject<Theme> themeSubject;
         private readonly ISubject<Unit> loggingOutSubject = new Subject<Unit>();
         private readonly ISubject<bool> isFeedbackSuccessViewShowing = new Subject<bool>();
         private readonly ISubject<bool> calendarPermissionGranted = new BehaviorSubject<bool>(false);
@@ -76,6 +73,7 @@ namespace Toggl.Core.UI.ViewModels
         public IObservable<bool> IsCalendarSmartRemindersVisible { get; }
         public IObservable<string> CalendarSmartReminders { get; }
         public IObservable<bool> SwipeActionsEnabled { get; }
+        public IObservable<Theme> AppTheme { get; }
 
         public UIAction OpenCalendarSettings { get; }
         public UIAction OpenCalendarSmartReminders { get; }
@@ -94,6 +92,7 @@ namespace Toggl.Core.UI.ViewModels
         public UIAction SelectBeginningOfWeek { get; }
         public UIAction ToggleManualMode { get; }
         public UIAction ToggleSwipeActions { get; }
+        public UIAction PickAppTheme { get; }
 
         public SettingsViewModel(
             ITogglDataSource dataSource,
@@ -128,6 +127,8 @@ namespace Toggl.Core.UI.ViewModels
             this.interactorFactory = interactorFactory;
             this.onboardingStorage = onboardingStorage;
             this.permissionsChecker = permissionsChecker;
+
+            themeSubject = new BehaviorSubject<Theme>(userPreferences.AppTheme);
 
             IsSynced =
                 syncManager.ProgressObservable
@@ -230,6 +231,10 @@ namespace Toggl.Core.UI.ViewModels
             SwipeActionsEnabled = userPreferences.SwipeActionsEnabled
                 .AsDriver(schedulerProvider);
 
+            AppTheme = themeSubject
+                .DistinctUntilChanged()
+                .AsDriver(schedulerProvider);
+
             OpenCalendarSettings = rxActionFactory.FromAsync(openCalendarSettings);
             OpenCalendarSmartReminders = rxActionFactory.FromAsync(openCalendarSmartReminders);
             OpenNotificationSettings = rxActionFactory.FromAsync(openNotificationSettings);
@@ -247,6 +252,7 @@ namespace Toggl.Core.UI.ViewModels
             ToggleTimeEntriesGrouping = rxActionFactory.FromAsync(toggleTimeEntriesGrouping);
             ToggleManualMode = rxActionFactory.FromAction(toggleManualMode);
             ToggleSwipeActions = rxActionFactory.FromAction(toggleSwipeActions);
+            PickAppTheme = rxActionFactory.FromAsync(pickNewTheme);
         }
 
         public override async Task Initialize()
@@ -451,6 +457,39 @@ namespace Toggl.Core.UI.ViewModels
         private void toggleSwipeActions()
         {
             userPreferences.SetSwipeActionsEnabled(!userPreferences.AreSwipeActionsEnabled);
+        }
+
+        private async Task pickNewTheme()
+        {
+            var currentTheme = userPreferences.AppTheme;
+            var currentThemeIndex = themeIndexInSelectView(currentTheme);
+            var selectOptions = new[]
+            {
+                new SelectOption<Theme>(Theme.UseSystem, Resources.UseSystemDefault),
+                new SelectOption<Theme>(Theme.Light, Resources.LightTheme),
+                new SelectOption<Theme>(Theme.Dark, Resources.DarkTheme)
+            };
+
+            var newTheme = await View
+                .Select(Resources.AppTitle, selectOptions, currentThemeIndex);
+
+            themeSubject.OnNext(newTheme);
+            userPreferences.SetTheme(newTheme);
+
+            int themeIndexInSelectView(Theme theme)
+            {
+                switch (theme)
+                {
+                    case Theme.UseSystem:
+                        return 0;
+                    case Theme.Light:
+                        return 1;
+                    case Theme.Dark:
+                        return 2;
+                    default:
+                        return 0;
+                }
+            }
         }
     }
 }

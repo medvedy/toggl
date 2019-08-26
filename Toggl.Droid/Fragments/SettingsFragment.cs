@@ -6,8 +6,11 @@ using Toggl.Core.UI.Extensions;
 using Toggl.Core.UI.ViewModels;
 using Toggl.Droid.Extensions;
 using Toggl.Droid.Extensions.Reactive;
+using Toggl.Droid.Helper;
 using Toggl.Droid.Presentation;
 using Toggl.Shared.Extensions;
+using Toggl.Storage.Settings;
+using static Android.Support.V7.App.AppCompatDelegate;
 using FoundationResources = Toggl.Shared.Resources;
 
 namespace Toggl.Droid.Fragments
@@ -94,6 +97,10 @@ namespace Toggl.Droid.Fragments
                 .Subscribe(showFeedbackSuccessToast)
                 .DisposedBy(DisposeBag);
 
+            ViewModel.AppTheme
+                .Subscribe(setupAppTheme)
+                .DisposedBy(DisposeBag);
+
             logoutView.Rx()
                 .BindAction(ViewModel.TryLogout)
                 .DisposedBy(DisposeBag);
@@ -153,6 +160,22 @@ namespace Toggl.Droid.Fragments
             smartRemindersView.Rx().Tap()
                 .Subscribe(ViewModel.OpenCalendarSmartReminders.Inputs)
                 .DisposedBy(DisposeBag);
+
+            appThemeView.Rx().Tap()
+                .Subscribe(ViewModel.PickAppTheme.Inputs)
+                .DisposedBy(DisposeBag);
+        }
+
+        private void setupAppTheme(Theme theme)
+        {
+            appThemeTextView.Text = theme.Name();
+            var currentNightModeFlag = DefaultNightMode;
+            var newNightModeFlag = theme.NightModeFlag();
+
+            if (currentNightModeFlag == newNightModeFlag)
+                return;
+
+            DefaultNightMode = newNightModeFlag;
         }
 
         public void ScrollToTop()

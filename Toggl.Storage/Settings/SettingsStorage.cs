@@ -57,6 +57,7 @@ namespace Toggl.Storage.Settings
         private const string didShowSiriClipboardInstructionKey = "didShowSiriClipboardInstructionKey";
 
         private const string swipeActionsDisabledKey = "swipeActionsDisabled";
+        private const string appThemeKey = "appTheme";
 
         private readonly Version version;
         private readonly IKeyValueStorage keyValueStorage;
@@ -105,6 +106,8 @@ namespace Toggl.Storage.Settings
             (hasTimeEntryBeenContinuedSubject, HasTimeEntryBeenContinued) = prepareSubjectAndObservable(hasTimeEntryBeenContinuedKey, keyValueStorage.GetBool);
             (timeSpanBeforeCalendarNotificationsSubject, TimeSpanBeforeCalendarNotifications) = prepareSubjectAndObservable(keyValueStorage.GetTimeSpan(timeSpanBeforeCalendarNotificationsKey) ?? defaultTimeSpanBeforeCalendarNotificationsSubject);
             (swipeActionsEnabledSubject, SwipeActionsEnabled) = prepareSubjectAndObservable(swipeActionsDisabledKey, key => !keyValueStorage.GetBool(key));
+
+            AppTheme = (Theme)keyValueStorage.GetInt(appThemeKey, 0);
         }
 
         #region IAccessRestrictionStorage
@@ -349,12 +352,10 @@ namespace Toggl.Storage.Settings
         public IObservable<bool> AreRunningTimerNotificationsEnabledObservable { get; }
         public IObservable<bool> AreStoppedTimerNotificationsEnabledObservable { get; }
         public IObservable<bool> SwipeActionsEnabled { get; }
-
         public IObservable<List<string>> EnabledCalendars { get; }
-
         public IObservable<bool> CalendarNotificationsEnabled { get; }
-
         public IObservable<TimeSpan> TimeSpanBeforeCalendarNotifications { get; }
+        public Theme AppTheme { get; private set; }
 
         public bool IsManualModeEnabled
             => keyValueStorage.GetBool(preferManualModeKey);
@@ -450,6 +451,13 @@ namespace Toggl.Storage.Settings
         {
             keyValueStorage.SetBool(swipeActionsDisabledKey, !enabled);
             swipeActionsEnabledSubject.OnNext(enabled);
+        }
+
+        public void SetTheme(Theme theme)
+        {
+            var themeValue = (int)theme;
+            keyValueStorage.SetInt(appThemeKey, themeValue);
+            AppTheme = theme;
         }
 
         #endregion

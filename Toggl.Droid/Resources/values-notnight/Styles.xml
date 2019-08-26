@@ -6,6 +6,11 @@
   <style name="AppBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
   </style>
 
+  <style name="TogglDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <item name="android:colorAccent">#328FFF</item>
+    <item name="colorControlActivated">#328FFF</item>
+  </style>
+
   <style name="WheelDialogStyle" parent="android:Theme.Material.Light.Dialog">
     <item name="android:colorAccent">#328fff</item>
     <item name="android:headerTimeTextAppearance">@style/TextAppearance.AppCompat</item>

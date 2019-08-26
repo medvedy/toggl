@@ -24,11 +24,6 @@
     <style name="AppTheme.OutdatedAppStatusBarColor">
         <item name="android:statusBarColor">@color/outdatedStatusBar</item>
     </style>
-
-    <style name="TogglDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-      <item name="android:colorAccent">#328FFF</item>
-		  <item name="colorControlActivated">#328FFF</item>
-    </style>
   
     <style name="TextInputLayoutErrorAppearance" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/errorText</item>

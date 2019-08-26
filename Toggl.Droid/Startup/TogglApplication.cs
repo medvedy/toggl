@@ -3,11 +3,13 @@ using Android.App;
 using Android.Arch.Lifecycle;
 using Android.Content;
 using Android.Runtime;
+using Android.Support.V7.App;
 using Android.Views.Accessibility;
 using Java.Interop;
 using Toggl.Core;
 using Toggl.Core.UI;
 using Toggl.Droid.BroadcastReceivers;
+using Toggl.Droid.Extensions;
 
 namespace Toggl.Droid
 {
@@ -31,6 +33,8 @@ namespace Toggl.Droid
 #if !DEBUG
             Firebase.FirebaseApp.InitializeApp(this);
 #endif
+            AppCompatDelegate.DefaultNightMode = AndroidDependencyContainer.Instance
+                .UserPreferences.AppTheme.NightModeFlag();
 
             AndroidDependencyContainer.EnsureInitialized(Context);
             var app = new AppStart(AndroidDependencyContainer.Instance);
