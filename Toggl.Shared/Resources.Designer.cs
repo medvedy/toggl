@@ -2475,5 +2475,23 @@ namespace Toggl.Shared {
                 return ResourceManager.GetString("SiriWorkflowFocusModeDescription", resourceCulture);
             }
         }
+        
+        public static string UseSystemDefault {
+            get {
+                return ResourceManager.GetString("UseSystemDefault", resourceCulture);
+            }
+        }
+        
+        public static string LightTheme {
+            get {
+                return ResourceManager.GetString("LightTheme", resourceCulture);
+            }
+        }
+        
+        public static string DarkTheme {
+            get {
+                return ResourceManager.GetString("DarkTheme", resourceCulture);
+            }
+        }
     }
 }
