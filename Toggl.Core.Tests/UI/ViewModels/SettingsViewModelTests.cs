@@ -682,9 +682,12 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 ViewModel.SelectDurationFormat.Execute();
                 TestScheduler.Start();
 
-                await NavigationService
+                await View
                     .Received()
-                    .Navigate<SelectDurationFormatViewModel, DurationFormat, DurationFormat>(durationFormat, View);
+                    .Select(
+                        Arg.Any<string>(),
+                        Arg.Any<IEnumerable<SelectOption<BeginningOfWeek>>>(),
+                        Arg.Is(1));
             }
 
             [Fact, LogIfTooSlow]
@@ -694,9 +697,11 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var newDurationFormat = DurationFormat.Improved;
                 var preferences = new MockPreferences { DurationFormat = oldDurationFormat };
                 PreferencesSubject.OnNext(preferences);
-                NavigationService
-                    .Navigate<SelectDurationFormatViewModel, DurationFormat, DurationFormat>(Arg.Any<DurationFormat>(), View)
-                    .Returns(Task.FromResult(newDurationFormat));
+                View.Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<DurationFormat>>>(),
+                    Arg.Any<int>())
+                .Returns(Observable.Return(newDurationFormat));
 
                 ViewModel.SelectDurationFormat.Execute();
                 TestScheduler.Start();
@@ -714,9 +719,11 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var newDurationFormat = DurationFormat.Improved;
                 var preferences = new MockPreferences { DurationFormat = oldDurationFormat };
                 PreferencesSubject.OnNext(preferences);
-                NavigationService
-                    .Navigate<SelectDurationFormatViewModel, DurationFormat, DurationFormat>(Arg.Any<DurationFormat>(), View)
-                    .Returns(Task.FromResult(newDurationFormat));
+                View.Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<DurationFormat>>>(),
+                    Arg.Any<int>())
+                .Returns(Observable.Return(newDurationFormat));
 
                 ViewModel.SelectDurationFormat.Execute();
                 TestScheduler.Start();
@@ -732,9 +739,11 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var oldPreferences = new MockPreferences { DurationFormat = oldDurationFormat };
                 var newPreferences = new MockPreferences { DurationFormat = newDurationFormat };
                 PreferencesSubject.OnNext(oldPreferences);
-                NavigationService
-                    .Navigate<SelectDurationFormatViewModel, DurationFormat, DurationFormat>(Arg.Any<DurationFormat>(), View)
-                    .Returns(Task.FromResult(newDurationFormat));
+                View.Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<DurationFormat>>>(),
+                    Arg.Any<int>())
+                .Returns(Observable.Return(newDurationFormat));
                 InteractorFactory
                     .UpdatePreferences(Arg.Any<EditPreferencesDTO>())
                     .Execute()

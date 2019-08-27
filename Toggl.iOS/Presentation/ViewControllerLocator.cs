@@ -66,8 +66,6 @@ namespace Toggl.iOS.Presentation
                     return new SelectDateTimeViewController(vm);
                 case SelectDefaultWorkspaceViewModel vm:
                     return new SelectDefaultWorkspaceViewController(vm);
-                case SelectDurationFormatViewModel vm:
-                    return new SelectDurationFormatViewController(vm);
                 case SelectProjectViewModel vm:
                     return new SelectProjectViewController(vm);
                 case SelectTagsViewModel vm:

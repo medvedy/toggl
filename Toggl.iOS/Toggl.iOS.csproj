@@ -1337,8 +1337,6 @@
     <InterfaceDefinition Include="Views\Reports\ReportsHeaderView.xib" />
     <InterfaceDefinition Include="Views\StartTimeEntry\NoEntityInfoViewCell.xib" />
     <InterfaceDefinition Include="Views\Suggestions\SuggestionView.xib" />
-    <InterfaceDefinition Include="ViewControllers\SelectDurationFormatViewController.xib" />
-    <InterfaceDefinition Include="Views\Settings\DurationFormatViewCell.xib" />
     <InterfaceDefinition Include="ViewControllers\Settings\SettingsViewController.xib" />
     <InterfaceDefinition Include="ViewControllers\Settings\AboutViewController.xib" />
     <InterfaceDefinition Include="Views\Log\TimeEntriesEmptyLogView.xib" />
@@ -1710,14 +1708,6 @@
       <DependentUpon>SuggestionView.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\LicenseProviderIos.cs" />
-    <Compile Include="ViewControllers\SelectDurationFormatViewController.cs" />
-    <Compile Include="ViewControllers\SelectDurationFormatViewController.designer.cs">
-      <DependentUpon>SelectDurationFormatViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Settings\DurationFormatViewCell.cs" />
-    <Compile Include="Views\Settings\DurationFormatViewCell.designer.cs">
-      <DependentUpon>DurationFormatViewCell.cs</DependentUpon>
-    </Compile>
     <Compile Include="Views\Log\TimeEntriesEmptyLogView.cs" />
     <Compile Include="Views\Log\TimeEntriesEmptyLogView.designer.cs">
       <DependentUpon>TimeEntriesEmptyLogView.cs</DependentUpon>

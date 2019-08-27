@@ -19,7 +19,6 @@ namespace Toggl.iOS.Presentation
             typeof(EditTimeEntryViewModel),
             typeof(SelectClientViewModel),
             typeof(SelectCountryViewModel),
-            typeof(SelectDurationFormatViewModel),
             typeof(SelectProjectViewModel),
             typeof(SelectTagsViewModel),
             typeof(SelectWorkspaceViewModel),

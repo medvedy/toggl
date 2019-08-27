@@ -211,13 +211,6 @@ namespace Toggl.Core.UI.Navigation
                     dependencyContainer.RxActionFactory);
             }
 
-            if (viewModelType == typeof(SelectDurationFormatViewModel))
-            {
-                return new SelectDurationFormatViewModel(
-                    dependencyContainer.NavigationService,
-                    dependencyContainer.RxActionFactory);
-            }
-
             if (viewModelType == typeof(SelectProjectViewModel))
             {
                 return new SelectProjectViewModel(

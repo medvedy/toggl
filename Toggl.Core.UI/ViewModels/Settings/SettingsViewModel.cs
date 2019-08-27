@@ -184,8 +184,7 @@ namespace Toggl.Core.UI.ViewModels
 
             DurationFormat =
                 dataSource.Preferences.Current
-                    .Select(preferences => preferences.DurationFormat)
-                    .Select(DurationFormatToString.Convert)
+                    .Select(preferences => preferences.DurationFormat.ToFormattedString())
                     .DistinctUntilChanged()
                     .AsDriver(schedulerProvider);
 
@@ -430,18 +429,27 @@ namespace Toggl.Core.UI.ViewModels
 
         private async Task selectDurationFormat()
         {
-            var newDurationFormat = await Navigate<SelectDurationFormatViewModel, DurationFormat, DurationFormat>(currentPreferences.DurationFormat);
+            var validDurationFormats = Enum.GetValues(typeof(DurationFormat)).Cast<DurationFormat>();
+            var durationFormats = validDurationFormats.Select(selectOptionFromDurationFormat);
+            var selectedDurationFormatIndex = validDurationFormats
+                .IndexOf(durationFormat => durationFormat == currentPreferences.DurationFormat);
+
+            var newDurationFormat = await View
+                .Select(Resources.FirstDayOfTheWeek, durationFormats, selectedDurationFormatIndex);
 
             if (currentPreferences.DurationFormat == newDurationFormat)
                 return;
 
             await updatePreferences(newDurationFormat);
+
+            SelectOption<DurationFormat> selectOptionFromDurationFormat(DurationFormat durationFormat)
+                => new SelectOption<DurationFormat>(durationFormat, durationFormat.ToFormattedString());
         }
 
         private async Task selectBeginningOfWeek()
         {
             var validDaysOfWeek = Enum.GetValues(typeof(BeginningOfWeek)).Cast<BeginningOfWeek>();
-            var beginningOfWeekSelections = validDaysOfWeek.Select(selectOptionFromDateFormat);
+            var beginningOfWeekSelections = validDaysOfWeek.Select(selectOptionFromBeginningOfWeek);
             var selectedDayIndex = validDaysOfWeek
                 .IndexOf(beginningOfWeek => beginningOfWeek == currentUser.BeginningOfWeek);
 
@@ -456,7 +464,7 @@ namespace Toggl.Core.UI.ViewModels
                 .Execute();
             syncManager.InitiatePushSync();
 
-            SelectOption<BeginningOfWeek> selectOptionFromDateFormat(BeginningOfWeek beginningOfWeek)
+            SelectOption<BeginningOfWeek> selectOptionFromBeginningOfWeek(BeginningOfWeek beginningOfWeek)
                 => new SelectOption<BeginningOfWeek>(beginningOfWeek, beginningOfWeek.ToLocalizedString());
         }
 
