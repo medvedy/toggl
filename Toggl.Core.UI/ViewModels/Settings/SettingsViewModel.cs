@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
@@ -12,7 +11,6 @@ using Toggl.Core.DataSources;
 using Toggl.Core.DTOs;
 using Toggl.Core.Extensions;
 using Toggl.Core.Interactors;
-using Toggl.Core.Login;
 using Toggl.Core.Models.Interfaces;
 using Toggl.Core.Services;
 using Toggl.Core.Sync;
@@ -391,10 +389,7 @@ namespace Toggl.Core.UI.ViewModels
         private async Task selectDateFormat()
         {
             var validDateFormats = Shared.DateFormat.ValidDateFormats;
-
-            var dayFormatSelections = validDateFormats
-                .Select(selectOptionFromDateFormat);
-
+            var dayFormatSelections = validDateFormats.Select(selectOptionFromDateFormat);
             var selectedDayFormatIndex = validDateFormats
                 .IndexOf(pref => pref.Long == currentPreferences.DateFormat.Long);
 
@@ -445,14 +440,24 @@ namespace Toggl.Core.UI.ViewModels
 
         private async Task selectBeginningOfWeek()
         {
-            var newBeginningOfWeek = await Navigate<SelectBeginningOfWeekViewModel, BeginningOfWeek, BeginningOfWeek>(currentUser
-                    .BeginningOfWeek);
+            var validDaysOfWeek = Enum.GetValues(typeof(BeginningOfWeek)).Cast<BeginningOfWeek>();
+            var beginningOfWeekSelections = validDaysOfWeek.Select(selectOptionFromDateFormat);
+            var selectedDayIndex = validDaysOfWeek
+                .IndexOf(beginningOfWeek => beginningOfWeek == currentUser.BeginningOfWeek);
+
+            var newBeginningOfWeek = await View
+                .Select(Resources.FirstDayOfTheWeek, beginningOfWeekSelections, selectedDayIndex);
 
             if (currentUser.BeginningOfWeek == newBeginningOfWeek)
                 return;
 
-            await interactorFactory.UpdateUser(new EditUserDTO { BeginningOfWeek = newBeginningOfWeek }).Execute();
+            await interactorFactory
+                .UpdateUser(new EditUserDTO { BeginningOfWeek = newBeginningOfWeek })
+                .Execute();
             syncManager.InitiatePushSync();
+
+            SelectOption<BeginningOfWeek> selectOptionFromDateFormat(BeginningOfWeek beginningOfWeek)
+                => new SelectOption<BeginningOfWeek>(beginningOfWeek, beginningOfWeek.ToLocalizedString());
         }
 
         private void checkCalendarPermissions()

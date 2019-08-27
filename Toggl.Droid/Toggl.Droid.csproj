@@ -521,7 +521,6 @@
     <Compile Include="Adapters\SelectClientRecyclerAdapter.cs" />
     <Compile Include="Fragments\SelectWorkspaceFragment.cs" />
     <Compile Include="Services\LicenseProviderAndroid.cs" />
-    <Compile Include="Fragments\SelectBeginningOfWeekFragment.cs" />
     <Compile Include="Fragments\SelectDurationFormatFragment.cs" />
     <Compile Include="Fragments\SelectDurationFormatFragment.ViewBinds.cs">
       <DependentUpon>SelectDurationFormatFragment.cs</DependentUpon>
@@ -610,10 +609,6 @@
     <Compile Include="Views\EditDuration\WheelDurationInput.InputFilter.cs">
       <DependentUpon>WheelDurationInput.cs</DependentUpon>
     </Compile>
-    <Compile Include="Fragments\SelectBeginningOfWeekFragment.ViewBinds.cs">
-      <DependentUpon>SelectBeginningOfWeekFragment.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewHolders\BeginningOfWeekViewHolder.cs" />
     <Compile Include="Fragments\SettingsFragment.cs" />
     <Compile Include="Fragments\SettingsFragment.ViewBinds.cs">
       <DependentUpon>SettingsFragment.cs</DependentUpon>
@@ -689,8 +684,6 @@
     <AndroidResource Include="Resources\layout\SelectProjectActivityWorkspaceHeader.axml" />
     <AndroidResource Include="Resources\drawable\TransparentToLightGrayGradient.xml" />
     <GoogleServicesJson Include="google-services.json" />
-    <AndroidResource Include="Resources\layout\SelectBeginningOfWeekFragment.axml" />
-    <AndroidResource Include="Resources\layout\SelectBeginningOfWeekFragmentCell.axml" />
     <AndroidResource Include="Resources\layout\SelectDurationFormatFragment.axml" />
     <AndroidResource Include="Resources\layout\SelectDurationFormatFragmentCell.axml" />
     <AndroidResource Include="Resources\layout\ReportsFragment.axml" />

@@ -171,13 +171,6 @@ namespace Toggl.Core.UI.Navigation
                     dependencyContainer.SchedulerProvider);
             }
 
-            if (viewModelType == typeof(SelectBeginningOfWeekViewModel))
-            {
-                return new SelectBeginningOfWeekViewModel(
-                    dependencyContainer.NavigationService,
-                    dependencyContainer.RxActionFactory);
-            }
-
             if (viewModelType == typeof(SelectClientViewModel))
             {
                 return new SelectClientViewModel(

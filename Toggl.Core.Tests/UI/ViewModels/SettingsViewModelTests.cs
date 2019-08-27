@@ -753,7 +753,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
         public sealed class TheSelectBeginningOfWeekMethod : SettingsViewModelTest
         {
             [Fact, LogIfTooSlow]
-            public async Task NavigatesToSelectBeginningOfWeekViewModelPassingCurrentBeginningOfWeek()
+            public async Task ShowsTheSelectModalPassingCurrentBeginningOfWeek()
             {
                 var beginningOfWeek = BeginningOfWeek.Friday;
                 var user = new MockUser { BeginningOfWeek = beginningOfWeek };
@@ -762,9 +762,12 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 ViewModel.SelectBeginningOfWeek.Execute();
                 TestScheduler.Start();
 
-                await NavigationService
+                await View
                     .Received()
-                    .Navigate<SelectBeginningOfWeekViewModel, BeginningOfWeek, BeginningOfWeek>(beginningOfWeek, View);
+                    .Select(
+                        Arg.Any<string>(),
+                        Arg.Any<IEnumerable<SelectOption<BeginningOfWeek>>>(),
+                        Arg.Is(5));
             }
 
             [Fact, LogIfTooSlow]
@@ -776,9 +779,11 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var user = Substitute.For<IThreadSafeUser>();
                 user.BeginningOfWeek.Returns(oldBeginningOfWeek);
                 UserSubject.OnNext(user);
-                NavigationService
-                    .Navigate<SelectBeginningOfWeekViewModel, BeginningOfWeek, BeginningOfWeek>(Arg.Any<BeginningOfWeek>(), View)
-                    .Returns(Task.FromResult(newBeginningOfWeek));
+                View.Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<BeginningOfWeek>>>(),
+                    Arg.Any<int>())
+                .Returns(Observable.Return(newBeginningOfWeek));
 
                 ViewModel.SelectBeginningOfWeek.Execute();
                 TestScheduler.Start();
@@ -796,9 +801,11 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var newBeginningOfWeek = BeginningOfWeek.Sunday;
                 var user = new MockUser { BeginningOfWeek = oldBeginningOfWeek };
                 UserSubject.OnNext(user);
-                NavigationService
-                    .Navigate<SelectBeginningOfWeekViewModel, BeginningOfWeek, BeginningOfWeek>(Arg.Any<BeginningOfWeek>(), View)
-                    .Returns(Task.FromResult(newBeginningOfWeek));
+                View.Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<BeginningOfWeek>>>(),
+                    Arg.Any<int>())
+                .Returns(Observable.Return(newBeginningOfWeek));
 
                 ViewModel.SelectBeginningOfWeek.Execute();
                 TestScheduler.Start();
@@ -814,9 +821,11 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var oldUser = new MockUser { BeginningOfWeek = oldBeginningOfWeek };
                 var newUser = new MockUser { BeginningOfWeek = newBeginningOfWeek };
                 UserSubject.OnNext(oldUser);
-                NavigationService
-                    .Navigate<SelectBeginningOfWeekViewModel, BeginningOfWeek, BeginningOfWeek>(Arg.Any<BeginningOfWeek>(), View)
-                    .Returns(Task.FromResult(newBeginningOfWeek));
+                View.Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<BeginningOfWeek>>>(),
+                    Arg.Any<int>())
+                .Returns(Observable.Return(newBeginningOfWeek));
                 InteractorFactory
                     .UpdateUser(Arg.Any<EditUserDTO>())
                     .Execute()

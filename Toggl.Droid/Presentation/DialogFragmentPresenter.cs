@@ -18,7 +18,6 @@ namespace Toggl.Droid.Presentation
         {
             typeof(CalendarPermissionDeniedViewModel),
             typeof(NoWorkspaceViewModel),
-            typeof(SelectBeginningOfWeekViewModel),
             typeof(SelectColorViewModel),
             typeof(SelectDefaultWorkspaceViewModel),
             typeof(SelectDurationFormatViewModel),
@@ -52,9 +51,6 @@ namespace Toggl.Droid.Presentation
 
                 case NoWorkspaceViewModel _:
                     return new NoWorkspaceFragment { Cancelable = false };
-
-                case SelectBeginningOfWeekViewModel _:
-                    return new SelectBeginningOfWeekFragment();
 
                 case SelectColorViewModel _:
                     return new SelectColorFragment();

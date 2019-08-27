@@ -1339,8 +1339,6 @@
     <InterfaceDefinition Include="Views\Suggestions\SuggestionView.xib" />
     <InterfaceDefinition Include="ViewControllers\SelectDurationFormatViewController.xib" />
     <InterfaceDefinition Include="Views\Settings\DurationFormatViewCell.xib" />
-    <InterfaceDefinition Include="ViewControllers\SelectBeginningOfWeekViewController.xib" />
-    <InterfaceDefinition Include="Views\Settings\DayOfWeekViewCell.xib" />
     <InterfaceDefinition Include="ViewControllers\Settings\SettingsViewController.xib" />
     <InterfaceDefinition Include="ViewControllers\Settings\AboutViewController.xib" />
     <InterfaceDefinition Include="Views\Log\TimeEntriesEmptyLogView.xib" />
@@ -1719,14 +1717,6 @@
     <Compile Include="Views\Settings\DurationFormatViewCell.cs" />
     <Compile Include="Views\Settings\DurationFormatViewCell.designer.cs">
       <DependentUpon>DurationFormatViewCell.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewControllers\SelectBeginningOfWeekViewController.cs" />
-    <Compile Include="ViewControllers\SelectBeginningOfWeekViewController.designer.cs">
-      <DependentUpon>SelectBeginningOfWeekViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Settings\DayOfWeekViewCell.cs" />
-    <Compile Include="Views\Settings\DayOfWeekViewCell.designer.cs">
-      <DependentUpon>DayOfWeekViewCell.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Log\TimeEntriesEmptyLogView.cs" />
     <Compile Include="Views\Log\TimeEntriesEmptyLogView.designer.cs">
