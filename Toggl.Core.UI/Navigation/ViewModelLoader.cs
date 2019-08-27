@@ -201,13 +201,6 @@ namespace Toggl.Core.UI.Navigation
                     dependencyContainer.RxActionFactory);
             }
 
-            if (viewModelType == typeof(SelectDateFormatViewModel))
-            {
-                return new SelectDateFormatViewModel(
-                    dependencyContainer.NavigationService,
-                    dependencyContainer.RxActionFactory);
-            }
-
             if (viewModelType == typeof(SelectDateTimeViewModel))
             {
                 return new SelectDateTimeViewModel(

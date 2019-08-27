@@ -521,10 +521,6 @@
     <Compile Include="Adapters\SelectClientRecyclerAdapter.cs" />
     <Compile Include="Fragments\SelectWorkspaceFragment.cs" />
     <Compile Include="Services\LicenseProviderAndroid.cs" />
-    <Compile Include="Fragments\SelectDateFormatFragment.cs" />
-    <Compile Include="Fragments\SelectDateFormatFragment.ViewBinds.cs">
-      <DependentUpon>SelectDateFormatFragment.cs</DependentUpon>
-    </Compile>
     <Compile Include="Fragments\SelectBeginningOfWeekFragment.cs" />
     <Compile Include="Fragments\SelectDurationFormatFragment.cs" />
     <Compile Include="Fragments\SelectDurationFormatFragment.ViewBinds.cs">
@@ -609,8 +605,6 @@
     <Compile Include="Services\BackgroundSyncJobSchedulerService.cs" />
     <Compile Include="ViewHolders\Tags\TagCreationSelectionViewHolder.cs" />
     <Compile Include="ViewHolders\Tags\TagSelectionViewHolder.cs" />
-    <Compile Include="Adapters\SelectDateFormatRecyclerAdapter.cs" />
-    <Compile Include="ViewHolders\SelectDateFormatViewHolder.cs" />
     <Compile Include="Extensions\ColorExtensions.cs" />
     <Compile Include="Views\EditDuration\WheelDurationInput.cs" />
     <Compile Include="Views\EditDuration\WheelDurationInput.InputFilter.cs">
@@ -693,8 +687,6 @@
     <AndroidResource Include="Resources\layout\SelectProjectActivityProjectCell.axml" />
     <AndroidResource Include="Resources\layout\SelectProjectActivityTaskCell.axml" />
     <AndroidResource Include="Resources\layout\SelectProjectActivityWorkspaceHeader.axml" />
-    <AndroidResource Include="Resources\layout\SelectDateFormatFragment.axml" />
-    <AndroidResource Include="Resources\layout\SelectDateFormatFragmentCell.axml" />
     <AndroidResource Include="Resources\drawable\TransparentToLightGrayGradient.xml" />
     <GoogleServicesJson Include="google-services.json" />
     <AndroidResource Include="Resources\layout\SelectBeginningOfWeekFragment.axml" />

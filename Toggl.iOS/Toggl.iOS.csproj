@@ -1337,8 +1337,6 @@
     <InterfaceDefinition Include="Views\Reports\ReportsHeaderView.xib" />
     <InterfaceDefinition Include="Views\StartTimeEntry\NoEntityInfoViewCell.xib" />
     <InterfaceDefinition Include="Views\Suggestions\SuggestionView.xib" />
-    <InterfaceDefinition Include="Views\Settings\DateFormatViewCell.xib" />
-    <InterfaceDefinition Include="ViewControllers\SelectDateFormatViewController.xib" />
     <InterfaceDefinition Include="ViewControllers\SelectDurationFormatViewController.xib" />
     <InterfaceDefinition Include="Views\Settings\DurationFormatViewCell.xib" />
     <InterfaceDefinition Include="ViewControllers\SelectBeginningOfWeekViewController.xib" />
@@ -1714,14 +1712,6 @@
       <DependentUpon>SuggestionView.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\LicenseProviderIos.cs" />
-    <Compile Include="Views\Settings\DateFormatViewCell.cs" />
-    <Compile Include="Views\Settings\DateFormatViewCell.designer.cs">
-      <DependentUpon>DateFormatViewCell.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewControllers\SelectDateFormatViewController.cs" />
-    <Compile Include="ViewControllers\SelectDateFormatViewController.designer.cs">
-      <DependentUpon>SelectDateFormatViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="ViewControllers\SelectDurationFormatViewController.cs" />
     <Compile Include="ViewControllers\SelectDurationFormatViewController.designer.cs">
       <DependentUpon>SelectDurationFormatViewController.cs</DependentUpon>

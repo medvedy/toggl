@@ -22,6 +22,7 @@ using Toggl.Core.UI.Parameters;
 using Toggl.Core.UI.Services;
 using Toggl.Core.UI.Transformations;
 using Toggl.Core.UI.ViewModels.Settings;
+using Toggl.Core.UI.Views;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using Toggl.Storage.Settings;
@@ -389,12 +390,24 @@ namespace Toggl.Core.UI.ViewModels
 
         private async Task selectDateFormat()
         {
-            var newDateFormat = await Navigate<SelectDateFormatViewModel, DateFormat, DateFormat>(currentPreferences.DateFormat);
+            var validDateFormats = Shared.DateFormat.ValidDateFormats;
+
+            var dayFormatSelections = validDateFormats
+                .Select(selectOptionFromDateFormat);
+
+            var selectedDayFormatIndex = validDateFormats
+                .IndexOf(pref => pref.Long == currentPreferences.DateFormat.Long);
+
+            var newDateFormat = await View
+                .Select(Resources.DateFormat, dayFormatSelections, selectedDayFormatIndex);
 
             if (currentPreferences.DateFormat == newDateFormat)
                 return;
 
             await updatePreferences(dateFormat: newDateFormat);
+
+            SelectOption<DateFormat> selectOptionFromDateFormat(DateFormat dateFormat)
+                => new SelectOption<DateFormat>(dateFormat, dateFormat.Localized);
         }
 
         private async Task pickDefaultWorkspace()

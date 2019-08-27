@@ -20,7 +20,6 @@ namespace Toggl.iOS.Presentation
             typeof(SelectBeginningOfWeekViewModel),
             typeof(SelectClientViewModel),
             typeof(SelectCountryViewModel),
-            typeof(SelectDateFormatViewModel),
             typeof(SelectDurationFormatViewModel),
             typeof(SelectProjectViewModel),
             typeof(SelectTagsViewModel),

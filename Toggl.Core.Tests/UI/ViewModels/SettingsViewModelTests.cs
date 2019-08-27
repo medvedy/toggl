@@ -21,6 +21,7 @@ using Toggl.Core.UI.Navigation;
 using Toggl.Core.UI.Parameters;
 using Toggl.Core.UI.ViewModels;
 using Toggl.Core.UI.ViewModels.Settings;
+using Toggl.Core.UI.Views;
 using Toggl.Shared;
 using Xunit;
 
@@ -549,7 +550,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
         public sealed class TheSelectDateFormatMethod : SettingsViewModelTest
         {
             [Fact, LogIfTooSlow]
-            public async Task NavigatesToSelectDateFormatViewModelPassingCurrentDateFormat()
+            public async Task ShowsASelectDialogPassingTheCurrentDateFormat()
             {
                 var dateFormat = DateFormat.FromLocalizedDateFormat("MM-DD-YYYY");
                 var preferences = new MockPreferences { DateFormat = dateFormat };
@@ -558,9 +559,12 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 ViewModel.SelectDateFormat.Execute();
                 TestScheduler.Start();
 
-                await NavigationService
+                await View
                     .Received()
-                    .Navigate<SelectDateFormatViewModel, DateFormat, DateFormat>(dateFormat, View);
+                    .Select(
+                        Arg.Any<string>(),
+                        Arg.Any<IEnumerable<SelectOption<DateFormat>>>(),
+                        Arg.Is(2));
             }
 
             [Fact, LogIfTooSlow]
@@ -570,10 +574,12 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var newDateFormat = DateFormat.FromLocalizedDateFormat("DD.MM.YYYY");
                 var preferences = new MockPreferences { DateFormat = oldDateFormat };
                 PreferencesSubject.OnNext(preferences);
-                NavigationService
-                    .Navigate<SelectDateFormatViewModel, DateFormat, DateFormat>(Arg.Any<DateFormat>(), View)
-                    .Returns(Task.FromResult(newDateFormat));
-
+                View.Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<DateFormat>>>(),
+                    Arg.Any<int>())
+                .Returns(Observable.Return(newDateFormat));
+                    
                 ViewModel.SelectDateFormat.Execute();
                 TestScheduler.Start();
 
@@ -591,9 +597,11 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var oldPreferences = new MockPreferences { DateFormat = oldDateFormat };
                 var newPreferences = new MockPreferences { DateFormat = newDateFormat };
                 PreferencesSubject.OnNext(oldPreferences);
-                NavigationService
-                    .Navigate<SelectDateFormatViewModel, DateFormat, DateFormat>(Arg.Any<DateFormat>(), View)
-                    .Returns(Task.FromResult(newDateFormat));
+                View.Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<DateFormat>>>(),
+                    Arg.Any<int>())
+                .Returns(Observable.Return(newDateFormat));
                 InteractorFactory.UpdatePreferences(Arg.Any<EditPreferencesDTO>())
                     .Execute()
                     .Returns(Observable.Return(newPreferences));
@@ -614,9 +622,11 @@ namespace Toggl.Core.Tests.UI.ViewModels
                 var newDateFormat = DateFormat.FromLocalizedDateFormat("DD.MM.YYYY");
                 var preferences = new MockPreferences { DateFormat = oldDateFormat };
                 PreferencesSubject.OnNext(preferences);
-                NavigationService
-                    .Navigate<SelectDateFormatViewModel, DateFormat, DateFormat>(Arg.Any<DateFormat>(), View)
-                    .Returns(Task.FromResult(newDateFormat));
+                View.Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<DateFormat>>>(),
+                    Arg.Any<int>())
+                .Returns(Observable.Return(newDateFormat));
 
                 ViewModel.SelectDateFormat.Execute();
                 TestScheduler.Start();

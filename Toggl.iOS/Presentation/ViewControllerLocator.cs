@@ -64,8 +64,6 @@ namespace Toggl.iOS.Presentation
                     return new SelectColorViewController(vm);
                 case SelectCountryViewModel vm:
                     return new SelectCountryViewController(vm);
-                case SelectDateFormatViewModel vm:
-                    return new SelectDateFormatViewController(vm);
                 case SelectDateTimeViewModel vm:
                     return new SelectDateTimeViewController(vm);
                 case SelectDefaultWorkspaceViewModel vm:
