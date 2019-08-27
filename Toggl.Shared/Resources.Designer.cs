@@ -10,6 +10,7 @@
 
 namespace Toggl.Shared {
     using System;
+    using System.Reflection;
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
@@ -2491,6 +2492,12 @@ namespace Toggl.Shared {
         public static string DarkTheme {
             get {
                 return ResourceManager.GetString("DarkTheme", resourceCulture);
+            }
+        }
+        
+        public static string AppTheme {
+            get {
+                return ResourceManager.GetString("AppTheme", resourceCulture);
             }
         }
     }
