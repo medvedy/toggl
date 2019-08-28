@@ -296,6 +296,18 @@ namespace Toggl.iOS.ViewControllers
             NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, onApplicationDidBecomeActive);
         }
 
+        public override void ViewDidAppear(bool animated)
+        {
+            base.ViewDidAppear(animated);
+
+            var activity = new NSUserActivity("com.toggl.daneel.log");
+            activity.Title = "Fucking title";
+            activity.EligibleForHandoff = true;
+            activity.WebPageUrl = new NSUrl("https://toggl.com/app");
+            UserActivity = activity;
+            activity.BecomeCurrent();
+        }
+
         public override void ViewDidDisappear(bool animated)
         {
             base.ViewDidDisappear(animated);

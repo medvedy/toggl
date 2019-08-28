@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reactive.Linq;
 using CoreGraphics;
+using Foundation;
 using Toggl.Core.UI.Collections;
 using Toggl.Core.UI.Extensions;
 using Toggl.Core.UI.Helper;
@@ -167,13 +168,18 @@ namespace Toggl.iOS.ViewControllers
             return sections.CombineLatest().Select(list => list.ToImmutableList());
         }
 
-#if DEBUG
-        private UILongPressGestureRecognizer recognizer;
-
         public override void ViewDidAppear(bool animated)
         {
             base.ViewDidAppear(animated);
 
+            var activity = new NSUserActivity("com.toggl.daneel.settings");
+            activity.Title = "Fucking title";
+            activity.EligibleForHandoff = true;
+            activity.WebPageUrl = new NSUrl("https://toggl.com/app/profile");
+            UserActivity = activity;
+            activity.BecomeCurrent();
+
+# if DEBUG
             recognizer = new UILongPressGestureRecognizer(recognizer =>
             {
                 if (recognizer.State != UIGestureRecognizerState.Recognized)
@@ -183,7 +189,11 @@ namespace Toggl.iOS.ViewControllers
             });
 
             NavigationController.NavigationBar.AddGestureRecognizer(recognizer);
+#endif
         }
+
+#if DEBUG
+        private UILongPressGestureRecognizer recognizer;
 
         public override void ViewWillDisappear(bool animated)
         {

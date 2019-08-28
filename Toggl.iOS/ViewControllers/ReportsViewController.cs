@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Toggl.Core.Models.Interfaces;
 using Toggl.Core.Reports;
 using Toggl.Core.UI.Extensions;
@@ -31,7 +33,6 @@ namespace Toggl.iOS.ViewControllers
 
         private const double maxWidth = 834;
 
-
         private UIButton titleButton;
         private bool calendarIsVisible;
         private bool alreadyLoadedCalendar;
@@ -39,6 +40,7 @@ namespace Toggl.iOS.ViewControllers
         private IDisposable calendarSizeDisposable;
         private ReportsCalendarViewController calendarViewController;
         private nfloat calendarHeight => CalendarContainer.Bounds.Height;
+        private ISubject<Unit> viewDidAppearSubject = new Subject<Unit>();
         private ReportsOverviewCardView overview = ReportsOverviewCardView.CreateFromNib();
         private ReportsBarChartCardView barChart = ReportsBarChartCardView.CreateFromNib();
 
@@ -135,6 +137,30 @@ namespace Toggl.iOS.ViewControllers
                 .BindAction(ViewModel.SelectWorkspace)
                 .DisposedBy(DisposeBag);
 
+            //Handoff
+            viewDidAppearSubject.AsObservable()
+                .CombineLatest(
+                    ViewModel.WorkspaceId,
+                    ViewModel.StartDate,
+                    ViewModel.EndDate,
+                    (_, workspaceId, start, end) => createUserActivity(workspaceId, start, end))
+                .Subscribe(updateUserActivity);
+
+            NSUserActivity createUserActivity(long workspaceId, DateTimeOffset start, DateTimeOffset end)
+            {
+                var userActivity = new NSUserActivity("com.toggl.daneel.reports");
+                var dateFormat = "yyyy-MM-dd";
+                userActivity.EligibleForHandoff = true;
+                userActivity.WebPageUrl = new NSUrl($"https://toggl.com/app/reports/summary/{workspaceId}/from/{start.ToString(dateFormat)}/to/{end.ToString(dateFormat)}");
+                return userActivity;
+            }
+
+            void updateUserActivity(NSUserActivity userActivity)
+            {
+                UserActivity = userActivity;
+                UserActivity.BecomeCurrent();
+            }
+ 
             void toggleCalendar()
             {
                 if (calendarIsVisible)
@@ -181,6 +207,8 @@ namespace Toggl.iOS.ViewControllers
             }
 
             alreadyLoadedCalendar = true;
+
+            viewDidAppearSubject.OnNext(Unit.Default);
         }
 
         public void ScrollToTop()
