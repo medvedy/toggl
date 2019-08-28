@@ -686,7 +686,7 @@ namespace Toggl.Core.Tests.UI.ViewModels
                     .Received()
                     .Select(
                         Arg.Any<string>(),
-                        Arg.Any<IEnumerable<SelectOption<BeginningOfWeek>>>(),
+                        Arg.Any<IEnumerable<SelectOption<DurationFormat>>>(),
                         Arg.Is(1));
             }
 
