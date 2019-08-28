@@ -6,6 +6,7 @@
   <color name="transparentBackground">#00FAFBFC</color>
   <color name="primaryText">#FF000000</color>
   <color name="secondaryText">#FF959595</color>
+  <color name="timerPageDurationText">#FF5E5B5B</color>
   <color name="navigationBar">#FFFFFFFF</color>
   <color name="errorText">#FFE20505</color>
   <color name="separator">#FFE5E5E5</color>
