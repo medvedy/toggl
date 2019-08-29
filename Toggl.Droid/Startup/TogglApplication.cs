@@ -33,10 +33,10 @@ namespace Toggl.Droid
 #if !DEBUG
             Firebase.FirebaseApp.InitializeApp(this);
 #endif
-            AppCompatDelegate.DefaultNightMode = AndroidDependencyContainer.Instance
-                .UserPreferences.AppTheme.NightModeFlag();
 
             AndroidDependencyContainer.EnsureInitialized(Context);
+            AppCompatDelegate.DefaultNightMode = AndroidDependencyContainer.Instance
+                .UserPreferences.AppTheme.NightModeFlag();
             var app = new AppStart(AndroidDependencyContainer.Instance);
             app.LoadLocalizationConfiguration();
             var accessLevel = app.GetAccessLevel();
