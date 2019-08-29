@@ -150,7 +150,6 @@ namespace Toggl.iOS.ViewControllers
             NSUserActivity createUserActivity(long workspaceId, DateTimeOffset start, DateTimeOffset end)
             {
                 var userActivity = new NSUserActivity(Handoff.Action.Reports);
-                var dateFormat = "yyyy-MM-dd";
                 userActivity.EligibleForHandoff = true;
                 userActivity.WebPageUrl = Handoff.Url.Reports(workspaceId, start, end);
                 return userActivity;
