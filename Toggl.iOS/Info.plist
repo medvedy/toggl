@@ -90,11 +90,5 @@
 	<array>
 		<string>en</string>
 	</array>
-	<key>NSUserActivityTypes</key>
-	<array>
-		<string>com.toggl.daneel.log</string>
-		<string>com.toggl.daneel.reports</string>
-		<string>com.toggl.daneel.settings</string>
-	</array>
 </dict>
 </plist>
