@@ -27,6 +27,8 @@
   <!-- Reports page-->
   <color name="reportsLabel">#FF757575</color>
   <color name="calendarSelected">#FF328FFF</color>
+  <color name="nonBillableChartBar">#1E328FFF</color>
+  <color name="billableChartBar">#FF328FFF</color>
 
   <!--Calendar page-->
   <color name="calendarHeaderBackground">#FF959595</color>
