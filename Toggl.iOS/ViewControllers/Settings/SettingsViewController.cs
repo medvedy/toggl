@@ -11,6 +11,7 @@ using Toggl.Core.UI.ViewModels;
 using Toggl.iOS.DebugHelpers;
 using Toggl.iOS.Extensions;
 using Toggl.iOS.Extensions.Reactive;
+using Toggl.iOS.Helper;
 using Toggl.iOS.Presentation.Transition;
 using Toggl.iOS.ViewControllers.Settings.Models;
 using Toggl.iOS.ViewSources;
@@ -172,10 +173,9 @@ namespace Toggl.iOS.ViewControllers
         {
             base.ViewDidAppear(animated);
 
-            var activity = new NSUserActivity("com.toggl.daneel.settings");
-            activity.Title = "Fucking title";
+            var activity = new NSUserActivity(Handoff.Action.Settings);
             activity.EligibleForHandoff = true;
-            activity.WebPageUrl = new NSUrl("https://toggl.com/app/profile");
+            activity.WebPageUrl = Handoff.Url.Settings;
             UserActivity = activity;
             activity.BecomeCurrent();
 

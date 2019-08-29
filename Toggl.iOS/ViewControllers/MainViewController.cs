@@ -20,6 +20,7 @@ using Toggl.Core.UI.ViewModels.TimeEntriesLog.Identity;
 using Toggl.iOS.ExtensionKit;
 using Toggl.iOS.Extensions;
 using Toggl.iOS.Extensions.Reactive;
+using Toggl.iOS.Helper;
 using Toggl.iOS.Presentation;
 using Toggl.iOS.Suggestions;
 using Toggl.iOS.Views;
@@ -300,10 +301,9 @@ namespace Toggl.iOS.ViewControllers
         {
             base.ViewDidAppear(animated);
 
-            var activity = new NSUserActivity("com.toggl.daneel.log");
-            activity.Title = "Fucking title";
+            var activity = new NSUserActivity(Handoff.Action.Log);
             activity.EligibleForHandoff = true;
-            activity.WebPageUrl = new NSUrl("https://toggl.com/app");
+            activity.WebPageUrl = Handoff.Url.Log;
             UserActivity = activity;
             activity.BecomeCurrent();
         }

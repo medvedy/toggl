@@ -15,6 +15,7 @@ using Toggl.Core.UI.ViewModels.Reports;
 using Toggl.Core.UI.Views;
 using Toggl.iOS.Extensions;
 using Toggl.iOS.Extensions.Reactive;
+using Toggl.iOS.Helper;
 using Toggl.iOS.Presentation;
 using Toggl.iOS.Views.Reports;
 using Toggl.iOS.ViewSources;
@@ -148,10 +149,10 @@ namespace Toggl.iOS.ViewControllers
 
             NSUserActivity createUserActivity(long workspaceId, DateTimeOffset start, DateTimeOffset end)
             {
-                var userActivity = new NSUserActivity("com.toggl.daneel.reports");
+                var userActivity = new NSUserActivity(Handoff.Action.Reports);
                 var dateFormat = "yyyy-MM-dd";
                 userActivity.EligibleForHandoff = true;
-                userActivity.WebPageUrl = new NSUrl($"https://toggl.com/app/reports/summary/{workspaceId}/from/{start.ToString(dateFormat)}/to/{end.ToString(dateFormat)}");
+                userActivity.WebPageUrl = Handoff.Url.Reports(workspaceId, start, end);
                 return userActivity;
             }
 
