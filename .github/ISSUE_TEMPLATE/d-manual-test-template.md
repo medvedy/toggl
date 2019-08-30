@@ -212,6 +212,13 @@ These tests still need to be done the old fashion way.
 - [ ] Test importing and using Siri Workflows from Settings into the Shortcuts app
 - [ ] Test Siri with all those shortcuts and workflows ☝️
 
+### Testing Handoff
+- [ ] Test Handoff to web from the timer page
+- [ ] Test Handoff to web from the settings page
+- [ ] Test Handoff to web from the reports page (check that it shows the same workspace and the same period)
+- [ ] Try changing the workspace in the mobile app. Is this handed off to web properly?
+- [ ] Try changing the selected period in the mobile app. Is this handed off to web properly?
+
 ### Testing app restriction UI
 
 - [ ] Check that all the non-permanent error screens are showing correctly (use the long-press on About) 
