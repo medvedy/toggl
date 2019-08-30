@@ -367,7 +367,7 @@
                 android:id="@+id/TimeMiddleGuide"
                 android:layout_width="0.5dp"
                 android:layout_height="72dp"
-                android:background="#dddddd"
+                android:background="@color/separator"
                 android:orientation="vertical"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
