@@ -194,10 +194,8 @@ namespace Toggl.iOS.ViewControllers
                     DescriptionTextView.Rx().CursorPosition().SelectUnit()
                 )
                 .Select(_ => DescriptionTextView.AttributedText) // Programatically changing the text doesn't send an event, that's why we do this, to get the last version of the text
-                .SubscribeOn(ThreadPoolScheduler.Instance)
                 .Do(updatePlaceholder)
                 .Select(text => text.AsSpans((int)DescriptionTextView.SelectedRange.Location).ToIImmutableList())
-                .ObserveOn(IosDependencyContainer.Instance.SchedulerProvider.MainScheduler)
                 .Subscribe(ViewModel.SetTextSpans.Inputs)
                 .DisposedBy(DisposeBag);
         }

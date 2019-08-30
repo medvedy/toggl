@@ -117,6 +117,11 @@ namespace Toggl.Droid.Activities
                 .Subscribe(projectTaskClientTextView.Rx().TextFormattedObserver())
                 .DisposedBy(DisposeBag);
 
+            ViewModel.ProjectClientTask
+                .Select(pct => !pct.HasProject)
+                .Subscribe(projectPlaceholderLabel.Rx().IsVisible())
+                .DisposedBy(DisposeBag);
+
             projectButton.Rx().Tap()
                 .Subscribe(ViewModel.SelectProject.Inputs)
                 .DisposedBy(DisposeBag);
@@ -143,6 +148,10 @@ namespace Toggl.Droid.Activities
 
             ViewModel.IsBillable
                 .Subscribe(billableSwitch.Rx().CheckedObserver())
+                .DisposedBy(DisposeBag);
+
+            billableSwitch.Rx()
+                .BindAction(ViewModel.ToggleBillable)
                 .DisposedBy(DisposeBag);
 
             billableButton.Rx().Tap()

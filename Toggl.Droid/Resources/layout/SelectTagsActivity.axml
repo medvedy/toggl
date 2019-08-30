@@ -26,6 +26,7 @@
             android:letterSpacing="-0.01"
             android:lineSpacingExtra="5sp"
             tools:hint="Add/filter tags"
+            android:background="@null"
             android:textCursorDrawable="@null"
             android:textColor="@color/primaryText"
             android:textColorHint="@color/placeholderText"
