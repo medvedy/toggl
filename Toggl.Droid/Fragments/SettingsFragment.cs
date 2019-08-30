@@ -11,7 +11,7 @@ using Toggl.Droid.Presentation;
 using Toggl.Shared.Extensions;
 using Toggl.Storage.Settings;
 using static Android.Support.V7.App.AppCompatDelegate;
-using FoundationResources = Toggl.Shared.Resources;
+using static Toggl.Shared.Resources;
 
 namespace Toggl.Droid.Fragments
 {
@@ -22,7 +22,7 @@ namespace Toggl.Droid.Fragments
             var view = inflater.Inflate(Resource.Layout.SettingsFragment, container, false);
 
             InitializeViews(view);
-            SetupToolbar(view, title: FoundationResources.Settings);
+            SetupToolbar(view, title: Settings);
             scrollView.AttachMaterialScrollBehaviour(appBarLayout);
             return view;
         }

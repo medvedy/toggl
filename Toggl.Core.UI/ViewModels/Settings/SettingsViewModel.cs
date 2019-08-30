@@ -465,9 +465,9 @@ namespace Toggl.Core.UI.ViewModels
             var currentThemeIndex = themeIndexInSelectView(currentTheme);
             var selectOptions = new[]
             {
-                new SelectOption<Theme>(Theme.UseSystem, Resources.UseSystemDefault),
-                new SelectOption<Theme>(Theme.Light, Resources.LightTheme),
-                new SelectOption<Theme>(Theme.Dark, Resources.DarkTheme)
+                new SelectOption<Theme>(Theme.SystemDefault, Resources.SystemDefault),
+                new SelectOption<Theme>(Theme.Light, Resources.Light),
+                new SelectOption<Theme>(Theme.Dark, Resources.Dark)
             };
 
             var newTheme = await View
@@ -480,7 +480,7 @@ namespace Toggl.Core.UI.ViewModels
             {
                 switch (theme)
                 {
-                    case Theme.UseSystem:
+                    case Theme.SystemDefault:
                         return 0;
                     case Theme.Light:
                         return 1;

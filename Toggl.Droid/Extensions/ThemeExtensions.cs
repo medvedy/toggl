@@ -10,7 +10,7 @@ namespace Toggl.Droid.Extensions
         {
             switch (theme)
             {
-                case Theme.UseSystem:
+                case Theme.SystemDefault:
                     return QApis.AreAvailable ? ModeNightFollowSystem : ModeNightAuto;
                 case Theme.Light:
                     return ModeNightNo;
@@ -25,7 +25,7 @@ namespace Toggl.Droid.Extensions
         {
             switch (theme)
             {
-                case Theme.UseSystem:
+                case Theme.SystemDefault:
                     return Shared.Resources.UseSystemDefault;
                 case Theme.Light:
                     return Shared.Resources.LightTheme;

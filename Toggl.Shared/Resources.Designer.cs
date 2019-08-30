@@ -2477,27 +2477,51 @@ namespace Toggl.Shared {
             }
         }
         
-        public static string UseSystemDefault {
+        public static string SystemDefault {
             get {
-                return ResourceManager.GetString("UseSystemDefault", resourceCulture);
+                return ResourceManager.GetString("SystemDefault", resourceCulture);
             }
         }
         
-        public static string LightTheme {
+        public static string Light {
             get {
-                return ResourceManager.GetString("LightTheme", resourceCulture);
+                return ResourceManager.GetString("Light", resourceCulture);
             }
         }
         
-        public static string DarkTheme {
+        public static string Dark {
             get {
-                return ResourceManager.GetString("DarkTheme", resourceCulture);
+                return ResourceManager.GetString("Dark", resourceCulture);
             }
         }
         
+        public static string RestartNeeded {
+            get {
+                return ResourceManager.GetString("RestartNeeded", resourceCulture);
+            }
+        }
+        
+        public static string RestartNeededMessage {
+            get {
+                return ResourceManager.GetString("RestartNeededMessage", resourceCulture);
+            }
+        }
+
         public static string AppTheme {
             get {
                 return ResourceManager.GetString("AppTheme", resourceCulture);
+            }
+        }
+
+        public static string Yes {
+            get {
+                return ResourceManager.GetString("Yes", resourceCulture);
+            }
+        }
+
+        public static string No {
+            get {
+                return ResourceManager.GetString("No", resourceCulture);
             }
         }
     }

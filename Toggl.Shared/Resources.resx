@@ -1339,16 +1339,28 @@
     <data name="SiriWorkflowFocusModeDescription" xml:space="preserve">
         <value>Start a Time Entry, select a music playlist and turn on do not disturb.</value>
     </data>
-    <data name="UseSystemDefault" xml:space="preserve">
-        <value>Use System Default</value>
+    <data name="SystemDefault" xml:space="preserve">
+        <value>System Default</value>
     </data>
-    <data name="LightTheme" xml:space="preserve">
-        <value>Light Theme</value>
+    <data name="Light" xml:space="preserve">
+        <value>Light</value>
     </data>
-    <data name="DarkTheme" xml:space="preserve">
-        <value>Dark Theme</value>
+    <data name="Dark" xml:space="preserve">
+        <value>Dark</value>
+    </data>
+    <data name="RestartNeeded" xml:space="preserve">
+        <value> Restart needed</value>
+    </data>
+    <data name="RestartNeededMessage" xml:space="preserve">
+        <value>The app needs to be restarted for changes to take effect. Restart now?</value>
     </data>
     <data name="AppTheme" xml:space="preserve">
         <value>App Theme</value>
+    </data>
+    <data name="Yes" xml:space="preserve">
+        <value>Yes</value>
+    </data>
+    <data name="No" xml:space="preserve">
+        <value>No</value>
     </data>
 </root>
