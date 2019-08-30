@@ -175,7 +175,18 @@ namespace Toggl.Droid.Fragments
             if (currentNightModeFlag == newNightModeFlag)
                 return;
 
-            DefaultNightMode = newNightModeFlag;
+            Confirm(RestartNeeded, RestartNeededMessage, Yes, No)
+                .Subscribe(onRestartConfirmation)
+                .DisposedBy(DisposeBag);
+
+            void onRestartConfirmation(bool shouldRestart)
+            {
+                if (!shouldRestart)
+                    return;
+
+                DefaultNightMode = newNightModeFlag;
+                Activity.Recreate();
+            }
         }
 
         public void ScrollToTop()
