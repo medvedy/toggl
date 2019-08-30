@@ -51,7 +51,7 @@ namespace Toggl.Droid.Autocomplete
             paint.Color = textColor;
             paint.StrokeWidth = previousStrokeWidth;
             paint.SetStyle(Paint.Style.FillAndStroke);
-            canvas.DrawText(text, start, end, x + padding / 2.0f + margin - strokeWidth, (bottom / 2.0f) + (bounds.Height() / 2.0f) - halfPadding, paint);
+            canvas.DrawText(text, start, end, x + padding / 2.0f + margin - strokeWidth, rect.CenterY() - (paint.Descent() + paint.Ascent()) / 2, paint);
         }
 
         public override int GetSize(Paint paint, ICharSequence text, int start, int end, Paint.FontMetricsInt fm)

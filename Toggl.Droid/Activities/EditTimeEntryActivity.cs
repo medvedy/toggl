@@ -150,6 +150,10 @@ namespace Toggl.Droid.Activities
                 .Subscribe(billableSwitch.Rx().CheckedObserver())
                 .DisposedBy(DisposeBag);
 
+            billableSwitch.Rx()
+                .BindAction(ViewModel.ToggleBillable)
+                .DisposedBy(DisposeBag);
+
             billableButton.Rx().Tap()
                 .Subscribe(ViewModel.ToggleBillable.Inputs)
                 .DisposedBy(DisposeBag);
