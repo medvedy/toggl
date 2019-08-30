@@ -54,7 +54,7 @@ namespace Toggl.Storage.Settings
 
     public enum Theme
     {
-        UseSystem = 0,
+        SystemDefault = 0,
         Light = 1,
         Dark = 2
     }
