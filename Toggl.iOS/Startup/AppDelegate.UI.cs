@@ -8,7 +8,8 @@ namespace Toggl.iOS
     {
         private void setupTabBar()
         {
-            UITabBar.Appearance.SelectedImageTintColor = Colors.TabBar.SelectedImageTintColor.ToNativeColor();
+            UITabBar.Appearance.BarTintColor = ColorAssets.Background;
+            //UITabBar.Appearance.SelectedImageTintColor = Colors.TabBar.SelectedImageTintColor.ToNativeColor();
             UITabBarItem.Appearance.TitlePositionAdjustment = new UIOffset(0, 200);
         }
 
