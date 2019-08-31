@@ -5,7 +5,6 @@ using System.Reactive.Linq;
 using CoreGraphics;
 using Toggl.Core.UI.Collections;
 using Toggl.Core.UI.Extensions;
-using Toggl.Core.UI.Helper;
 using Toggl.Core.UI.ViewModels;
 using Toggl.iOS.DebugHelpers;
 using Toggl.iOS.Extensions;
@@ -165,6 +164,14 @@ namespace Toggl.iOS.ViewControllers
             sections.Add(footerSection);
 
             return sections.CombineLatest().Select(list => list.ToImmutableList());
+        }
+
+        public override void ViewWillAppear(bool animated)
+        {
+            base.ViewWillAppear(animated);
+
+            NavigationController.NavigationBar.BarTintColor = ColorAssets.Table.HeaderBackground;
+            NavigationController.NavigationBar.ShadowImage = new UIImage();
         }
 
 #if DEBUG

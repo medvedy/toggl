@@ -13,9 +13,6 @@ namespace Toggl.iOS.Cells.Settings
 	partial class SettingsButtonCell
 	{
 		[Outlet]
-		UIKit.UIView BottomSeparator { get; set; }
-
-		[Outlet]
 		UIKit.UILabel TitleLabel { get; set; }
 		
 		void ReleaseDesignerOutlets ()
@@ -23,11 +20,6 @@ namespace Toggl.iOS.Cells.Settings
 			if (TitleLabel != null) {
 				TitleLabel.Dispose ();
 				TitleLabel = null;
-			}
-
-			if (BottomSeparator != null) {
-				BottomSeparator.Dispose ();
-				BottomSeparator = null;
 			}
 		}
 	}

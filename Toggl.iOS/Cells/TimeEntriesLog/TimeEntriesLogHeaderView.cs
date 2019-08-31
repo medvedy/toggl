@@ -36,6 +36,8 @@ namespace Toggl.iOS.Views
             ContentView.BackgroundColor = ColorAssets.AlternateBackground;
             DateLabel.TextColor = ColorAssets.Text;
             DurationLabel.TextColor = ColorAssets.Text;
+
+            this.InsertSeparator();
         }
 
         protected override void UpdateView()

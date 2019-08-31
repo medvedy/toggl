@@ -68,7 +68,7 @@ namespace Toggl.iOS.Views
                 ContinueImageView.Image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
             ContinueImageView.TintColor = ColorAssets.Timeline.Arrow;
 
-            BottomSeparator.BackgroundColor = ColorAssets.Table.Separator;
+            this.InsertSeparator();
         }
 
         public override void PrepareForReuse()

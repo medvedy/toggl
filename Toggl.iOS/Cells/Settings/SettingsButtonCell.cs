@@ -25,7 +25,8 @@ namespace Toggl.iOS.Cells.Settings
         {
             ContentView.BackgroundColor = ColorAssets.Table.CellBackground;
             TitleLabel.TextColor = UIColor.SystemRedColor;
-            BottomSeparator.BackgroundColor = ColorAssets.Table.Separator;
+
+            this.InsertSeparator();
         }
 
         protected override void UpdateView()

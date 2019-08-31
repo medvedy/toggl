@@ -250,22 +250,12 @@
                             <constraint firstAttribute="height" constant="64" id="z4C-w8-MQK"/>
                         </constraints>
                     </stackView>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jec-Z0-lsf" userLabel="Bottom separator">
-                        <rect key="frame" x="0.0" y="63" width="874" height="1"/>
-                        <color key="backgroundColor" red="0.90980392156862744" green="0.90980392156862744" blue="0.90980392156862744" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="1" id="izG-Sm-pwo"/>
-                        </constraints>
-                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="BLU-UX-hjg" secondAttribute="trailing" id="2tm-Rh-hZK"/>
                     <constraint firstItem="BLU-UX-hjg" firstAttribute="leading" secondItem="FMY-EJ-tyu" secondAttribute="leading" id="Bmc-FS-pCV"/>
                     <constraint firstItem="BLU-UX-hjg" firstAttribute="top" secondItem="FMY-EJ-tyu" secondAttribute="top" id="Qgs-gh-fKM"/>
-                    <constraint firstAttribute="trailing" secondItem="jec-Z0-lsf" secondAttribute="trailing" id="SQ1-Sc-cK5"/>
-                    <constraint firstItem="jec-Z0-lsf" firstAttribute="bottom" secondItem="BLU-UX-hjg" secondAttribute="bottom" id="Y9G-zR-vYZ"/>
                     <constraint firstItem="PNy-Vs-gWI" firstAttribute="width" secondItem="FMY-EJ-tyu" secondAttribute="width" multiplier="0.32" id="cgC-GQ-akG"/>
-                    <constraint firstItem="jec-Z0-lsf" firstAttribute="leading" secondItem="FMY-EJ-tyu" secondAttribute="leading" id="eJ5-sk-3ar"/>
                     <constraint firstAttribute="bottom" secondItem="BLU-UX-hjg" secondAttribute="bottom" id="mOk-5y-Jeu"/>
                     <constraint firstAttribute="trailing" secondItem="2Q5-T6-UvK" secondAttribute="trailing" constant="27" id="xx9-4r-fxJ"/>
                 </constraints>
@@ -285,7 +275,6 @@
             </accessibility>
             <connections>
                 <outlet property="BillableIcon" destination="Arb-iG-IM3" id="MHp-Pv-hnS"/>
-                <outlet property="BottomSeparator" destination="jec-Z0-lsf" id="CNm-eK-2cp"/>
                 <outlet property="ContinueButton" destination="Re8-uD-vpm" id="name-outlet-Re8-uD-vpm"/>
                 <outlet property="ContinueImageView" destination="2Q5-T6-UvK" id="name-outlet-2Q5-T6-UvK"/>
                 <outlet property="DescriptionFadeView" destination="ohm-7o-dpZ" id="Sgi-eo-FZ7"/>

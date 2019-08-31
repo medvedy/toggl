@@ -33,5 +33,21 @@ namespace Toggl.iOS.Extensions
             self.LeadingAnchor.ConstraintEqualTo(view.LeadingAnchor).Active = true;
             self.TrailingAnchor.ConstraintEqualTo(view.TrailingAnchor).Active = true;
         }
+
+        public static UIView InsertSeparator(this UIView self, float leftInset = 0)
+        {
+            var separatorHeight = 1 / UIScreen.MainScreen.Scale;
+            var separator = new UIView();
+            separator.BackgroundColor = ColorAssets.Table.Separator;
+            self.AddSubview(separator);
+
+            separator.TranslatesAutoresizingMaskIntoConstraints = false;
+            separator.BottomAnchor.ConstraintEqualTo(self.BottomAnchor).Active = true;
+            separator.LeftAnchor.ConstraintEqualTo(self.LeftAnchor, leftInset).Active = true;
+            separator.RightAnchor.ConstraintEqualTo(self.RightAnchor).Active = true;
+            separator.HeightAnchor.ConstraintEqualTo(separatorHeight).Active = true;
+
+            return separator;
+        }
     }
 }

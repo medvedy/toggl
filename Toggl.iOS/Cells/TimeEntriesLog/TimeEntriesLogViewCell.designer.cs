@@ -13,13 +13,7 @@ namespace Toggl.iOS.Views
 	partial class TimeEntriesLogViewCell
 	{
 		[Outlet]
-		UIKit.UILabel AddDescriptionLabel { get; set; }
-
-		[Outlet]
 		UIKit.UIView BillableIcon { get; set; }
-
-		[Outlet]
-		UIKit.UIView BottomSeparator { get; set; }
 
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
@@ -72,11 +66,6 @@ namespace Toggl.iOS.Views
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (AddDescriptionLabel != null) {
-				AddDescriptionLabel.Dispose ();
-				AddDescriptionLabel = null;
-			}
-
 			if (BillableIcon != null) {
 				BillableIcon.Dispose ();
 				BillableIcon = null;
@@ -150,11 +139,6 @@ namespace Toggl.iOS.Views
 			if (UnsyncedImageView != null) {
 				UnsyncedImageView.Dispose ();
 				UnsyncedImageView = null;
-			}
-
-			if (BottomSeparator != null) {
-				BottomSeparator.Dispose ();
-				BottomSeparator = null;
 			}
 		}
 	}

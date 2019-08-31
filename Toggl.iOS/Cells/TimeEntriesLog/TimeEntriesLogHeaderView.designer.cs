@@ -9,7 +9,7 @@ using System.CodeDom.Compiler;
 
 namespace Toggl.iOS.Views
 {
-    [Register ("TimeEntriesLogHeaderView")]
+	[Register ("TimeEntriesLogHeaderView")]
 	partial class TimeEntriesLogHeaderView
 	{
 		[Outlet]
@@ -19,10 +19,7 @@ namespace Toggl.iOS.Views
 		[Outlet]
 		[GeneratedCode ("iOS Designer", "1.0")]
 		UIKit.UILabel DurationLabel { get; set; }
-
-		[Outlet]
-		UIKit.UIView TopSeparator { get; set; }
-
+		
 		void ReleaseDesignerOutlets ()
 		{
 			if (DateLabel != null) {
@@ -33,11 +30,6 @@ namespace Toggl.iOS.Views
 			if (DurationLabel != null) {
 				DurationLabel.Dispose ();
 				DurationLabel = null;
-			}
-
-			if (TopSeparator != null) {
-				TopSeparator.Dispose ();
-				TopSeparator = null;
 			}
 		}
 	}

@@ -13,9 +13,6 @@ namespace Toggl.iOS.Cells.Settings
 	partial class SettingCell
 	{
 		[Outlet]
-		UIKit.UIView BottomSeparator { get; set; }
-
-		[Outlet]
 		UIKit.UILabel DetailLabel { get; set; }
 
 		[Outlet]
@@ -23,9 +20,6 @@ namespace Toggl.iOS.Cells.Settings
 
 		[Outlet]
 		UIKit.UILabel TitleLabel { get; set; }
-
-		[Outlet]
-		UIKit.UIView TopSeparator { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
@@ -42,16 +36,6 @@ namespace Toggl.iOS.Cells.Settings
 			if (TitleLabel != null) {
 				TitleLabel.Dispose ();
 				TitleLabel = null;
-			}
-
-			if (TopSeparator != null) {
-				TopSeparator.Dispose ();
-				TopSeparator = null;
-			}
-
-			if (BottomSeparator != null) {
-				BottomSeparator.Dispose ();
-				BottomSeparator = null;
 			}
 		}
 	}

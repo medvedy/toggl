@@ -389,6 +389,9 @@ namespace Toggl.iOS.ViewControllers
         {
             base.ViewWillAppear(animated);
 
+            NavigationController.NavigationBar.BarTintColor = ColorAssets.Background;
+            NavigationController.NavigationBar.ShadowImage = null;
+
             NavigationItem.TitleView = createTitleImage();
             NavigationItem.RightBarButtonItems = new[]
             {
@@ -570,8 +573,6 @@ namespace Toggl.iOS.ViewControllers
 
         private void prepareViews()
         {
-            TopSeparator.BackgroundColor = ColorAssets.Table.Separator;
-
             //Prevent bounces in UIScrollView
             AutomaticallyAdjustsScrollViewInsets = false;
 

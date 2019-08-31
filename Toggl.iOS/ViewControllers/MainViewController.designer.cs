@@ -82,9 +82,6 @@ namespace Toggl.iOS.ViewControllers
 		UIKit.NSLayoutConstraint TopConstraint { get; set; }
 
 		[Outlet]
-		UIKit.UIView TopSeparator { get; set; }
-
-		[Outlet]
 		UIKit.UILabel WelcomeBackDescriptionLabel { get; set; }
 
 		[Outlet]
@@ -95,14 +92,14 @@ namespace Toggl.iOS.ViewControllers
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (CurrentTimeEntryCard != null) {
-				CurrentTimeEntryCard.Dispose ();
-				CurrentTimeEntryCard = null;
-			}
-
 			if (CreatedFirstTimeEntryLabel != null) {
 				CreatedFirstTimeEntryLabel.Dispose ();
 				CreatedFirstTimeEntryLabel = null;
+			}
+
+			if (CurrentTimeEntryCard != null) {
+				CurrentTimeEntryCard.Dispose ();
+				CurrentTimeEntryCard = null;
 			}
 
 			if (CurrentTimeEntryDescriptionLabel != null) {
@@ -198,11 +195,6 @@ namespace Toggl.iOS.ViewControllers
 			if (TopConstraint != null) {
 				TopConstraint.Dispose ();
 				TopConstraint = null;
-			}
-
-			if (TopSeparator != null) {
-				TopSeparator.Dispose ();
-				TopSeparator = null;
 			}
 
 			if (WelcomeBackDescriptionLabel != null) {

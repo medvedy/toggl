@@ -25,6 +25,8 @@ namespace Toggl.iOS.ViewSources
 
         public SettingsTableViewSource(UITableView tableView)
         {
+            tableView.SeparatorStyle = UITableViewCellSeparatorStyle.None;
+
             tableView.RegisterNibForCellReuse(SettingCell.Nib, SettingCell.Identifier);
             tableView.RegisterNibForCellReuse(SettingsAnnotationCell.Nib, SettingsAnnotationCell.Identifier);
             tableView.RegisterNibForCellReuse(SettingsSyncCell.Nib, SettingsSyncCell.Identifier);

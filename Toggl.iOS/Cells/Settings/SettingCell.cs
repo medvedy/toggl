@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using CoreGraphics;
 using Foundation;
 using Toggl.iOS.Extensions;
 using Toggl.iOS.Extensions.Reactive;
@@ -19,6 +20,7 @@ namespace Toggl.iOS.Cells.Settings
 
         private CompositeDisposable disposeBag = new CompositeDisposable();
 
+        private UIView separator;
         private bool isLast;
 
         public bool IsLast
@@ -27,9 +29,10 @@ namespace Toggl.iOS.Cells.Settings
             set
             {
                 isLast = value;
-               // BottomSeparator.Hidden =!value;
-                var cellWidth = Bounds.Size.Width;
-                SeparatorInset = new UIEdgeInsets(0, value ? cellWidth : defaultSeparatorInset, 0, 0);
+                if (separator != null) {
+                    separator.RemoveFromSuperview();
+                }
+                separator = this.InsertSeparator(isLast ? 0 : defaultSeparatorInset);
             }
         }
 
@@ -45,11 +48,16 @@ namespace Toggl.iOS.Cells.Settings
 
         public override void AwakeFromNib()
         {
+            base.AwakeFromNib();
             BackgroundColor = ColorAssets.Table.CellBackground;
             ContentView.BackgroundColor = UIColor.Clear;
             TitleLabel.TextColor = ColorAssets.Text;
             DetailLabel.TextColor = ColorAssets.SecondaryText;
-            BottomSeparator.BackgroundColor = ColorAssets.Table.Separator;
+
+            if (separator != null) {
+                separator.RemoveFromSuperview();
+            }
+            separator = this.InsertSeparator(isLast ? 0 : defaultSeparatorInset);
         }
 
         public override void PrepareForReuse()

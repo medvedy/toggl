@@ -14,7 +14,6 @@ namespace Toggl.iOS.ViewControllers
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-
             setBarAppereance();
         }
 
@@ -45,11 +44,11 @@ namespace Toggl.iOS.ViewControllers
 
             //Title and background
             var barBackgroundColor = ColorAssets.Background;
-            NavigationBar.ShadowImage = new UIImage();
+            //NavigationBar.ShadowImage = new UIImage();
             NavigationBar.BarTintColor = barBackgroundColor;
             NavigationBar.BackgroundColor = barBackgroundColor;
+            NavigationBar.Translucent = false;
             NavigationBar.TintColor = ColorAssets.Navigation.BarButtons;
-            NavigationBar.SetBackgroundImage(ImageExtension.ImageWithColor(barBackgroundColor), UIBarMetrics.Default);
             NavigationBar.TitleTextAttributes = new UIStringAttributes
             {
                 Font = UIFont.SystemFontOfSize(14, UIFontWeight.Medium),

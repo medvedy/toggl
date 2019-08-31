@@ -31,7 +31,8 @@ namespace Toggl.iOS.Cells.Settings
             ContentView.BackgroundColor = ColorAssets.Table.HeaderBackground;
             StatusLabel.TextColor = ColorAssets.Table.HeaderText;
             LoadingIcon.IndicatorColor = ColorAssets.Table.HeaderText;
-            BottomSeparator.BackgroundColor = ColorAssets.Table.Separator;
+
+            this.InsertSeparator();
         }
 
         public override void PrepareForReuse()

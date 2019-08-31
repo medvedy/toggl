@@ -13,9 +13,6 @@ namespace Toggl.iOS.Cells.Settings
 	partial class SettingsSyncCell
 	{
 		[Outlet]
-		UIKit.UIView BottomSeparator { get; set; }
-
-		[Outlet]
 		Toggl.iOS.Views.ActivityIndicatorView LoadingIcon { get; set; }
 
 		[Outlet]
@@ -26,6 +23,11 @@ namespace Toggl.iOS.Cells.Settings
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (LoadingIcon != null) {
+				LoadingIcon.Dispose ();
+				LoadingIcon = null;
+			}
+
 			if (StatusLabel != null) {
 				StatusLabel.Dispose ();
 				StatusLabel = null;
@@ -34,16 +36,6 @@ namespace Toggl.iOS.Cells.Settings
 			if (SyncedIcon != null) {
 				SyncedIcon.Dispose ();
 				SyncedIcon = null;
-			}
-
-			if (LoadingIcon != null) {
-				LoadingIcon.Dispose ();
-				LoadingIcon = null;
-			}
-
-			if (BottomSeparator != null) {
-				BottomSeparator.Dispose ();
-				BottomSeparator = null;
 			}
 		}
 	}
