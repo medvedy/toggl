@@ -128,7 +128,7 @@ namespace Toggl.iOS.Extensions
                     var option = listOfOptions[i];
                     var style = i == initialSelectionIndex ? UIAlertActionStyle.Cancel : UIAlertActionStyle.Default;
 
-                    var action = UIAlertAction.Create(option.ItemName, UIAlertActionStyle.Default, _ =>
+                    var action = UIAlertAction.Create(option.ItemName, style, _ =>
                     {
                         observer.OnNext(option.Item);
                         observer.OnCompleted();
