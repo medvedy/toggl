@@ -121,8 +121,13 @@ namespace Toggl.iOS.Extensions
             {
                 var alertController = UIAlertController.Create(title, null, UIAlertControllerStyle.ActionSheet);
 
-                foreach (var option in options)
+                var listOfOptions = options.ToList();
+
+                for (int i = 0; i < listOfOptions.Count; i++)
                 {
+                    var option = listOfOptions[i];
+                    var style = i == initialSelectionIndex ? UIAlertActionStyle.Cancel : UIAlertActionStyle.Default;
+
                     var action = UIAlertAction.Create(option.ItemName, UIAlertActionStyle.Default, _ =>
                     {
                         observer.OnNext(option.Item);
