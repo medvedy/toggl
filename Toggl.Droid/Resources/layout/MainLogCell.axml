@@ -60,7 +60,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             tools:text="5"
-            android:textColor="@color/BlueTextColor"
+            android:textColor="@color/FlatButtonTextColor"
             android:fontFamily="sans-serif-medium"
             android:textSize="15sp"
             android:gravity="center"

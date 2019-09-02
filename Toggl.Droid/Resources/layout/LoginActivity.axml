@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
     <ImageView
         android:scaleType="centerCrop"
-        android:src="@drawable/bg_noise_login"
+        android:src="@drawable/login_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <ScrollView
@@ -78,7 +78,7 @@
             <Button
                 android:id="@+id/LoginLoginButton"
                 android:background="@color/raisedButtonBackground"
-                android:textColor="@color/BlueButtonTextColor"
+                android:textColor="@color/RaisedButtonTextColor"
                 android:foreground="?attr/selectableItemBackground"
                 android:layout_height="36dp"
                 android:layout_marginLeft="24dp"
@@ -158,7 +158,7 @@
                     android:textStyle="normal"
                     android:paddingStart="18dp"
                     android:letterSpacing="0.02"
-                    android:textColor="#8a000000"
+                    android:textColor="@color/primaryText"
                     android:fontFamily="sans-serif-medium"
                     tools:text="Sign in With Google"
                     android:layout_width="wrap_content"

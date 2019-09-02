@@ -682,7 +682,7 @@
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="packages.config" />
     <None Include="FodyWeavers.xml" />
-    <AndroidResource Include="Resources\color\BlueTextColor.xml" />
+    <AndroidResource Include="Resources\color\FlatButtonTextColor.xml" />
     <AndroidResource Include="Resources\drawable\Dot.xml" />
     <AndroidResource Include="Resources\drawable\ic_archived.xml" />
     <AndroidResource Include="Resources\drawable\Splash.xml" />
@@ -1001,9 +1001,9 @@
     <AndroidResource Include="Resources\drawable-xhdpi\paws.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\paws.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\paws.png" />
-    <AndroidResource Include="Resources\drawable\LightBlueRoundedRectangle.xml" />
+    <AndroidResource Include="Resources\drawable\RoundedRectangle.xml" />
     <AndroidResource Include="Resources\layout\ForgotPasswordActivity.axml" />
-    <AndroidResource Include="Resources\color\BlueButtonTextColor.xml" />
+    <AndroidResource Include="Resources\color\RaisedButtonTextColor.xml" />
     <AndroidResource Include="Resources\layout\SignUpActivity.axml" />
     <AndroidResource Include="Resources\layout\SelectCountryActivity.axml" />
     <AndroidResource Include="Resources\layout\SelectCountryActivityCountryCell.axml" />
@@ -1052,13 +1052,12 @@
     <AndroidResource Include="Resources\drawable\workspace_white.xml" />
     <AndroidResource Include="Resources\layout\SelectDefaultWorkspaceFragment.axml" />
     <AndroidResource Include="Resources\layout\SelectDefaultWorkspaceFragmentCell.axml" />
-    <AndroidResource Include="Resources\drawable\bg_noise_login.png" />
     <AndroidResource Include="Resources\drawable\ic_thumbs_down.xml" />
     <AndroidResource Include="Resources\drawable\ic_thumbs_up.xml" />
     <AndroidResource Include="Resources\layout\MainUserFeedbackCard.axml" />
     <AndroidResource Include="Resources\xml\RemoteConfigDefaults.xml" />
     <AndroidResource Include="Resources\layout\MainLogEmptyView.axml" />
-    <AndroidResource Include="Resources\drawable\BorderRectangle.xml" />
+    <AndroidResource Include="Resources\drawable\TagsBackground.xml" />
     <AndroidResource Include="Resources\drawable\EmptyViewRoundedRectangle.xml" />
     <AndroidResource Include="Resources\drawable-hdpi\toggl_spider.png" />
     <AndroidResource Include="Resources\drawable-mdpi\toggl_spider.png" />
@@ -1069,7 +1068,7 @@
     <AndroidResource Include="Resources\layout\SelectUserCalendarsFragment.axml" />
     <AndroidResource Include="Resources\layout\UserCalendarItem.axml" />
     <AndroidResource Include="Resources\layout\UserCalendarHeader.axml" />
-    <AndroidResource Include="Resources\color\BlueLinkTextColor.xml" />
+    <AndroidResource Include="Resources\color\LinkTextColor.xml" />
     <AndroidResource Include="Resources\layout\MainTabBarActivity.axml" />
     <AndroidResource Include="Resources\menu\MainTabBarBottomMenu.xml" />
     <AndroidResource Include="Resources\color\MainTabBarItemTextColor.xml" />
@@ -1084,7 +1083,7 @@
     <AndroidResource Include="Resources\drawable-xhdpi\calendar_onboarding.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\calendar_onboarding.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\calendar_onboarding.png" />
-    <AndroidResource Include="Resources\drawable\BlueButton.axml" />
+    <AndroidResource Include="Resources\drawable\RaisedButton.axml" />
     <AndroidResource Include="Resources\layout\CalendarPermissionDeniedFragment.axml" />
     <AndroidResource Include="Resources\layout\UpcomingEventsNotificationSettingsFragment.axml" />
     <AndroidResource Include="Resources\layout\SelectCalendarNotificationsOptionItem.axml" />
@@ -1222,6 +1221,9 @@
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\login_background.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />

@@ -23,12 +23,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <View
-                android:background="@drawable/BorderRectangle"
+                android:background="@drawable/TagsBackground"
                 android:layout_width="200dp"
                 android:layout_height="64dp"
                 android:layout_marginLeft="15dp" />
             <View
-                android:background="@drawable/BorderRectangle"
+                android:background="@drawable/TagsBackground"
                 android:layout_width="200dp"
                 android:layout_height="64dp"
                 android:layout_marginLeft="12dp" />

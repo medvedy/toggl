@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
     <ImageView
         android:scaleType="centerCrop"
-        android:src="@drawable/bg_noise_login"
+        android:src="@drawable/login_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <ScrollView
@@ -53,7 +53,7 @@
             </LinearLayout>
             <ImageView
                 android:id="@+id/SignUpLogo"
-                android:src="@drawable/logo_black"
+                android:src="@drawable/ic_toggl_logo"
                 android:layout_width="102dp"
                 android:layout_height="32dp"
                 android:layout_marginTop="64dp"
@@ -108,7 +108,7 @@
                 android:id="@+id/SignUpButton"
                 tools:text="Sign up for free"
                 android:background="@color/raisedButtonBackground"
-                android:textColor="@color/BlueButtonTextColor"
+                android:textColor="@color/RaisedButtonTextColor"
                 android:foreground="?attr/selectableItemBackground"
                 android:layout_height="36dp"
                 android:layout_marginLeft="24dp"
@@ -137,7 +137,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_below="@id/SignUpButton" />
             <View
-                android:background="#f3f3f3"
+                android:background="@color/primaryText"
                 android:layout_height="1dp"
                 android:layout_marginTop="9dp"
                 android:layout_marginLeft="5dp"
@@ -146,7 +146,7 @@
                 android:layout_alignTop="@id/SignUpOrLabel"
                 android:layout_toRightOf="@id/SignUpOrLabel" />
             <View
-                android:background="#f3f3f3"
+                android:background="@color/primaryText"
                 android:layout_height="1dp"
                 android:layout_marginTop="9dp"
                 android:layout_marginLeft="24dp"
@@ -176,7 +176,7 @@
                     android:textStyle="normal"
                     android:paddingStart="18dp"
                     android:letterSpacing="0.02"
-                    android:textColor="#8a000000"
+                    android:textColor="@color/primaryText"
                     android:fontFamily="sans-serif-medium"
                     tools:text="Sign up with Google"
                     android:layout_width="wrap_content"

@@ -16,9 +16,9 @@
   <color name="placeholderText">#FFCECECE</color>
   <color name="defaultIcon">#FF959595</color>
   <color name="flatButtonText">#FF328FFF</color>
-  <color name="flatButtonDisabledText">#7a328FFF</color>
+  <color name="flatButtonDisabledText">#7A328FFF</color>
   <color name="raisedButtonText">#FFFFFFFF</color>
-  <color name="raisedButtonDisabledText">#7a328FFF</color>  
+  <color name="raisedButtonDisabledText">#7AFFFFFF</color>  
 
   <!--Navigation bar-->
   <color name="bottomBarIcon">#FF328FFF</color>

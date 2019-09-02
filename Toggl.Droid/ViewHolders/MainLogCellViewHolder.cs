@@ -198,7 +198,7 @@ namespace Toggl.Droid.ViewHolders
         private void presentAsExpandedGroupHeader(int timeEntriesCount)
         {
             groupExpansionButton.Enabled = true;
-            groupCountTextView.SetBackgroundResource(Resource.Drawable.LightBlueRoundedRectangle);
+            groupCountTextView.SetBackgroundResource(Resource.Drawable.TagsBackground);
             groupCountTextView.Enabled = true;
             groupCountTextView.Text = timeEntriesCount.ToString();
             groupCountTextView.Visibility = ViewStates.Visible;
