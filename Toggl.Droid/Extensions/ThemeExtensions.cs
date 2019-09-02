@@ -17,7 +17,7 @@ namespace Toggl.Droid.Extensions
                 case Theme.Dark:
                     return ModeNightYes;
                 default:
-                    return DefaultNightMode;
+                    return ModeNightFollowSystem;
             }
         }
 
@@ -26,13 +26,13 @@ namespace Toggl.Droid.Extensions
             switch (theme)
             {
                 case Theme.SystemDefault:
-                    return Shared.Resources.UseSystemDefault;
+                    return Shared.Resources.SystemDefault;
                 case Theme.Light:
-                    return Shared.Resources.LightTheme;
+                    return Shared.Resources.Light;
                 case Theme.Dark:
-                    return Shared.Resources.DarkTheme;
+                    return Shared.Resources.Dark;
                 default:
-                    return Shared.Resources.UseSystemDefault;
+                    return Shared.Resources.SystemDefault;
             }
         }
     }
