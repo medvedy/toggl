@@ -72,8 +72,6 @@ namespace Toggl.iOS.Presentation
                     return new SelectTagsViewController(vm);
                 case SelectUserCalendarsViewModel vm:
                     return new SelectUserCalendarsViewController(vm);
-                case SelectWorkspaceViewModel vm:
-                    return new SelectWorkspaceViewController(vm);
                 case SendFeedbackViewModel vm:
                     return new SendFeedbackViewController(vm);
                 case SettingsViewModel vm:

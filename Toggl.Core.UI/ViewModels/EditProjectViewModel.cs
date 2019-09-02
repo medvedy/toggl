@@ -14,6 +14,7 @@ using Toggl.Core.Services;
 using Toggl.Core.UI.Extensions;
 using Toggl.Core.UI.Navigation;
 using Toggl.Core.UI.Parameters;
+using Toggl.Core.UI.Views;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using Toggl.Shared.Extensions.Reactive;
@@ -164,9 +165,16 @@ namespace Toggl.Core.UI.ViewModels
             return currentWorkspace.FirstAsync().SelectMany(workspaceFromViewModel);
 
             IObservable<IThreadSafeWorkspace> workspaceFromViewModel(IThreadSafeWorkspace currentWorkspace)
-                => Navigate<SelectWorkspaceViewModel, SelectWorkspaceParameters, long>(new SelectWorkspaceParameters(Resources.SetDefaultWorkspace, currentWorkspace.Id))
-                    .ToObservable()
-                    .SelectMany(selectedWorkspaceId => workspaceFromId(selectedWorkspaceId, currentWorkspace));
+                => interactorFactory.GetAllWorkspaces().Execute()
+                .SelectMany(allWorkspaces =>
+                {
+                    var eligibleWorkspaces = allWorkspaces.Where(ws => ws.IsEligibleForProjectCreation()).ToList();
+                    var selectWorkspaces = eligibleWorkspaces.Select(ws => new SelectOption<IThreadSafeWorkspace>(ws, ws.Name));
+                    var selectedWorkspaceIndex = eligibleWorkspaces.IndexOf(ws => ws.Id == currentWorkspace.Id);
+
+                    return View.Select(Resources.Workspace, selectWorkspaces, selectedWorkspaceIndex);
+                })
+                .SelectMany(selectedWorkspace => workspaceFromId(selectedWorkspace.Id, currentWorkspace));
 
             IObservable<IThreadSafeWorkspace> workspaceFromId(long selectedWorkspaceId, IThreadSafeWorkspace currentWorkspace)
                 => selectedWorkspaceId == currentWorkspace.Id

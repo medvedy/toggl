@@ -367,21 +367,25 @@ namespace Toggl.Core.Tests.UI.ViewModels
             }
 
             [Fact, LogIfTooSlow]
-            public async Task CallsTheSelectWorkspaceViewModel()
+            public async Task CallsTheSelectModal()
             {
                 ViewModel.PickDefaultWorkspace.Execute();
                 TestScheduler.Start();
 
-                await NavigationService.Received()
-                    .Navigate<SelectWorkspaceViewModel, SelectWorkspaceParameters, long>(Arg.Any<SelectWorkspaceParameters>(), View);
+                await View.Received().Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<IThreadSafeWorkspace>>>(),
+                    Arg.Any<int>());
             }
 
             [Fact, LogIfTooSlow]
             public async Task UpdatesTheUserWithTheReceivedWorspace()
             {
-                NavigationService
-                    .Navigate<SelectWorkspaceViewModel, SelectWorkspaceParameters, long>(Arg.Any<SelectWorkspaceParameters>(), View)
-                    .Returns(Task.FromResult(workspaceId));
+                View.Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<IThreadSafeWorkspace>>>(),
+                    Arg.Any<int>())
+                .Returns(Observable.Return(new MockWorkspace { Id = workspaceId }));
 
                 ViewModel.PickDefaultWorkspace.Execute();
                 TestScheduler.Start();
@@ -395,9 +399,11 @@ namespace Toggl.Core.Tests.UI.ViewModels
             [Fact, LogIfTooSlow]
             public async Task StartsTheSyncAlgorithm()
             {
-                NavigationService
-                    .Navigate<SelectWorkspaceViewModel, SelectWorkspaceParameters, long>(Arg.Any<SelectWorkspaceParameters>(), View)
-                    .Returns(Task.FromResult(workspaceId));
+                View.Select(
+                    Arg.Any<string>(),
+                    Arg.Any<IEnumerable<SelectOption<IThreadSafeWorkspace>>>(),
+                    Arg.Any<int>())
+                .Returns(Observable.Return(new MockWorkspace { Id = workspaceId }));
 
                 ViewModel.PickDefaultWorkspace.Execute();
                 TestScheduler.Start();

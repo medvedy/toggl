@@ -1316,7 +1316,6 @@
     <InterfaceDefinition Include="Views\Onboarding\ReportsPage.xib" />
     <InterfaceDefinition Include="ViewControllers\EditProjectViewController.xib" />
     <InterfaceDefinition Include="ViewControllers\SelectColorViewController.xib" />
-    <InterfaceDefinition Include="ViewControllers\SelectWorkspaceViewController.xib" />
     <InterfaceDefinition Include="ViewControllers\SelectClientViewController.xib" />
     <InterfaceDefinition Include="ViewControllers\OutdatedAppViewController.xib" />
     <InterfaceDefinition Include="ViewControllers\TokenResetViewController.xib" />
@@ -1572,10 +1571,6 @@
       <DependentUpon>SelectColorViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewSources\ColorSelectionCollectionViewSource.cs" />
-    <Compile Include="ViewControllers\SelectWorkspaceViewController.cs" />
-    <Compile Include="ViewControllers\SelectWorkspaceViewController.designer.cs">
-      <DependentUpon>SelectWorkspaceViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="ViewSources\ClientTableViewSource.cs" />
     <Compile Include="ViewControllers\SelectClientViewController.cs" />
     <Compile Include="ViewControllers\SelectClientViewController.designer.cs">

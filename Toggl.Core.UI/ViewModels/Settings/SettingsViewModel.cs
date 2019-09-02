@@ -29,8 +29,6 @@ using static Toggl.Shared.Extensions.CommonFunctions;
 
 namespace Toggl.Core.UI.ViewModels
 {
-    using WorkspaceToSelectableWorkspaceLambda = Func<IEnumerable<IThreadSafeWorkspace>, IList<SelectableWorkspaceViewModel>>;
-
     [Preserve(AllMembers = true)]
     public sealed class SettingsViewModel : ViewModel
     {
@@ -406,18 +404,22 @@ namespace Toggl.Core.UI.ViewModels
 
         private async Task pickDefaultWorkspace()
         {
-            var defaultWorkspace = await interactorFactory.GetDefaultWorkspace()
-                .TrackException<InvalidOperationException, IThreadSafeWorkspace>("SettingsViewModel.PickDefaultWorkspace")
-                .Execute();
+            var validWorkspaces = await interactorFactory.GetAllWorkspaces().Execute();
+            var workspaceSelections = validWorkspaces.Select(selectOptionFromWorkspace);
+            var selectedWorkspaceIndex = validWorkspaces
+                .IndexOf(ws => ws.Id == currentUser.DefaultWorkspaceId);
 
-            var selectedWorkspaceId =
-                await Navigate<SelectWorkspaceViewModel, SelectWorkspaceParameters, long>(new SelectWorkspaceParameters(Resources.SetDefaultWorkspace, defaultWorkspace.Id));
+            var newWorkspace = await View
+                .Select(Resources.DefaultWorkspace, workspaceSelections, selectedWorkspaceIndex);
 
-            if (selectedWorkspaceId == currentUser.DefaultWorkspaceId)
+            if (currentUser.DefaultWorkspaceId == newWorkspace.Id)
                 return;
 
-            await interactorFactory.UpdateDefaultWorkspace(selectedWorkspaceId).Execute();
+            await interactorFactory.UpdateDefaultWorkspace(newWorkspace.Id).Execute();
             syncManager.InitiatePushSync();
+
+            SelectOption<IThreadSafeWorkspace> selectOptionFromWorkspace(IThreadSafeWorkspace workspace)
+                => new SelectOption<IThreadSafeWorkspace>(workspace, workspace.Name);
         }
 
         private async Task toggleTimeEntriesGrouping()
@@ -435,7 +437,7 @@ namespace Toggl.Core.UI.ViewModels
                 .IndexOf(durationFormat => durationFormat == currentPreferences.DurationFormat);
 
             var newDurationFormat = await View
-                .Select(Resources.FirstDayOfTheWeek, durationFormats, selectedDurationFormatIndex);
+                .Select(Resources.DurationFormat, durationFormats, selectedDurationFormatIndex);
 
             if (currentPreferences.DurationFormat == newDurationFormat)
                 return;

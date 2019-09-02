@@ -414,9 +414,6 @@
     <Compile Include="Fragments\CalendarFragment.ViewBinds.cs">
       <DependentUpon>CalendarFragment.cs</DependentUpon>
     </Compile>
-    <Compile Include="Fragments\SelectWorkspaceFragment.ViewBinds.cs">
-      <DependentUpon>SelectWorkspaceFragment.cs</DependentUpon>
-    </Compile>
     <Compile Include="Helper\PersistentNotificationsHelper.cs" />
     <Compile Include="Fragments\NoWorkspaceFragment.cs" />
     <Compile Include="Fragments\NoWorkspaceFragment.ViewBinds.cs">
@@ -460,7 +457,6 @@
     <Compile Include="ViewHolders\MainLogSuggestionItemViewHolder.cs" />
     <Compile Include="ViewHolders\MainLogSuggestionsListViewHolder.cs" />
     <Compile Include="ViewHolders\SimpleTextViewHolder.cs" />
-    <Compile Include="ViewHolders\SelectWorkspaceViewHolder.cs" />
     <Compile Include="ViewHolders\ReportsCalendarShortcutCellViewHolder.cs" />
     <Compile Include="ViewHolders\ReportsHeaderCellViewHolder.cs" />
     <Compile Include="ViewHolders\ReportsItemCellViewHolder.cs" />
@@ -517,7 +513,6 @@
     <Compile Include="Views\ValueSlider.cs" />
     <Compile Include="Activities\SelectClientActivity.cs" />
     <Compile Include="Adapters\SelectClientRecyclerAdapter.cs" />
-    <Compile Include="Fragments\SelectWorkspaceFragment.cs" />
     <Compile Include="Services\LicenseProviderAndroid.cs" />
     <Compile Include="Adapters\ReportsRecyclerAdapter.cs" />
     <Compile Include="Extensions\ViewExtensions.cs" />
@@ -917,8 +912,6 @@
     <AndroidResource Include="Resources\drawable\ValueSliderThumb.xml" />
     <AndroidResource Include="Resources\layout\SelectClientActivity.axml" />
     <AndroidResource Include="Resources\layout\SelectClientActivityCell.axml" />
-    <AndroidResource Include="Resources\layout\SelectWorkspaceFragment.axml" />
-    <AndroidResource Include="Resources\layout\SelectWorkspaceFragmentCell.axml" />
     <AndroidResource Include="Resources\layout\ReportsFragmentItem.axml" />
     <AndroidResource Include="Resources\layout\ReportsCalendarFragmentDayCell.axml" />
     <AndroidResource Include="Resources\layout\ReportsCalendarFragmentPage.axml" />

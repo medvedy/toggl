@@ -230,14 +230,6 @@ namespace Toggl.Core.UI.Navigation
                     dependencyContainer.RxActionFactory);
             }
 
-            if (viewModelType == typeof(SelectWorkspaceViewModel))
-            {
-                return new SelectWorkspaceViewModel(
-                    dependencyContainer.InteractorFactory,
-                    dependencyContainer.NavigationService,
-                    dependencyContainer.RxActionFactory);
-            }
-
             if (viewModelType == typeof(SignupViewModel))
             {
                 return new SignupViewModel(

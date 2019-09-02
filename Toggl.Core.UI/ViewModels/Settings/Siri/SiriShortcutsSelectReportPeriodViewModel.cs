@@ -13,6 +13,7 @@ using Toggl.Core.UI.Extensions;
 using Toggl.Core.UI.Navigation;
 using Toggl.Core.UI.Parameters;
 using Toggl.Core.UI.ViewModels.Selectable;
+using Toggl.Core.UI.Views;
 using Toggl.Shared;
 using Toggl.Shared.Extensions;
 using Toggl.Shared.Extensions.Reactive;
@@ -71,17 +72,24 @@ namespace Toggl.Core.UI.ViewModels.Settings
 
         private async Task pickWorkspace()
         {
-            var defaultWorkspace = await interactorFactory.GetDefaultWorkspace()
+            var defaultWorkspaceId = SelectedWorkspace.Value?.Id ?? (await interactorFactory.GetDefaultWorkspace()
                 .TrackException<InvalidOperationException, IThreadSafeWorkspace>(
                     "SiriShortcutsSelectReportPeriodViewModel.PickWorkspace")
-                .Execute();
+                .Execute()).Id;
 
-            var selectWorkspaceParams = new SelectWorkspaceParameters(Resources.SelectWorkspace, SelectedWorkspace.Value?.Id ?? defaultWorkspace.Id);
-            var selectedWorkspaceId =
-                await Navigate<SelectWorkspaceViewModel, SelectWorkspaceParameters, long>(selectWorkspaceParams);
-            var workspace = await interactorFactory.GetWorkspaceById(selectedWorkspaceId).Execute();
+            var allWorkspaces = await interactorFactory.GetAllWorkspaces().Execute();
+            var selectWorkspaces = allWorkspaces.Select(selectOptionFromWorkspace);
+            var selectedWorkspaceIndex = allWorkspaces.IndexOf(ws => ws.Id == defaultWorkspaceId);
 
-            SelectedWorkspace.Accept(workspace);
+            var selectedWorkspace = await View.Select(Resources.Workspace, selectWorkspaces, selectedWorkspaceIndex);
+
+            if (SelectedWorkspace.Value?.Id == selectedWorkspace.Id)
+                return;
+
+            SelectedWorkspace.Accept(selectedWorkspace);
+
+            SelectOption<IThreadSafeWorkspace> selectOptionFromWorkspace(IThreadSafeWorkspace ws)
+                => new SelectOption<IThreadSafeWorkspace>(ws, ws.Name);
         }
     }
 }
