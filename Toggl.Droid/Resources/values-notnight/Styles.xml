@@ -6,9 +6,12 @@
   <style name="AppBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
   </style>
 
-  <style name="TogglDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-    <item name="android:colorAccent">#328FFF</item>
-    <item name="colorControlActivated">#328FFF</item>
+  <style name="TogglDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+    <item name="android:colorAccent">@color/accent</item>
+    <item name="colorControlActivated">@color/accent</item>
+    <item name="android:textColor">@color/primaryText</item>
+    <item name="colorPrimary">@color/primaryText</item>
+    <item name="android:background">@color/background</item>
   </style>
 
   <style name="WheelDialogStyle" parent="android:Theme.Material.Light.Dialog">
@@ -28,6 +31,6 @@
 
   <style name="WheelTimePicker" parent="@android:style/Widget.Material.Light.TimePicker">
     <item name="android:headerBackground">@drawable/picker_header_background</item>
-    <item name="android:numbersSelectorColor">#328fff</item>
+    <item name="android:numbersSelectorColor">@color/accent</item>
   </style>
 </resources>
