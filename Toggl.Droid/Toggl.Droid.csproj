@@ -704,11 +704,6 @@
     <AndroidResource Include="Resources\layout\SelectDurationFormatFragmentCell.axml" />
     <AndroidResource Include="Resources\layout\ReportsFragment.axml" />
     <AndroidResource Include="Resources\layout\ReportsFragmentHeader.axml" />
-    <AndroidResource Include="Resources\drawable-hdpi\logo.png" />
-    <AndroidResource Include="Resources\drawable-mdpi\logo.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\logo.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\logo.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\logo.png" />
     <AndroidResource Include="Resources\menu\GenericSaveMenu.xml" />
     <AndroidResource Include="Resources\values\Strings.xml" />
     <AndroidResource Include="Resources\mipmap-hdpi\ic_launcher.png" />
@@ -765,7 +760,6 @@
     <AndroidResource Include="Resources\drawable-hdpi\dropdown.png" />
     <AndroidResource Include="Resources\drawable-hdpi\error_baddata.png" />
     <AndroidResource Include="Resources\drawable-hdpi\google.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\logo_icon.png" />
     <AndroidResource Include="Resources\drawable-hdpi\next_light.png" />
     <AndroidResource Include="Resources\drawable-hdpi\play.png" />
     <AndroidResource Include="Resources\drawable-hdpi\play_white.png" />
@@ -797,7 +791,6 @@
     <AndroidResource Include="Resources\drawable-mdpi\dropdown.png" />
     <AndroidResource Include="Resources\drawable-mdpi\error_baddata.png" />
     <AndroidResource Include="Resources\drawable-mdpi\google.png" />
-    <AndroidResource Include="Resources\drawable-mdpi\logo_icon.png" />
     <AndroidResource Include="Resources\drawable-mdpi\next_light.png" />
     <AndroidResource Include="Resources\drawable-mdpi\play.png" />
     <AndroidResource Include="Resources\drawable-mdpi\play_white.png" />
@@ -829,7 +822,6 @@
     <AndroidResource Include="Resources\drawable-xhdpi\dropdown.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\error_baddata.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\google.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\logo_icon.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\next_light.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\play.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\play_white.png" />
@@ -861,7 +853,6 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\dropdown.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\error_baddata.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\google.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\logo_icon.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\next_light.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\play.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\play_white.png" />
@@ -893,7 +884,6 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\dropdown.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\error_baddata.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\google.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\logo_icon.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\next_light.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\play.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\play_white.png" />
@@ -957,11 +947,6 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\timer.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\book.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\timer.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\toggl_logo.png" />
-    <AndroidResource Include="Resources\drawable-mdpi\toggl_logo.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\toggl_logo.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\toggl_logo.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\toggl_logo.png" />
     <AndroidResource Include="Resources\drawable-hdpi\ic_illustration_error_spider.png" />
     <AndroidResource Include="Resources\drawable-mdpi\ic_illustration_error_spider.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\ic_illustration_error_spider.png" />
@@ -976,11 +961,6 @@
     <AndroidResource Include="Resources\drawable-xhdpi\date_light.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\date_light.png" />
     <AndroidResource Include="Resources\drawable-xxxhdpi\date_light.png" />
-    <AndroidResource Include="Resources\drawable-hdpi\logo_black.png" />
-    <AndroidResource Include="Resources\drawable-mdpi\logo_black.png" />
-    <AndroidResource Include="Resources\drawable-xhdpi\logo_black.png" />
-    <AndroidResource Include="Resources\drawable-xxhdpi\logo_black.png" />
-    <AndroidResource Include="Resources\drawable-xxxhdpi\logo_black.png" />
     <AndroidResource Include="Resources\drawable-hdpi\visibility_off.png" />
     <AndroidResource Include="Resources\drawable-mdpi\visibility_off.png" />
     <AndroidResource Include="Resources\drawable-xhdpi\visibility_off.png" />
