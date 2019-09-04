@@ -23,7 +23,7 @@
     <TextView
         android:id="@+id/TermsMessageTextView"
         android:textSize="16sp"
-        android:textColor="#99000000"
+        android:textColor="@color/primaryText"
         android:lineSpacingExtra="7sp"
         tools:text="By tapping 'I Agree', you\nunderstand and agree to Toggl's"
         android:layout_marginTop="155dp"
@@ -34,7 +34,7 @@
     <TextView
         android:id="@+id/ViewTermsOfServiceTextView"
         android:textSize="16sp"
-        android:textColor="#2e81e6"
+        android:textColor="@color/accent"
         android:lineSpacingExtra="7sp"
         tools:text="Terms of service"
         android:layout_marginTop="205dp"
@@ -45,7 +45,7 @@
     <TextView
         android:id="@+id/AndTextView"
         android:textSize="16sp"
-        android:textColor="#99000000"
+        android:textColor="@color/primaryText"
         android:lineSpacingExtra="7sp"
         tools:text="and"
         android:layout_marginTop="205dp"
@@ -56,7 +56,7 @@
     <TextView
         android:id="@+id/ViewPrivacyPolicyTextView"
         android:textSize="16sp"
-        android:textColor="#2e81e6"
+        android:textColor="@color/accent"
         android:lineSpacingExtra="7sp"
         tools:text="Privacy policy"
         android:layout_marginTop="230dp"
@@ -69,7 +69,7 @@
         android:textSize="14sp"
         android:gravity="center"
         android:textAllCaps="true"
-        android:textColor="#328fff"
+        android:textColor="@color/accent"
         android:letterSpacing="0.04"
         tools:text="I Agree"
         android:fontFamily="sans-serif-medium"
