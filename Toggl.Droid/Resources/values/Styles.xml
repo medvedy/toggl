@@ -19,8 +19,6 @@
     </style>
 
     <style name="AppTheme" parent="@style/BaseAppTheme">
-      <item name="android:statusBarColor">@color/background</item>
-      <item name="android:navigationBarColor">@color/navigationBar</item>
     </style>
 
     <style name="AppTheme.OutdatedAppStatusBarColor">
