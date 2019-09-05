@@ -61,6 +61,7 @@ namespace Toggl.Core.UI.ViewModels
 
             customColor = Observable
                 .CombineLatest(hue, saturation, value, Colors.FromHSV)
+                .Throttle(TimeSpan.FromMilliseconds(100))
                 .Do(selectedColor.OnNext);
 
             var availableColors = Observable.Return(Colors.DefaultProjectColors)
@@ -123,7 +124,7 @@ namespace Toggl.Core.UI.ViewModels
 
         private IImmutableList<SelectableColorViewModel> updateSelectableColors(IEnumerable<Color> availableColors, Color selectedColor)
             => availableColors.Select(color => new SelectableColorViewModel(color, color == selectedColor)).ToImmutableList();
-        
+
         private void save()
         {
             Close(selectedColor.Value);
