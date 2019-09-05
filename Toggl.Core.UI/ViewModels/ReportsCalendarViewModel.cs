@@ -102,7 +102,8 @@ namespace Toggl.Core.UI.ViewModels
 
             CurrentPageObservable = currentPageSubject
                 .AsObservable()
-                .DistinctUntilChanged();
+                .DistinctUntilChanged()
+                .AsDriver(MonthsToShow - 1, schedulerProvider);
 
             SelectedDateRangeObservable = selectedDateRangeSubject
                 .ShareReplay(1);
